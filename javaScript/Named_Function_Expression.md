@@ -28,7 +28,7 @@ new function bar(){}; // expression, since it's part of a <em>NewExpression</em>
 
 ## Grouping Operator ()
 
-A somewhat less obvious expression is the one where funciton is wrapped with parenthesis ---```(function foo(){})```.  The reason it is an expression is again **due to a context: "(" and ")" constitute a grouping oeprator can only contain an expression**:
+A somewhat less obvious expression is the one where funciton is wrapped with parenthesis ```(function foo(){})```.  The reason it is an expression is again **due to a context: "(" and ")" constitute a grouping oeprator can only contain an expression**:
 
 To demonstrate with examples:
 ```js
@@ -82,7 +82,7 @@ try {
     foo();
     ```
 ## Production rules of function declarations
-FunctionDeclarations are only allowed to appear in Program or FunctionBody. Syntactically, they can not appear in Block ({ ... }) — such as that of if, while or for statements. **This is because Blocks can only contain Statements, not SourceElements, which FunctionDeclaration is.** If we look at production rules carefully, we can see that the only way Expression is allowed directly within Block is when it is part of ExpressionStatement. However, ExpressionStatement is explicitly defined to not begin with "function" keyword, and this is exactly why FunctionDeclaration cannot appear directly within a Statement or Block (note that Block is merely a list of Statements).
+Function Declarations are only allowed to appear in Program or Function Body. Syntactically, they can not appear in Block ({ ... }) — such as that of if, while or for statements. **This is because Blocks can only contain Statements, not Source Elements, which Function Declaration is.** If we look at production rules carefully, we can see that the only way Expression is allowed directly within Block is when it is part of Expression Statement. However, Expression Statement is explicitly defined to not begin with "function" keyword, and this is exactly why Function Declaration cannot appear directly within a Statement or Block (note that Block is merely a list of Statements).
 
 Because of these restrictions, whenever function appears directly in a block (such as in the previous example) it should actually be considered a syntax error, not function declaration or expression. The problem is that almost none of the implementations I've seen parse these functions strictly per rules (exceptions are BESEN and DMDScript). They interpret them in proprietary ways instead.
 
