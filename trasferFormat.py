@@ -12,9 +12,9 @@ class Transfer:
             self.ROOT = path
             meta_string = self.generateMetaString()
             if os.path.isdir(path):
-                self.COPIED_ROOT = path + meta_string
+                self.COPIED_ROOT = path + "_" + meta_string
             else:
-                self.COPIED_ROOT = os.path.splitext(path)[0] + meta_string + os.path.splitext(path)[1]
+                self.COPIED_ROOT = os.path.splitext(path)[0] + "_" + meta_string + os.path.splitext(path)[1]
             current_copy_path = self.COPIED_ROOT
         else:
             current_copy_path = self.COPIED_ROOT + path.split(self.ROOT)[1]
@@ -43,4 +43,6 @@ class Transfer:
 if __name__ == "__main__":
     transfer = Transfer()
     transfer.traverse(r"C:\Users\陈翔宇\Desktop\dir_root")
+    print(transfer.ROOT)
+    print(transfer.COPIED_ROOT)
         
