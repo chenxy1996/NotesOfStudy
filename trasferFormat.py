@@ -46,7 +46,7 @@ class Transfer:
             file_string = f.read()
 
             '''
-            add js to js code block:
+            add js name to js code block:
 
             ```                         ```js
             function fun() {}    =>     function fun() {}
