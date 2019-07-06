@@ -1,7 +1,11 @@
 # Notes Of Study
 To record study progress of daily life.
 
+用来记录每天的学习进度
+
 **Format of markdown file is in accordance with the format of [_Typora_](https://www.typora.io/)**.
+
+**Markdown采用_Typora_软件设定的格式**
 
 ## Script *transferFormat.py*
 The python script is used to transfer the markdown file format of *YoudaoYun* to the format setted in *Typora* or vice versa.
