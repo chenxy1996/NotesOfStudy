@@ -87,7 +87,7 @@ class Transfer:
             self.stack3.append(first_str)
 
             if second_str and len(first_str) >= 3 and len(self.stack3) == 1:
-                return first_str + "js" + second_str
+                return first_str + "java" + second_str
 
         else:
             self.stack3 = self.stack3[0:(self.stack3.index(first_str))]
@@ -128,5 +128,5 @@ class Transfer:
 
 if __name__ == "__main__":
     transfer = Transfer()
-    transfer.traverse(r"C:\Users\陈翔宇\Desktop\JavaScript高级程序设计")
+    transfer.traverse(r"C:\Users\陈翔宇\Desktop\Java_程序设计")
         
