@@ -128,5 +128,5 @@ class Transfer:
 
 if __name__ == "__main__":
     transfer = Transfer()
-    transfer.traverse(r"C:\Users\陈翔宇\Desktop\dir_root")
+    transfer.traverse(r"C:\Users\陈翔宇\Desktop\JavaScript高级程序设计")
         
