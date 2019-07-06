@@ -14,7 +14,7 @@ class Transfer:
 
     # Traverse the target path to find markdown files. 
     # Create a new directory (or a new file if the objective
-    # is a file)in the same postition, which has the same 
+    # is a file)in the same position, which has the same 
     # documentary structure as the objective directory.
     # Meanwhile process markdown files.
     def traverse(self, path, in_root = True, reverse = False):
