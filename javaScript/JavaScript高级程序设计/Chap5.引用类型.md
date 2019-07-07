@@ -1,4 +1,7 @@
+[TOC]
+
 #### 5.1 Object类型 
+
 1. 创建Object实例:
     - new操作符后跟Object构造函数```var newObj = new Object();newObj.age = 29;```
     - 使用对象字面量```var newObj = {age : 29, name : "chen"}```
