@@ -1,7 +1,3 @@
----
-typora-copy-images-to: ..\..\image
----
-
 [TOC]
 
 # 函数表达式
@@ -37,7 +33,7 @@ function createComparisonFunction(propertyName) {
 
 **A function that is defined inside another function adds the containing function's activation object into its scope chain.**
 
-## Closures and Variables
+### Closures and Variables
 
 The closure always gets the last value of any variable from the containing function.
 
