@@ -1,7 +1,3 @@
----
-typora-copy-images-to: ..\..\image
----
-
 [TOC]
 
 # 函数表达式
