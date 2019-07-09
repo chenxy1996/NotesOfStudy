@@ -1,6 +1,6 @@
 [TOC]
 
-# 函数表达式
+# Function Expressions
 
 ##  function declaration & function expression
 
@@ -10,7 +10,7 @@ More info:
 2. [Hoisting and JavaScript Variable Scope.md](../Hoisting and JavaScript Variable Scope.md)
 3.  [Named Function Expression.md](../Named Function Expression.md)
 
-## 闭包Closure
+## Closure
 
 closure: 有权访问另一个函数作用域中的变量的函数。创建闭包的常见方式，就是在一个函数内部创建另一个函数。
 
@@ -84,6 +84,249 @@ function createFunctions() {
 for 循环进行第三次时候，如下图所示:
 
 ![scopeChain_2](../../image/scopeChain_2.jpg)
+
+
+
+###  The `this` Object
+
+The `this` object is bound at runtime based on the **context in which a function is executed**:
+
+1. when used inside global functions, `this` is equal to `window` in non-strict mode and `undefined` in strict mode.
+2. whereas this is equal to the object when called as an object method.
+3. Anonymous functions are not bound to an object in this context, meaning the this object points to window unless executing in strict mode (where `this` is undefined).
+
+```js
+var name = "The Window";
+var object = {
+    name: "My Object",
+    getNameFunc: function() {
+        var that = this;
+        return function() {
+            return that.name;
+        };
+    }
+};
+
+alert(object.getNameFunc()());
+```
+
+
+
+### Memory Leaks
+
+## Mimicking block scope
+
+The basic syntax of an anonymous function used as a block scope (often called a *private scope*) is as follows:
+
+```js
+(function() {
+    //block code here
+})();
+```
+
+Remember a function declaration followed by parentheses won't work. However, a function expression can work. So to turn the function declaration into a function expression, you need only **surround it with parentheses**.
+
+**Note:** Now, we can use **`let`** to declare a variable instead of `var` to realize the block scope.
+
+## Private variables
+
+Any variable inside a function is considered private since it is inaccessible outside that function. This includes **function arguments, local variable, function defined inside other functions*
+
+```js
+function add(num1, num2) {
+    var sum = num1 + num2;
+    return sum;
+}
+```
+
+### privileged method
+
+Two ways to create privileged methods on objects.
+
+- ```js
+  function MyObject() {
+      // private variable and functions
+      var privateVariable = 10;
+      
+      function privateFunction() {
+          return false;
+      }
+      
+      this.publicMethod = function() {
+          privateVariable++;
+          return privateFunction();
+      }
+  }
+  ```
+
+- ```js
+  function Person(name){
+      this.getName = function(){
+      	return name;
+      };
+      this.setName = function (value) {
+      	name = value;
+      };
+  }
+  var person = new Person(“Nicholas”);
+  alert(person.getName()); //”Nicholas”
+  person.setName(“Greg”);
+  alert(person.getName()); //”Greg”
+  ```
+
+### Static Private Variables
+
+```js
+(function(){
+    //private variables and functions
+    var privateVariable = 10;
+    function privateFunction(){
+    	return false;
+    }
+    //constructor
+    MyObject = function(){
+    };
+    //public and privileged methods
+    MyObject.prototype.publicMethod = function() {
+        privateVariable++;
+        return privateFunction();
+    };
+})();
+```
+
+This pattern defined the constructor not by using a function but instead by using a function expression. Function declarations always create local functions, which is undesiable in this case. For this same reason, the _var_ key word is not used with `MyObject`.
+
+Remember: **initializing an undeclared variable always creates a global variable, so `MyObject` becomes global and available outside the private scope. Also keep in mind that assigning to an undeclared variable in strict mode causes an error.**
+
+==In this pattern, private variables and functions are shared among instances==
+
+```js
+(function() {
+    var name = "";
+    Person = function(value) {
+        name = value;
+    };
+    Person.prototype.getName = function() {
+        return name;
+    };
+    Person.prototype.setName = function(value) {
+        name = value;
+    };
+})();
+
+var person1 = new Person(“Nicholas”);
+alert(person1.getName()); //”Nicholas”
+person1.setName(“Greg”);
+alert(person1.getName()); //”Greg”
+var person2 = new Person(“Michael”);
+alert(person1.getName()); //”Michael”
+alert(person2.getName()); //”Michael”
+```
+
+Using this pattern, the `name` variable becomes static and will be used among all instances.
+
+### The Module Pattern
+
+The module pattern augments the basic singleton to allow for private variables and privileged methods.
+
+```js
+var singleton = function() {
+    //private variables and functions
+    var privateVariable = 10;
+    
+    function privateFunction() {
+        return false;
+    }
+    
+    //privileged/public methods and properties
+    return {
+        publicProperty: true,
+        publicMethod: function() {
+            privateVariable++;
+            return privateFunction();
+        }
+    };
+}();
+```
+
+That object literal contains only properties and methods that should be public. Since the object is defined inside the anonymous function, all of the public methods have access to the private variables and functions. Essentially, the object literal defines the public interface for the singleton.
+
+```js
+var application = function() {
+    //private variables and functions
+    var components = new Array();
+    
+    //initialization
+    components.push(new BaseComponent());
+    
+    //public interface
+    return {
+        getComponentCount: function() {
+            return components.length;
+        },
+        
+        registerComponent: function(component) {
+            if (typeof component === "object") {
+                components.push(component);
+            }
+        }
+    };
+}();
+```
+
+### The Module-Augmentation Pattern
+
+```js
+var singleton = function(){
+	//private variables and functions
+	var privateVariable = 10;
+	function privateFunction(){
+		return false;
+	}
+	//create object
+	var object = new CustomType();
+	//add privileged/public properties and methods
+	object.publicProperty = true;
+	object.publicMethod = function(){
+		privateVariable++;
+		return privateFunction();
+	};
+	//return the object
+	return object;
+}();
+```
+
+```js
+var application = function(){
+    //private variables and functions
+    var components = new Array();
+    //initialization
+    components.push(new BaseComponent());
+    //create a local copy of application
+    var app = new BaseComponent();
+    //public interface
+    app.getComponentCount = function(){
+        return components.length;
+    };
+    app.registerComponent = function(component){
+        if (typeof component == “object”){
+        	components.push(component);
+        }
+    };
+        //return it
+    return app;
+}();
+```
+
+
+
+
+
+
+
+
+
+
 
 
 
