@@ -37,3 +37,5 @@ DOM Level 2 Events define two methods to deal with the assignment and removal of
 accept three arguments: **the event name to handle**, **the event handler function**, and a
 **Boolean value** indicating <u>whether to call the event handler during the capture phase (true) or during the bubble phase (false).</u>
 
+==**MORE INFO SEE THE BOOK**==
+
