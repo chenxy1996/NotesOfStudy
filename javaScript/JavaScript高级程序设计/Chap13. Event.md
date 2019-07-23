@@ -39,3 +39,8 @@ accept three arguments: **the event name to handle**, **the event handler functi
 
 ==**MORE INFO SEE THE BOOK**==
 
+## 总计
+
+- 限制一个页面中的事件处理程序的数量，数量太多会占用大量内存。
+- 建立在事件冒泡上的事件委托技术。
+

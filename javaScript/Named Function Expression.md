@@ -1,11 +1,11 @@
-[toc]
+[TOC]
 # Introduction
 ==The whole article is based on the ECMAScript2==
 
 In a nutshell, named function expressions are usefull for one thing only - **decriptive function names in debuggers and profilers**. There is also a possibility of using function names for recursion.
 
 # Function Expression vs. Function Declaration
-The only thing ECMA specs make clear is that <u>*Function Declaration* must always hava an identifier</u> (or a function name, if you prefer), and *Function Expression* may omit it:
+The only thing ECMA specs make clear is that <u>*Function Declaration* must always have an identifier</u> (or a function name, if you prefer), and *Function Expression* may omit it:
 ```js
 FunctionDeclaration:
 function identifier (FormalParameterList_opt){FunctionBody}
@@ -28,7 +28,7 @@ new function bar(){}; // expression, since it's part of a <em>NewExpression</em>
 
 ## Grouping Operator ()
 
-A somewhat less obvious expression is the one where funciton is wrapped with parenthesis ---```(function foo(){})```.  The reason it is an expression is again **due to a context: "(" and ")" constitute a grouping oeprator can only contain an expression**:
+A somewhat less obvious expression is the one where function is wrapped with parenthesis ---```(function foo(){})```.  The reason it is an expression is again **due to a context: "(" and ")" constitute a grouping operator can only contain an expression**:
 
 To demonstrate with examples:
 ```js

@@ -1,4 +1,4 @@
-[toc]
+[TOC]
 # Variable Scope
 ## intro
 The scope of a variable is controlled by the <u>location of the variable declaration, and defines the part of the program where a particular variable is accessible.</u>
@@ -48,14 +48,14 @@ var state = "ready";
 ```
  Here is how the code is interpreted by a JavaScript engine:
  ```js
- var state;           // moved to the top
+var state;           // moved to the top
 console.log(state);   
 state = "ready";     // left in place
  ```
- 
+
  Another example on hoisting of function declarations:
  ```js
- showState();            // output: Ready
+showState();            // output: Ready
 
 function showState() {
   console.log("Ready");
