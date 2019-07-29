@@ -12,6 +12,3 @@ function Student(name, age) {
     return o;
 }
 
-var aStudent = Student("chen", 23);
-var fun1 = aStudent.sayName;
-fun1();
