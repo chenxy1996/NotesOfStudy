@@ -126,4 +126,295 @@ Object.setPrototypeOf(objectC, protoB);
 console.log(objectC.x); // 20
 ```
 
-**Note**:even though the `__proto__` property is standardized today, and is easier to use for explanations, on practice prefer using API methods for prototype manipulations, such as `Object.create`, `Object.getPrototypeOf`, `Object.setPrototypeOf` , and similar on the `Reflect` module.
+**Note**: even though the `__proto__` property is standardized today, and is easier to use for explanations, on practice prefer using API methods for prototype manipulations, such as `Object.create`, `Object.getPrototypeOf`, `Object.setPrototypeOf` , and similar on the `Reflect` module.
+
+# Class
+
+<u>When several objects share the same initial state and behavior, they form a classification.</u>
+
+==**Def. 5: Class:** A *class* is a formal abstract set which specifies initial state and behavior of its objects.==
+
+![Figure 3](http://dmitrysoshnikov.com/wp-content/uploads/2017/11/shared-prototype.png)
+
+*Figure 3. A shared prototype.*
+
+
+
+However, this is obviously *cumbersome*. And the class abstraction serves exactly this purpose — being a ***syntactic sugar*** <u>(i.e. a construct which *semantically does the same*, but in a much *nicer syntactic form*)</u>, it allows creating such multiple objects with the convenient pattern:
+
+```js
+class Letter {
+  constructor(number) {
+    this.number = number;
+  }
+ 
+  getNumber() {
+    return this.number;
+  }
+}
+ 
+let a = new Letter(1);
+let b = new Letter(2);
+// ...
+let z = new Letter(26);
+ 
+console.log(
+  a.getNumber(), // 1
+  b.getNumber(), // 2
+  z.getNumber(), // 26
+);
+```
+
+Technically a “class” is represented as a *“constructor function + prototype”* pair. Thus, a constructor function *creates objects*, and also *automatically* sets the *prototype* for its newly created instances. This prototype is stored in the `<ConstructorFunction>.prototype` property.
+
+==**Def. 6: Constructor:** A *constructor* is a function which is used to create instances, and automatically set their prototype.==
+
+It is possible to use a constructor function explicitly. Moreover, before the class abstraction was introduced, JS developers used to do so not having a better alternative (we can still find a lot of such legacy code allover the internets):
+
+```js
+function Letter(number) {
+  this.number = number;
+}
+ 
+Letter.prototype.getNumber = function() {
+  return this.number;
+};
+ 
+let a = new Letter(1);
+let b = new Letter(2);
+// ...
+let z = new Letter(26);
+ 
+console.log(
+  a.getNumber(), // 1
+  b.getNumber(), // 2
+  z.getNumber(), // 26
+);
+```
+
+![Figure 4](http://dmitrysoshnikov.com/wp-content/uploads/2017/11/js-constructor.png)
+
+
+
+# Execution context
+
+==**Def. 7: Execution context:** An *execution context* is a specification device that is used to track the runtime evaluation of the code.==
+
+There are several types of ECMAScript code: the ***global code*, *function code*, *`eval`code*, and *module code*;** each code is evaluated in its execution context. Different code types, and their appropriate objects may affect the structure of an execution context: for example, *generator functions* save their *generator object* on the context.
+
+```js
+function recursive(flag) {
+ 
+  // Exit condition.
+  if (flag === 2) {
+    return;
+  }
+ 
+  // Call recursively.
+  recursive(++flag);
+}
+ 
+// Go.
+recursive(0);
+```
+
+When a function is called, a *new execution context* is created, and *pushed* onto the stack — at this point it becomes *an active execution context*. When a function returns, its context is *popped* from the stack.
+
+**A context which calls another context is called a *caller***, **And a context which is being called, accordingly, is a *callee*.**
+
+In our example the `recursive` function plays both roles: of a callee and a caller — when calls itself recursively.\
+
+==**Def. 8: Execution context stack:** An *execution context stack* is a LIFO structure used to maintain control flow and order of execution.==
+
+![Figure 5](http://dmitrysoshnikov.com/wp-content/uploads/2017/11/execution-stack.png)
+
+*Figure 5. An execution context stack.*
+
+As we can also see, the *global context* is always at the bottom of the stack, it is created prior execution of any other context.
+
+In general, the code of a context *runs to completion*, however as we mentioned above, some objects — such as *generators*, may violate LIFO order of the stack. A generator function may suspend its running context, and *remove* it from the stack *before completion*. Once a generator is activated again, its context is *resumed* and again is *pushed* onto the stack:
+
+```js
+function *gen() {
+  yield 1;
+  return 2;
+}
+
+let g = gen();
+
+console.log(
+  g.next().value, // 1
+  g.next().value, // 2
+);
+```
+
+The `yield` statement here returns the value to the caller, and pops the context. On the second `next` call, the *same context* is pushed again onto the stack, and is *resumed*. Such context may *outlive* the caller which creates it, hence the violation of the LIFO structure.
+
+# Environment
+
+Every execution context has an associated *lexical environment*.
+
+==**Def. 9: Lexical environment:** A *lexical environment* is a structure used to define association between *identifiers* appearing in the context with their values. Each environment can have a reference to an *optional parent environment*.==
+
+**So a environment is a *storage* of variables, functions, and classes defined in a scope.**
+
+Technically, an environment is a *pair*, consisting of an *environment record* (an actual storage table which maps identifiers to values), and a reference to the parent (which can be `null`).
+
+For the code:
+
+```js
+let x = 10;
+let y = 20;
+
+function foo(z) {
+  let x = 100;
+  return x + y + z;
+}
+
+foo(30); // 150
+```
+
+The environment structures of the *global* context, and a context of the `foo` function would looks as follows:
+
+![Figure 6](http://dmitrysoshnikov.com/wp-content/uploads/2017/11/environment-chain.png)
+
+*Figure 6. An environment chain.*
+
+ **if a variable is *not found* in the *own* environment, there is an attempt to lookup it in the *parent environment*, in the parent of the parent, and so on — until the whole *environment chain* is considered.**
+
+==**Def. 10: Identifier resolution:** the process of resolving a variable *(binding)* in an environment chain. An unresolved binding results to `ReferenceError`.==
+
+Similarly to prototypes, the same parent environment can be shared by several child environments: for example, two global functions share the same global environment.
+
+Environment records differ by *type*. There are **<u>object** environment records</u> and <u>**declarative** environment records.</u> On top of the declarative record there are also <u>**function** environment records</u>, and **<u>module** environment records</u>. Each type of the record has specific only to it properties. However, the generic mechanism of the identifier resolution is common across all the environments, and doesn’t depend on the type of a record.
+
+An example of an *object environment record* can be the record of the *global environment*. Such record has also associated *binding object*, which may store some properties from the record, but not the others, and vice-versa. The binding object can also be provided as `this` value.
+
+```js
+// Legacy variables using `var`.
+var x = 10;
+
+// Modern variables using `let`.
+let y = 20;
+
+// Both are added to the environment record:
+console.log(
+  x, // 10
+  y, // 20
+);
+
+// But only `x` is added to the "binding object".
+// The binding object of the global environment
+// is the global object, and equals to `this`:
+
+console.log(
+  this.x, // 10
+  this.y, // undefined!
+);
+
+// Binding object can store a name which is not
+// added to the environment record, since it's
+// not a valid identifier:
+
+this['not valid ID'] = 30;
+
+console.log(
+  this['not valid ID'], // 30
+);
+```
+
+This is depicted on the following figure:
+
+![Figure 7](http://dmitrysoshnikov.com/wp-content/uploads/2017/11/env-binding-object.png)
+
+*Figure 7. A binding object.*
+
+
+
+# Closure
+
+Functions in ECMAScript are *first-class*. This concept is fundamental to *functional programming*, which aspects are supported in JavaScript.
+
+==**Def. 11: First-class function:** a function which can participate as a normal data: be stored in a variable, passed as an argument, or returned as a value from another function.==
+
+With the concept of first-class functions so called [“Funarg problem”](https://en.wikipedia.org/wiki/Funarg_problem) is related (or *“A problem of a functional argument”*). The problem arises when a function has to deal with *free variables*.
+
+==**Def. 12: Free variable:** a variable which is *neither a parameter*, *nor a local variable* of this function.==
+
+```js
+let x = 10;
+ 
+function foo() {
+  console.log(x);
+}
+ 
+function bar(funArg) {
+  let x = 20;
+  funArg(); // 10, not 20!
+}
+ 
+// Pass `foo` as an argument to `bar`.
+bar(foo);
+```
+
+For the function `foo` the variable `x` is free. When the `foo` function is activated (via the `funArg` parameter) — where should it resolve the `x` binding? From the *outer scope* where the function was *created*, or from the *caller scope*, from where the function is *called*? As we see, the caller, that is the `bar` function, also provides the binding for `x` — with the value `20`.
+
+The use-case described above is known as the **downwards funarg problem**, i.e. an *ambiguity* at determining a *correct environment* of a binding: should it be an environment of the *creation time*, or environment of the *call time*?
+
+**This is solved by an agreement of using *static scope*, that is the scope of the *==creation time==*.**
+
+==**Def. 13: Static scope:** a language implements *static scope*, if only by looking at the source code one can determine in which environment a binding is resolved.==
+
+In our example, the environment captured by the `foo` function, is the *global environment*:
+
+![Figure 8](http://dmitrysoshnikov.com/wp-content/uploads/2017/11/closure.png)
+
+*Figure 8. A closure.*
+
+==**Def. 14: Closure:** A *closure* is a function which *captures the environment*  where it’s *defined*. Further this environment is used for *identifier resolution*.
+
+The second sub-type of the Funarg problem is known as the **upwards funarg problem**.
+
+Again, technically it doesn’t differ from the same exact mechanism of capturing the definition environment. **Just in this case, hadn’t we have the closure, the activation environment of `foo` *would be destroyed*. But we *captured* it, so it *cannot be deallocated*, and is preserved — to support *static scope* semantics.**
+
+However, as we can see, the technical mechanism for the *downwards* and *upwards funarg problem* is *exactly the same* — and is the *mechanism of the static scope*.
+
+As we mentioned above, similarly to prototypes, the same parent environment can be *shared* across *several* closures. This allows accessing and mutating the shared data:
+
+```js
+function createCounter() {
+  let count = 0;
+ 
+  return {
+    increment() { count++; return count; },
+    decrement() { count--; return count; },
+  };
+}
+ 
+let counter = createCounter();
+ 
+console.log(
+  counter.increment(), // 1
+  counter.decrement(), // 0
+  counter.increment(), // 1
+);
+```
+
+Since both closures, `increment` and `decrement`, are created within the scope containing the `count` variable, they *share* this *parent scope*. **That is, capturing always happens ==*“by-reference”*== — meaning the *reference* to the *whole parent environment* is stored.**
+
+![Figure 9](http://dmitrysoshnikov.com/wp-content/uploads/2017/11/shared-environment.png)
+
+*Figure 9. A shared environment.*
+
+<u>Some languages may capture *by-value*, making a copy of a captured variable, and do not allow changing it in the parent scopes. However in JS, to repeat, it is always the *reference* to the parent scope.</u>
+
+**Note**: implementations may optimize this step, and do not capture the whole environment. Capturing *only used* free-variables, they though still maintain invariant of mutable data in parent scopes.
+
+==**So all identifiers are statically scoped.**== <u>There is however *one* value which is *dynamically scoped* in ECMAScript. It’s the value of `this`.</u>
+
+# This
+
+
+
+
+

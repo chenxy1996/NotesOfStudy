@@ -45,10 +45,51 @@ Student.prototype.sayMajor = function() {
 
 var aStudent = new Student("chen", 23, "computer science");
 
-console.log(
-    aStudent.sayName(),
-    aStudent.sayAge(),
-    aStudent.sayMajor(),
-    aStudent.constructor
-)
+class Letter {
+    constructor(number) {
+        this.number = number;
+    }
+
+    getNumber() {
+        return this.number;
+    }
+}
+
+var obj = {
+    name: "chen",
+};
+
+function NewConstrctor(initialNum) {
+    this.x = initialNum;
+}
+
+NewConstrctor.prototype.recursiveIncrement = function f() {
+    if (this.x < 10) {
+        this.x = this.x + 1;
+        // var newF = f.bind(this);
+        // newF();
+        f.call(this);
+    }
+};
+
+// NewConstrctor.prototype.recursiveIncrement = function () {
+//     if (this.x < 10) {
+//         this.x = this.x + 1;
+//         this.recursiveIncrement();
+//     }
+// };
+
+function outer() {
+    let x = 3;
+    function inner() {
+        x++;
+        console.log(x);
+    }
+    return inner;
+}
+
+outer()()
+
+
+
 
