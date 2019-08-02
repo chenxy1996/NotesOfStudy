@@ -79,16 +79,66 @@ NewConstrctor.prototype.recursiveIncrement = function f() {
 //     }
 // };
 
-function outer() {
-    let x = 3;
-    function inner() {
-        x++;
-        console.log(x);
+function createFunctions() {
+    var result = new Array();
+
+    for (let i = 0; i < 10; i++) {
+        result[i] = function() {
+            console.log(i);
+        };
     }
-    return inner;
+
+    return result;
 }
 
-outer()()
+
+function sayNewVariable() {
+    console.log(newVariable);
+}
+
+var SomeConstructor;
+
+// {
+//     let privateScope = {};
+
+//     SomeConstructor = function SomeConstructor () {
+//         this.someProperty = "foo";
+//         privateScope.hiddenProperty = "bar";
+//     }
+
+//     SomeConstructor.prototype.showPublic = function () {
+//         console.log(this.someProperty); // foo
+//     }
+
+//     SomeConstructor.prototype.showPrivate = function () {
+//         console.log(privateScope.hiddenProperty); // bar
+//     }
+
+// }
+
+(function() {
+    var privateScope = {};
+
+    SomeConstructor = function SomeConstructor () {
+        this.someProperty = "foo";
+        privateScope.hiddenProperty = "bar";
+    }
+
+    SomeConstructor.prototype.showPublic = function () {
+        console.log(this.someProperty); // foo
+    }
+
+    SomeConstructor.prototype.showPrivate = function () {
+        console.log(privateScope.hiddenProperty); // bar
+    }
+
+})();
+
+var newConstructor = new SomeConstructor();
+
+newConstructor.showPublic();
+newConstructor.showPrivate();
+
 
 
 

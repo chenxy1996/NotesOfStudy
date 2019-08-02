@@ -414,6 +414,286 @@ Since both closures, `increment` and `decrement`, are created within the scope c
 
 # This
 
+The `this` value is a special object which is dynamically and implicitly passed to the code of a context. **We can consider it as an implicit extra parameter, which we can access, but cannot mutate.**
+
+<u>The purpose of the `this` value is to executed the same code for multiple objects.</u>
+
+==**Def. 15: This:** an implicit *context object* accessible from a code of an execution context — in order to apply the same code for multiple objects.==
+
+```js
+class Point {
+  constructor(x, y) {
+    this._x = x;
+    this._y = y;
+  }
+ 
+  getX() {
+    return this._x;
+  }
+ 
+  getY() {
+    return this._y;
+  }
+}
+ 
+let p1 = new Point(1, 2);
+let p2 = new Point(3, 4);
+ 
+// Can access `getX`, and `getY` from
+// both instances (they are passed as `this`).
+ 
+console.log(
+  p1.getX(), // 1
+  p2.getX(), // 3
+);
+```
+
+
+
+Another application of `this`, is *generic interface functions*, which can be used in *mixins* or *traits*.
+
+In the following example, the `Movable` interface contains generic function `move`, which expects the users of this mixin to implement `_x`, and `_y` properties:
+
+```js
+// Generic Movable interface (mixin).
+let Movable = {
+ 
+  /**
+   * This function is generic, and works with any
+   * object, which provides `_x`, and `_y` properties,
+   * regardless of the class of this object.
+   */
+  move(x, y) {
+    this._x = x;
+    this._y = y;
+  },
+};
+ 
+let p1 = new Point(1, 2);
+ 
+// Make `p1` movable.
+Object.assign(p1, Movable);
+ 
+// Can access `move` method.
+p1.move(100, 200);
+ 
+console.log(p1.getX()); // 100
+```
+
+As an alternative, a mixin can also be applied at *prototype level* instead of *per-instance* as we did in the example above.
+
+```js
+function foo() {
+  return this;
+}
+ 
+let bar = {
+  foo,
+ 
+  baz() {
+    return this;
+  },
+};
+ 
+// `foo`
+console.log(
+  foo(),       // global or undefined
+ 
+  bar.foo(),   // bar
+  (bar.foo)(), // bar
+ 
+  (bar.foo = bar.foo)(), // global
+);
+ 
+// `bar.baz`
+console.log(bar.baz()); // bar
+ 
+let savedBaz = bar.baz;
+console.log(savedBaz()); // global
+```
+
+==The **arrow functions** are special in terms of `this` value: their `this` is *lexical (static)*, but *not dynamic*.== I.e. their function environment record *does not provide this value*, and **it’s taken from the *parent environment*.**
+
+```js
+var x = 10;
+ 
+let foo = {
+  x: 20,
+ 
+  // Dynamic `this`.
+  bar() {
+    return this.x;
+  },
+ 
+  // Lexical `this`.
+  baz: () => this.x,
+ 
+  qux() {
+    // Lexical this within the invocation.
+    let arrow = () => this.x;
+ 
+    return arrow();
+  },
+};
+ 
+console.log(
+  foo.bar(), // 20, from `foo`
+  foo.baz(), // 10, from global
+  foo.qux(), // 20, from `foo` and arrow
+);
+```
+
+Like we said, in the *global context* the `this` value is the *global object* (the *binding object* of the *global environment record*). Previously there was only one global object. In current version of the spec there might be *multiple global objects* which are part of *code realms*. Let’s discuss this structure.
+
+# Realm
+
+Before it is evaluated, all ECMAScript code must be associated with a *realm*. Technically a realm just provides a global environment for a context.
+
+==**Def. 16: Realm:** A *code realm* is an object which encapsulates a separate *global environment*.==
+
+**Note**: a direct realm equivalent in browser environment is the `iframe`element, which exactly provides a custom global environment. In Node.js it is close to the sandbox of the [vm module](https://nodejs.org/api/vm.html).
+
+Current version of the specification doesn’t provide an ability to explicitly create realms, but they can be created implicitly by the implementations. There is a [proposal](https://github.com/tc39/proposal-realms/) though to expose this API to user-code.
+
+Logically though, each context from the stack is always associated with its realm:
+
+![Figure 10](http://dmitrysoshnikov.com/wp-content/uploads/2017/11/context-realm.png)
+
+*Figure 10. A context and realm association.*
+
+
+
+```js
+const vm = require('vm');
+ 
+// First realm, and its global:
+const realm1 = vm.createContext({x: 10, console});
+ 
+// Second realm, and its global:
+const realm2 = vm.createContext({x: 20, console});
+ 
+// Code to execute:
+const code = `console.log(x);`;
+ 
+vm.runInContext(code, realm1); // 10
+vm.runInContext(code, realm2); // 20
+```
+
+# Job
+
+Some operations can be postponed, and executed as soon as there is an available spot on the execution context stack.
+
+==**Def. 17: Job:** A *job* is an abstract operation that initiates an ECMAScript computation when *no other* ECMAScript computation is currently in progress.==
+
+Jobs are enqueued on the **job queues**, and in current spec version there are two job queues: **ScriptJobs**, and **PromiseJobs**.
+
+And *initial job* on the *ScriptJobs* queue is the *main entry point* to our program — initial script which is loaded and evaluated: a realm is created, a global context is created and is associated with this realm, it’s pushed onto the stack, and the global code is executed.
+
+**Notice, the *ScriptJobs* queue manages both, *scripts* and *modules*.**
+
+Further this context can execute *other contexts*, or enqueue *other jobs*. An example of a job which can be spawned and enqueued is a *promise*.
+
+When there is *no running* execution context and the execution context stack is *empty*, the ECMAScript implementation removes the first *pending job* from a job queue, creates an execution context and starts its execution.
+
+```js
+// Enqueue a new promise on the PromiseJobs queue.
+new Promise(resolve => setTimeout(() => resolve(10), 0))
+  .then(value => console.log(value));
+ 
+// This log is executed earlier, since it's still a
+// running context, and job cannot start executing first
+console.log(20);
+ 
+// Output: 20, 10
+```
+
+The ***async functions*** can *await* for promises, so they also enqueue promise jobs:
+
+```js
+async function later() {
+  return await Promise.resolve(10);
+}
+ 
+(async () => {
+  let data = await later();
+  console.log(data); // 10
+})();
+ 
+// Also happens earlier, since async execution
+// is queued on the PromiseJobs queue.
+console.log(20);
+ 
+// Output: 20, 10
+```
+
+
+
+# Agent
+
+The *concurrency* and *parallelism* is implemented in ECMAScript using *Agent pattern*. The Agent pattern is very close to the [Actor pattern](https://en.wikipedia.org/wiki/Actor_model) — a *lightweight process* with *message-passing* style of communication.
+
+==**Def. 18: Agent:** An *agent* is an abstraction encapsulating execution context stack, set of job queues, and code realms.==
+
+Implementation dependent an agent can run on the same thread, or on a separate thread. The `Worker` agent in the browser environment is an example of the *Agent*concept.
+
+The agents are *state isolated* from each other, and can communicate by *sending messages*. Some data can be shared though between agents, for example `SharedArrayBuffer`s. Agents can also combine into *agent clusters*.
+
+In the example below, the `index.html` calls the `agent-smith.js` worker, passing shared chunk of memory:
+
+```js
+// In the `index.html`:
+ 
+// Shared data between this agent, and another worker.
+let sharedHeap = new SharedArrayBuffer(16);
+ 
+// Our view of the data.
+let heapArray = new Int32Array(sharedHeap);
+ 
+// Create a new agent (worker).
+let agentSmith = new Worker('agent-smith.js');
+ 
+agentSmith.onmessage = (message) => {
+  // Agent sends the index of the data it modified.
+  let modifiedIndex = message.data;
+ 
+  // Check the data is modified:
+  console.log(heapArray[modifiedIndex]); // 100
+};
+ 
+// Send the shared data to the agent.
+agentSmith.postMessage(sharedHeap);
+```
+
+And the worker code:
+
+```js
+// agent-smith.js
+ 
+/**
+ * Receive shared array buffer in this worker.
+ */
+onmessage = (message) => {
+  // Worker's view of the shared data.
+  let heapArray = new Int32Array(message.data);
+ 
+  let indexToModify = 1;
+  heapArray[indexToModify] = 100;
+ 
+  // Send the index as a message back.
+  postMessage(indexToModify);
+};
+```
+
+You can find the full code for the example above in [this gist](https://gist.github.com/DmitrySoshnikov/b75a2dbcdb60b18fd9f05b595135dc82).
+
+(Notice, if you run this example locally, run it in Firefox, since Chrome due to security reasons doesn’t allow loading web workers from a local file)
+
+So below is the picture of the ECMAScript runtime:
+
+![Figure 11](http://dmitrysoshnikov.com/wp-content/uploads/2017/11/agents-1.png)
+
+*Figure 11. ECMAScript runtime.*
+
 
 
 
