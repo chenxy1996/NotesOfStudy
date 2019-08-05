@@ -92,6 +92,7 @@ function createFunctions() {
 }
 
 
+
 function sayNewVariable() {
     console.log(newVariable);
 }
@@ -138,6 +139,8 @@ var newConstructor = new SomeConstructor();
 
 newConstructor.showPublic();
 newConstructor.showPrivate();
+
+console.log(1 + 3);
 
 
 

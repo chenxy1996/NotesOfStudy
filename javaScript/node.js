@@ -1,14 +1,10 @@
-function Student(name, age) {
-    var o = {};
+var funcs = [];
 
-    o.sayName = function() {
-        console.log(name);
-    }
-
-    o.sayAge = function() {
-        console.log(age);
-    }
-
-    return o;
+// throws an error after one iteration
+for (let i = 0; i < 10; i++) {
+    funcs.push(function() {
+        console.log(i, j);
+    });
 }
 
+funcs.forEach((eachFunc) => eachFunc());
