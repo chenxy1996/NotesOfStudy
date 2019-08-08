@@ -1,15 +1,23 @@
 module.exports.x = 10;
 
-// let foo = {
-//     x: 20, 
+let foo = {
+    x: 20, 
 
-//     bar: function() {
-//         this.baz = () => this.x
-//     }
-// }
+    bar: function() {
+        this.baz = () => this.x
+    },
 
-// foo.bar()
-// console.log(foo.baz())
+    fiz: () => this.x
+}
 
-let nums = [1, 2, 11];
-console.log(nums.sort((a, b) => a - b));
+let newObj = {
+    x: 30
+};
+
+// newObj.func = foo.bar;
+// newObj.func();
+// console.log(newObj.baz());
+
+let obj1 = {
+    
+}

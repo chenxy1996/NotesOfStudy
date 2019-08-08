@@ -23,7 +23,7 @@ function makeRequest(url, timeout, callback) {
 }
 ```
 
-In this example, both `timeout` and `callback` are actually optional because they are given a default value if a parameter isn't provided. The logical OR operator (`||`) always returns the second operand when the first is falsy. Since named function parameters that are not explicitly provided are set to `undefined`, the logical OR operator is frequently used to provide default values for missing parameters. There is a flaw with this approach, however, in that a valid value for `timeout` might actually be `0`, but this would replace it with `2000` because `0` is falsy.
+In this example, both `timeout` and `callback` are actually optional because they are given a default value if a parameter isn't provided. **The logical OR operator (`||`) always returns the second operand when the first is falsy.** <u>Since named function parameters that are not explicitly provided are set to `undefined`, the logical OR operator is frequently used to provide default values for missing parameters.</u> There is a flaw with this approach, however, in that a valid value for `timeout` might actually be `0`, but this would replace it with `2000` because `0` is falsy.
 
 In that case, a safer alternative is to check the type of the argument using `typeof`, as in this example:
 
@@ -98,7 +98,7 @@ makeRequest("/foo", null, function(body) {
 });
 ```
 
-In the case of default parameter values, a value of `null` is considered to be valid, meaning that in the third call to `makeRequest()`, the default value for `timeout` will not be used.
+In the case of default parameter values, **a value of `null` is considered to be valid**, meaning that in the third call to `makeRequest()`, the default value for `timeout` will not be used.
 
 ### How Default Parameter Values Affect the arguments Object
 
@@ -156,7 +156,7 @@ false
 
 This time, changing `first` and `second` doesn't affect `arguments`, so the output behaves as you'd normally expect it to.
 
-The `arguments` object in a function using ECMAScript 6 default parameter values, however, will always behave in the same manner as ECMAScript 5 strict mode, regardless of whether the function is explicitly running in strict mode. The presence of default parameter values triggers the `arguments` object to remain detached from the named parameters. This is a subtle but important detail because of how the `arguments` object may be used. Consider the following:
+<u>The `arguments` object in a function using ECMAScript 6 default parameter values, however, will always behave in the same manner as ECMAScript 5 strict mode, regardless of whether the function is explicitly running in strict mode.</u> The presence of default parameter values triggers the `arguments` object to remain detached from the named parameters. This is a subtle but important detail because of how the `arguments` object may be used. Consider the following:
 
 ```js
 // not in strict mode
@@ -202,7 +202,7 @@ console.log(add(1, 1));     // 2
 console.log(add(1));        // 6
 ```
 
-Here, if the last argument isn't provided, the function `getValue()` is called to retrieve the correct default value. Keep in mind that `getValue()` is only called when `add()` is called without a second parameter, not when the function declaration is first parsed. That means if `getValue()` were written differently, it could potentially return a different value. For instance:
+Here, if the last argument isn't provided, the function `getValue()` is called to retrieve the correct default value. **Keep in mind that `getValue()` is only called when `add()` is called without a second parameter, not when the function declaration is first parsed.** That means if `getValue()` were written differently, it could potentially return a different value. For instance:
 
 ```js
 let value = 5;
@@ -252,7 +252,7 @@ console.log(add(1));        // 7
 
 This example sets `second` equal to the value returned by `getValue(first)`, so while `add(1, 1)` still returns 2, `add(1)` returns 7 (1 + 6).
 
-The ability to reference parameters from default parameter assignments works only for previous arguments, so earlier arguments do not have access to later arguments. For example:
+**The ability to reference parameters from default parameter assignments works only for previous arguments**, so **earlier arguments do not have access to later arguments**. For example:
 
 ```js
 function add(first = second, second) {
@@ -267,7 +267,7 @@ The call to `add(undefined, 1)` throws an error because `second` is defined afte
 
 ### Default Parameter Value Temporal Dead Zone
 
-Chapter 1 introduced the temporal dead zone (TDZ) as it relates to `let` and `const`, and default parameter values also have a TDZ where parameters cannot be accessed. Similar to a `let` declaration, each parameter creates a new identifier binding that can't be referenced before initialization without throwing an error. Parameter initialization happens when the function is called, either by passing a value for the parameter or by using the default parameter value.
+Chapter 1 introduced the temporal dead zone (TDZ) as it relates to `let` and `const`, and default parameter values also have a TDZ where parameters cannot be accessed. <u>Similar to a `let` declaration, each parameter creates a new identifier binding that can't be referenced before initialization without throwing an error.</u> <u>Parameter initialization happens **when the function is called**, either by passing a value for the parameter or by using the default parameter value.</u>
 
 To explore the default parameter value TDZ, consider this example from "Default Parameter Expressions" again:
 
@@ -321,7 +321,7 @@ let second = 1;
 
 In this example, the call to `add(undefined, 1)` throws an error because `second` hasn't yet been initialized when `first` is initialized. At that point, `second` is in the TDZ and therefore any references to `second` throw an error. This mirrors the behavior of `let` bindings discussed in Chapter 1.
 
-I> Function parameters have their own scope and their own TDZ that is separate from the function body scope. That means the default value of a parameter cannot access any variables declared inside the function body.
+I> <u>Function parameters have their own scope and their own TDZ that is separate from the function body scope. That means the default value of a parameter cannot access any variables declared inside the function body.</u>
 
 ## Working with Unnamed Parameters
 
@@ -379,11 +379,28 @@ function pick(object, ...keys) {
 
 In this version of the function, `keys` is a rest parameter that contains all parameters passed after `object` (unlike `arguments`, which contains all parameters including the first one). That means you can iterate over `keys` from beginning to end without worry. As a bonus, you can tell by looking at the function that it is capable of handling any number of parameters.
 
-I> Rest parameters do not affect a function's `length` property, which indicates the number of named parameters for the function. The value of `length` for `pick()` in this example is 1 because only `object` counts towards this value.
+I> <u>**Rest parameters do not affect a function's `length` property, which indicates the number of named parameters for the function**. The value of `length` for `pick()` in this example is 1 because only `object` counts towards this value.</u>
+
+```js
+// 笔记 Note
+
+function fun1(object, ...keys) {
+    console.log(
+        arguments.length,
+        keys.length
+    );
+}
+
+console.log(fun1.length); // 1
+```
+
+
+
+
 
 #### Rest Parameter Restrictions
 
-There are two restrictions on rest parameters. The first restriction is that there can be only one rest parameter, and the rest parameter must be last. For example, this code won't work:
+There are two restrictions on rest parameters. **The first restriction is that there can be only one rest parameter, and the rest parameter must be last**. For example, this code won't work:
 
 ```js
 // Syntax error: Can't have a named parameter after rest parameters
@@ -400,7 +417,7 @@ function pick(object, ...keys, last) {
 
 Here, the parameter `last` follows the rest parameter `keys`, which would cause a syntax error.
 
-The second restriction is that rest parameters cannot be used in an object literal setter. That means this code would also cause a syntax error:
+**The second restriction is that rest parameters cannot be used in an object literal setter**. That means this code would also cause a syntax error:
 
 ```js
 let object = {
@@ -481,7 +498,7 @@ The addition of default and rest parameters ensures that `Function` has all of t
 
 ## The Spread Operator
 
-Closely related to rest parameters is the spread operator. While rest parameters allow you to specify that multiple independent arguments should be combined into an array, the spread operator allows you to specify an array that should be split and have its items passed in as separate arguments to a function. Consider the `Math.max()` method, which accepts any number of arguments and returns the one with the highest value. Here's a simple use case for this method:
+Closely related to rest parameters is the spread operator. While rest parameters allow you to specify that multiple independent arguments should be combined into an array, <u>the spread operator allows you to specify an array that should be split and have its items passed in as separate arguments to a function</u>. Consider the `Math.max()` method, which accepts any number of arguments and returns the one with the highest value. Here's a simple use case for this method:
 
 ```js
 let value1 = 25,
@@ -574,9 +591,9 @@ var descriptor = Object.getOwnPropertyDescriptor(person, "firstName");
 console.log(descriptor.get.name); // "get firstName"
 ```
 
-In this example, `doSomething.name` is `"doSomethingElse"` because the function expression itself has a name, and that name takes priority over the variable to which the function was assigned. The `name` property of `person.sayName()` is `"sayName"`, as the value was interpreted from the object literal. Similarly, `person.firstName` is actually a getter function, so its name is `"get firstName"` to indicate this difference. Setter functions are prefixed with `"set"` as well. (Both getter and setter functions must be retrieved using `Object.getOwnPropertyDescriptor()`.)
+<u>In this example, `doSomething.name` is `"doSomethingElse"` because the function expression itself has a name, and that name takes priority over the variable to which the function was assigned</u>. The `name` property of `person.sayName()` is `"sayName"`, as the value was interpreted from the object literal. Similarly, `person.firstName` is actually a getter function, so its name is `"get firstName"` to indicate this difference. Setter functions are prefixed with `"set"` as well. (Both getter and setter functions must be retrieved using `Object.getOwnPropertyDescriptor()`.)
 
-There are a couple of other special cases for function names, too. Functions created using `bind()` will have their names prefixed with `"bound"` and functions created using the `Function` constructor have a name of `"anonymous"`, as in this example:
+**There are a couple of other special cases for function names, too. Functions created using `bind()` will have their names prefixed with `"bound"` and functions created using the `Function` constructor have a name of `"anonymous"**`, as in this example:
 
 ```js
 var doSomething = function() {
@@ -610,7 +627,7 @@ console.log(notAPerson);    // "undefined"
 
 When creating `notAPerson`, calling `Person()` without `new` results in `undefined` (and sets a `name` property on the global object in nonstrict mode). The capitalization of `Person` is the only real indicator that the function is meant to be called using `new`, as is common in JavaScript programs. This confusion over the dual roles of functions led to some changes in ECMAScript 6.
 
-JavaScript has two different internal-only methods for functions: `[[Call]]` and `[[Construct]]`. When a function is called without `new`, the `[[Call]]` method is executed, which executes the body of the function as it appears in the code. When a function is called with `new`, that's when the `[[Construct]]` method is called. The `[[Construct]]` method is responsible for creating a new object, called the *new target*, and then executing the function body with `this` set to the new target. Functions that have a `[[Construct]]` method are called *constructors*.
+**JavaScript has two different internal-only methods for functions: `[[Call]]` and `[[Construct]]`.** When a function is called without `new`, the `[[Call]]` method is executed, which executes the body of the function as it appears in the code. When a function is called with `new`, that's when the `[[Construct]]` method is called. The `[[Construct]]` method is responsible for creating a new object, called the *new target*, and then executing the function body with `this` set to the new target. Functions that have a `[[Construct]]` method are called *constructors*.
 
 I> Keep in mind that not all functions have `[[Construct]]`, and therefore not all functions can be called with `new`. Arrow functions, discussed in the "Arrow Functions" section, do not have a `[[Construct]]` method.
 
@@ -650,7 +667,7 @@ The call to `Person.call()` passes the `person` variable as the first argument, 
 
 ### The new.target MetaProperty
 
-To solve this problem, ECMAScript 6 introduces the `new.target` *metaproperty*. A metaproperty is a property of a non-object that provides additional information related to its target (such as `new`). When a function's `[[Construct]]` method is called, `new.target` is filled with the target of the `new` operator. That target is typically the constructor of the newly created object instance that will become `this` inside the function body. If `[[Call]]` is executed, then `new.target` is `undefined`.
+To solve this problem, ECMAScript 6 introduces the `new.target` *metaproperty*. <u>A metaproperty is a property of a non-object that provides additional information related to its target (such as `new`). **When a function's `[[Construct]]` method is called, `new.target` is filled with the target of the `new` operator.**</u> That target is typically the **constructor** of the newly created object instance that will become `this` inside the function body. If `[[Call]]` is executed, then `new.target` is `undefined`.
 
 This new metaproperty allows you to safely detect if a function is called with `new` by checking whether `new.target` is defined as follows:
 
@@ -669,7 +686,7 @@ var notAPerson = Person.call(person, "Michael");    // error!
 
 By using `new.target` instead of `this instanceof Person`, the `Person` constructor is now correctly throwing an error when used without `new`.
 
-You can also check that `new.target` was called with a specific constructor. For instance, look at this example:
+<u>You can also check that `new.target` was called with a specific constructor.</u> For instance, look at this example:
 
 ```js
 function Person(name) {
@@ -758,7 +775,7 @@ Here, code execution stops when `typeof doSomething` is executed, because the `l
 
 ### Block-Level Functions in Nonstrict Mode
 
-ECMAScript 6 also allows block-level functions in nonstrict mode, but the behavior is slightly different. Instead of hoisting these declarations to the top of the block, they are hoisted all the way to the containing function or global environment. For example:
+ECMAScript 6 also allows block-level functions in nonstrict mode, but the behavior is slightly different. **Instead of hoisting these declarations to the top of the block, they are hoisted all the way to the containing function or global environment.** For example:
 
 ```js
 // ECMAScript 6 behavior
@@ -784,7 +801,7 @@ Allowing block-level functions improves your ability to declare functions in Jav
 
 One of the most interesting new parts of ECMAScript 6 is the *arrow function*. Arrow functions are, as the name suggests, functions defined with a new syntax that uses an "arrow" (`=>`). But arrow functions behave differently than traditional JavaScript functions in a number of important ways:
 
-* **No `this`, `super`, `arguments`, and `new.target` bindings** - The value of `this`, `super`, `arguments`, and `new.target` inside of the function is by the closest containing nonarrow function. (`super` is covered in Chapter 4.)
+* **No `this`, `super`, `arguments`, and `new.target` bindings** - The value of `this`, `super`, `arguments`, and `new.target` inside of the function is <u>by the closest containing nonarrow function</u>. (`super` is covered in Chapter 4.)
 * **Cannot be called with `new`** - Arrow functions do not have a `[[Construct]]` method and therefore cannot be used as constructors. Arrow functions throw an error when used with `new`.
 * **No prototype** - since you can't use `new` on an arrow function, there's no need for a prototype. The `prototype` property of an arrow function doesn't exist.
 * **Can't change `this`** - The value of `this` inside of the function can't be changed. It remains the same throughout the entire lifecycle of the function.
@@ -795,7 +812,7 @@ There are a few reasons for these differences. First and foremost, `this` bindin
 
 The rest of the differences are also focused on reducing errors and ambiguities inside of arrow functions. By doing so, JavaScript engines are better able to optimize arrow function execution.
 
-I> Note: Arrow functions also have a `name` property that follows the same rule as other functions.
+I> Note: **Arrow functions also have a `name` property that follows the same rule as other functions.**
 
 ### Arrow Function Syntax
 
@@ -967,7 +984,7 @@ var PageHandler = {
 
 Now the code works as expected, but it may look a little bit strange. By calling `bind(this)`, you're actually creating a new function whose `this` is bound to the current `this`, which is `PageHandler`. To avoid creating an extra function, a better way to fix this code is to use an arrow function.
 
-Arrow functions have no `this` binding, which means the value of `this` inside an arrow function can only be determined by looking up the scope chain. If the arrow function is contained within a nonarrow function, `this` will be the same as the containing function; otherwise, `this` is equivalent to the value of `this` in the global scope. Here's one way you could write this code using an arrow function:
+<u>Arrow functions have no `this` binding, which means the value of `this` inside an arrow function can only be determined **by looking up the scope chain**.</u> If the arrow function is contained within a nonarrow function, `this` will be the same as the containing function; otherwise, `this` is equivalent to the value of `this` in the global scope. Here's one way you could write this code using an arrow function:
 
 ```js
 var PageHandler = {
@@ -987,7 +1004,7 @@ var PageHandler = {
 
 The event handler in this example is an arrow function that calls `this.doSomething()`. The value of `this` is the same as it is within `init()`, so this version of the code works similarly to the one using `bind(this)`. Even though the `doSomething()` method doesn't return a value, it's still the only statement executed in the function body, and so there is no need to include braces.
 
-Arrow functions are designed to be "throwaway" functions, and so cannot be used to define new types; this is evident from the missing `prototype` property, which regular functions have. If you try to use the `new` operator with an arrow function, you'll get an error, as in this example:
+<u>Arrow functions are designed to be "throwaway" functions, and so cannot be used to define new types; this is evident from the missing `prototype` property, which regular functions have.</u> If you try to use the `new` operator with an arrow function, you'll get an error, as in this example:
 
 ```js
 var MyType = () => {},
@@ -1030,7 +1047,7 @@ var arrowFunction = createArrowFunctionReturningFirstArg(5);
 console.log(arrowFunction());       // 5
 ```
 
-Inside `createArrowFunctionReturningFirstArg()`, the `arguments[0]` element is referenced by the created arrow function. That reference contains the first argument passed to the `createArrowFunctionReturningFirstArg()` function. When the arrow function is later executed, it returns `5`, which was the first argument passed to `createArrowFunctionReturningFirstArg()`. Even though the arrow function is no longer in the scope of the function that created it, `arguments` remains accessible due to scope chain resolution of the `arguments` identifier.
+Inside `createArrowFunctionReturningFirstArg()`, the `arguments[0]` element is referenced by the created arrow function. That reference contains the first argument passed to the `createArrowFunctionReturningFirstArg()` function. When the arrow function is later executed, it returns `5`, which was the first argument passed to `createArrowFunctionReturningFirstArg()`. <u>Even though the arrow function is no longer in the scope of the function that created it, `arguments` remains accessible due to scope chain resolution of the `arguments` identifier.</u>
 
 ### Identifying Arrow Functions
 
@@ -1064,7 +1081,7 @@ Arrow functions are appropriate to use anywhere you're currently using an anonym
 
 ## Tail Call Optimization
 
-Perhaps the most interesting change to functions in ECMAScript 6 is an engine optimization, which changes the tail call system. A *tail call* is when a function is called as the last statement in another function, like this:
+Perhaps the most interesting change to functions in ECMAScript 6 is an engine optimization, which changes the tail call system. **A *tail call* is when a function is called as the last statement in another function**, like this:
 
 ```js
 function doSomething() {
@@ -1076,7 +1093,7 @@ Tail calls as implemented in ECMAScript 5 engines are handled just like any othe
 
 ### What's Different?
 
-ECMAScript 6 seeks to reduce the size of the call stack for certain tail calls in strict mode (nonstrict mode tail calls are left untouched). With this optimization, instead of creating a new stack frame for a tail call, the current stack frame is cleared and reused so long as the following conditions are met:
+ECMAScript 6 seeks to reduce the size of the call stack for certain tail calls in strict mode (nonstrict mode tail calls are left untouched). With this optimization, <u>instead of creating a new stack frame for a tail call, the current stack frame is cleared and reused so long as the following conditions are met:</u>
 
 1. The tail call does not require access to variables in the current stack frame (meaning the function is not a closure)
 1. The function making the tail call has no further work to do after the tail call returns
@@ -1185,7 +1202,7 @@ function factorial(n, p = 1) {
 
 In this rewritten version of `factorial()`, a second argument `p` is added as a parameter with a default value of 1. The `p` parameter holds the previous multiplication result so that the next result can be computed without another function call. When `n` is greater than 1, the multiplication is done first and then passed in as the second argument to `factorial()`. This allows the ECMAScript 6 engine to optimize the recursive call.
 
-Tail call optimization is something you should think about whenever you're writing a recursive function, as it can provide a significant performance improvement, especially when applied in a computationally-expensive function.
+<u>Tail call optimization is something you should think about whenever you're writing a recursive function, as it can provide a significant performance improvement, especially when applied in a computationally-expensive function.</u>
 
 ## Summary
 
