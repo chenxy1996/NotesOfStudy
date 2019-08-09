@@ -73,7 +73,7 @@ var person = {
 };
 ```
 
-This shorthand syntax, also called *concise method* syntax, creates a method on the `person` object just as the previous example did. The `sayName()` property is assigned an anonymous function and has all the same characteristics as the ECMAScript 5 `sayName()` function. The one difference is that concise methods may use `super` (discussed later in the "Easy Prototype Access with Super References" section), while the nonconcise methods may not.
+This shorthand syntax, also called *concise method* syntax, creates a method on the `person` object just as the previous example did. The `sayName()` property is assigned an anonymous function and has all the same characteristics as the ECMAScript 5 `sayName()` function. **The one difference is that concise methods may use `super` (discussed later in the "Easy Prototype Access with Super References" section), while the nonconcise methods may not**.
 
 I> The `name` property of a method created using concise method shorthand is the name used before the parentheses. In the last example, the `name` property for `person.sayName()` is `"sayName"`.
 
@@ -106,7 +106,7 @@ console.log(person["first name"]);      // "Nicholas"
 
 This pattern works for property names that are known ahead of time and can be represented with a string literal. If, however, the property name `"first name"` were contained in a variable (as in the previous example) or had to be calculated, then there would be no way to define that property using an object literal in ECMAScript 5.
 
-In ECMAScript 6, computed property names are part of the object literal syntax, and they use the same square bracket notation that has been used to reference computed property names in object instances. For example:
+<u>In ECMAScript 6, computed property names are part of the object literal syntax, and they use the same square bracket notation that has been used to reference computed property names in object instances</u>. For example:
 
 ```js
 var lastName = "last name";
@@ -138,13 +138,13 @@ These properties evaluate to `"first name"` and `"last name"`, and those strings
 
 ## New Methods
 
-One of the design goals of ECMAScript beginning with ECMAScript 5 was to avoid creating new global functions or methods on `Object.prototype`, and instead try to find objects on which new methods should be available. As a result, the `Object` global has received an increasing number of methods when no other objects are more appropriate. ECMAScript 6 introduces a couple new methods on the `Object` global that are designed to make certain tasks easier.
+**One of the design goals of ECMAScript beginning with ECMAScript 5 was to avoid creating new global functions or methods on `Object.prototype`, and instead try to find objects on which new methods should be available.** As a result, the `Object` global has received an increasing number of methods when no other objects are more appropriate. ECMAScript 6 introduces a couple new methods on the `Object` global that are designed to make certain tasks easier.
 
 ### The Object.is() Method
 
 When you want to compare two values in JavaScript, you're probably used to using either the equals operator (`==`) or the identically equals operator (`===`). Many developers prefer the latter, to avoid type coercion during comparison. But even the identically equals operator isn't entirely accurate. For example, the values +0 and -0 are considered equal by `===` even though they are represented differently in the JavaScript engine. Also `NaN === NaN` returns `false`, which necessitates using `isNaN()` to detect `NaN` properly.
 
-ECMAScript 6 introduces the `Object.is()` method to make up for the remaining quirks of the identically equals operator. This method accepts two arguments and returns `true` if the values are equivalent. Two values are considered equivalent when they are of the same type and have the same value. Here are some examples:
+ECMAScript 6 introduces the `Object.is()` method to make up for the remaining quirks of the identically equals operator. This method accepts two arguments and returns `true` if the values are equivalent. **Two values are considered equivalent when they are of the same type and have the same value**. Here are some examples:
 
 ```js
 console.log(+0 == -0);              // true
@@ -163,7 +163,7 @@ console.log(Object.is(5, 5));       // true
 console.log(Object.is(5, "5"));     // false
 ```
 
-In many cases, `Object.is()` works the same as the `===` operator. The only differences are that +0 and -0 are considered not equivalent and `NaN` is considered equivalent to `NaN`. But there's no need to stop using equality operators altogether. Choose whether to use `Object.is()` instead of `==` or `===` based on how those special cases affect your code.
+In many cases, `Object.is()` works the same as the `===` operator. **The only differences are that +0 and -0 are considered not equivalent and `NaN` is considered equivalent to `NaN`**. But there's no need to stop using equality operators altogether. Choose whether to use `Object.is()` instead of `==` or `===` based on how those special cases affect your code.
 
 ### The Object.assign() Method
 
@@ -197,7 +197,7 @@ myObject.emit("somethingChanged");
 
 Here, `myObject` receives behavior from the `EventTarget.prototype` object. This gives `myObject` the ability to publish events and subscribe to them using the `emit()` and `on()` methods, respectively.
 
-This pattern became popular enough that ECMAScript 6 added the `Object.assign()` method, which behaves the same way, accepting a receiver and any number of suppliers, and then returning the receiver. The name change from `mixin()` to `assign()` reflects the actual operation that occurs. Since the `mixin()` function uses the assignment operator (`=`), it cannot copy accessor properties to the receiver as accessor properties. The name `Object.assign()` was chosen to reflect this distinction.
+This pattern became popular enough that ECMAScript 6 added the `Object.assign()` method, which behaves the same way, accepting a receiver and any number of suppliers, and then returning the receiver. The name change from `mixin()` to `assign()` reflects the actual operation that occurs. <u>Since the `mixin()` function uses the assignment operator (`=`), **it cannot copy accessor properties to the receiver as accessor properties**. The name `Object.assign()` was chosen to reflect this distinction</u>.
 
 I> Similar methods in various libraries may have other names for the same basic functionality; popular alternates include the `extend()` and `mix()` methods. There was also, briefly, an `Object.mixin()` method in ECMAScript 6 in addition to the `Object.assign()` method. The primary difference was that `Object.mixin()` also copied over accessor properties, but the method was removed due to concerns over the use of `super` (discussed in the "Easy Prototype Access with Super References" section of this chapter).
 
@@ -242,7 +242,7 @@ The `Object.assign()` method isn't a big addition to ECMAScript 6, but it does f
 
 A> ### Working with Accessor Properties
 A>
-A> Keep in mind that `Object.assign()` doesn't create accessor properties on the receiver when a supplier has accessor properties. Since `Object.assign()` uses the assignment operator, an accessor property on a supplier will become a data property on the receiver. For example:
+A> Keep in mind that `Object.assign()` doesn't create accessor properties on the receiver when a supplier has accessor properties. <u>Since `Object.assign()` uses the assignment operator, an accessor property on a supplier will become a data property on the receiver.</u> For example:
 A>
 A> ```js
 A> var receiver = {},
@@ -294,11 +294,11 @@ In this example, the value of `person.name` is `"Greg"` because that's the last 
 
 ECMAScript 5 didn't define the enumeration order of object properties, as it left this up to the JavaScript engine vendors. However, ECMAScript 6 strictly defines the order in which own properties must be returned when they are enumerated. This affects how properties are returned using `Object.getOwnPropertyNames()` and `Reflect.ownKeys` (covered in Chapter 12). It also affects the order in which properties are processed by `Object.assign()`.
 
-The basic order for own property enumeration is:
+<u>The basic order for own property enumeration is:</u>
 
-1. All numeric keys in ascending order
-2. All string keys in the order in which they were added to the object
-3. All symbol keys (covered in Chapter 6) in the order in which they were added to the object
+1. <u>All numeric keys in ascending order</u>
+2. <u>All string keys in the order in which they were added to the object</u>
+3. <u>All symbol keys (covered in Chapter 6) in the order in which they were added to the object</u>
 
 Here's an example:
 
@@ -319,7 +319,7 @@ console.log(Object.getOwnPropertyNames(obj).join(""));     // "012acbd"
 
 The `Object.getOwnPropertyNames()` method returns the properties in `obj` in the order `0`, `1`, `2`, `a`, `c`, `b`, `d`. Note that the numeric keys are grouped together and sorted, even though they appear out of order in the object literal. The string keys come after the numeric keys and appear in the order that they were added to `obj`. The keys in the object literal itself come first, followed by any dynamic keys that were added later (in this case, `d`).
 
-W> The `for-in` loop still has an unspecified enumeration order because not all JavaScript engines implement it the same way. The `Object.keys()` method and `JSON.stringify()` are both specified to use the same (unspecified) enumeration order as `for-in`.
+W> T<u>he `for-in` loop still has an unspecified enumeration order because not all JavaScript engines implement it the same way</u>. <u>The `Object.keys()` method and `JSON.stringify()` are both specified to use the same (unspecified) enumeration order as `for-in</u>`.
 
 While enumeration order is a subtle change to how JavaScript works, it's not uncommon to find programs that rely on a specific enumeration order to work correctly. ECMAScript 6, by defining the enumeration order, ensures that JavaScript code relying on enumeration will work correctly regardless of where it is executed.
 
@@ -398,6 +398,42 @@ console.log(Object.getPrototypeOf(friend) === dog);     // true
 
 In this example, `getGreeting()` on `friend` calls the prototype method of the same name. The `Object.getPrototypeOf()` method ensures the correct prototype is called, and then an additional string is appended to the output. The additional `.call(this)` ensures that the `this` value inside the prototype method is set correctly.
 
+```js
+// 笔记 NOTE
+
+let prototypeObj = {
+    name: "SuperType",
+
+    sayName() {
+        return this.name;
+    }
+}
+
+let subtypeObj = {
+    name: "SubType",
+
+    sayName() {
+        return Object.getPrototypeOf(this).sayName() + "//" + this.name;
+    }
+}
+
+let subtypeObj1 = {
+    name: "SubType",
+
+    sayName() {
+        return super.sayName() + "//" + this.name;
+    }
+}
+
+Object.setPrototypeOf(subtypeObj, prototypeObj);
+Object.setPrototypeOf(subtypeObj1, prototypeObj);
+
+console.log(subtypeObj.sayName()); // SuperType//SubType
+console.log(subtypeObj1.sayName()); // SubType//SubType
+```
+
+
+
 Remembering to use `Object.getPrototypeOf()` and `.call(this)` to call a method on the prototype is a bit involved, so ECMAScript 6 introduced `super`. At its simplest, `super` is a pointer to the current object's prototype, effectively the `Object.getPrototypeOf(this)` value. Knowing that, you can simplify the `getGreeting()` method as follows:
 
 ```js
@@ -410,7 +446,7 @@ let friend = {
 };
 ```
 
-The call to `super.getGreeting()` is the same as `Object.getPrototypeOf(this).getGreeting.call(this)` in this context. Similarly, you can call any method on an object's prototype by using a `super` reference, so long as it's inside a concise method. Attempting to use `super` outside of concise methods results in a syntax error, as in this example:
+The call to `super.getGreeting()` is the same as `Object.getPrototypeOf(this).getGreeting.call(this)` in this context. <u>Similarly, you can call any method on an object's prototype by using a `super` reference, **so long as it's inside a concise method**</u>**. Attempting to use `super` outside of concise methods results in a syntax error, as in this example:
 
 ```js
 let friend = {
@@ -422,6 +458,10 @@ let friend = {
 ```
 
 This example uses a named property with a function, and the call to `super.getGreeting()` results in a syntax error because `super` is invalid in this context.
+
+
+
+==EXAMPLE==
 
 The `super` reference is really powerful when you have multiple levels of inheritance, because in that case, `Object.getPrototypeOf()` no longer works in all circumstances. For example:
 
@@ -451,6 +491,33 @@ console.log(relative.getGreeting());                // error!
 
 The call to `Object.getPrototypeOf()` results in an error when `relative.getGreeting()` is called. That's because `this` is `relative`, and the prototype of `relative` is the `friend` object. When `friend.getGreeting().call()` is called with `relative` as `this`, the process starts over again and continues to call recursively until a stack overflow error occurs.
 
+```JS
+// 笔记 NOTE
+// fix the problem above
+let person = {
+    getGreeting() {
+        return "Hello";
+    }
+};
+
+// prototype is person
+let friend = {
+    getGreeting() {
+        let that = this === firend ? this : friend;
+        return Object.getPrototypeOf(that).getGreeting.call(that) + ", hi!";
+    }
+};
+Object.setPrototypeOf(friend, person);
+
+let relative = Object.create(friend);
+
+console.log(person.getGreeting());                  // "Hello"
+console.log(friend.getGreeting());                  // "Hello, hi!"
+console.log(relative.getGreeting());                // "Hello, hi!"
+```
+
+
+
 That problem is difficult to solve in ECMAScript 5, but with ECMAScript 6 and `super`, it's easy:
 
 ```js
@@ -477,7 +544,7 @@ console.log(friend.getGreeting());                  // "Hello, hi!"
 console.log(relative.getGreeting());                // "Hello, hi!"
 ```
 
-Because `super` references are not dynamic, they always refer to the correct object. In this case, `super.getGreeting()` always refers to `person.getGreeting()`, regardless of how many other objects inherit the method.
+**Because `super` references are not dynamic,** they always refer to the correct object. In this case, `super.getGreeting()` always refers to `person.getGreeting()`, regardless of how many other objects inherit the method.
 
 ## A Formal Method Definition
 
@@ -500,7 +567,7 @@ function shareGreeting() {
 
 This example defines `person` with a single method called `getGreeting()`. The `[[HomeObject]]` for `getGreeting()` is `person` by virtue of assigning the function directly to an object. The `shareGreeting()` function, on the other hand, has no `[[HomeObject]]` specified because it wasn't assigned to an object when it was created. In most cases, this difference isn't important, but it becomes very important when using `super` references.
 
-Any reference to `super` uses the `[[HomeObject]]` to determine what to do. The first step is to call `Object.getPrototypeOf()` on the `[[HomeObject]]` to retrieve a reference to the prototype. Then, the prototype is searched for a function with the same name. Last, the `this` binding is set and the method is called. Here's an example:
+<u>Any reference to `super` uses the `[[HomeObject]]` to determine what to do. The first step is to call `Object.getPrototypeOf()` on the `[[HomeObject]]` to retrieve a reference to the prototype. Then, the prototype is searched for a function with the same name. Last, the `this` binding is set and the method is called.</u> Here's an example:
 
 ```js
 let person = {

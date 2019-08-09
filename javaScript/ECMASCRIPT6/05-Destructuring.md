@@ -77,7 +77,7 @@ console.log(name);      // "foo"
 
 In this example, `type` and `name` are initialized with values when declared, and then two variables with the same names are initialized with different values. The next line uses destructuring assignment to change those values by reading from the `node` object. Note that you must put parentheses around a destructuring assignment statement. That's because an opening curly brace is expected to a be a block statement, and a block statement cannot appear on the left side of an assignment. The parentheses signal that the next curly brace is not a block statement and should be interpreted as an expression, allowing the assignment to complete.
 
-A destructuring assignment expression evaluates to the right side of the expression (after the `=`). That means you can use a destructuring assignment expression anywhere a value is expected. For instance, passing a value to a function:
+<u>A destructuring assignment expression evaluates to the right side of the expression (after the `=`)</u>. That means you can use a destructuring assignment expression anywhere a value is expected. For instance, passing a value to a function:
 
 ```js
 let node = {
@@ -120,7 +120,7 @@ console.log(value);     // undefined
 
 This code defines an additional local variable called `value` and attempts to assign it a value. However, there is no corresponding `value` property on the `node` object, so the variable is assigned the value of `undefined` as expected.
 
-You can optionally define a default value to use when a specified property doesn't exist. To do so, insert an equals sign (`=`) after the property name and specify the default value, like this:
+<u>You can optionally define a default value to use when a specified property doesn't exist. To do so, insert an equals sign (`=`) after the property name and specify the default value, like this</u>:
 
 ```js
 let node = {
@@ -198,7 +198,7 @@ console.log(start.line);        // 1
 console.log(start.column);      // 1
 ```
 
-The destructuring pattern in this example uses curly braces to indicate that the pattern should descend into the property named `loc` on `node` and look for the `start` property. Remember from the last section that whenever there's a colon in a destructuring pattern, it means the identifier before the colon is giving a location to inspect, and the right side assigns a value. When there's a curly brace after the colon, that indicates that the destination is nested another level into the object.
+The destructuring pattern in this example uses curly braces to indicate that the pattern should descend into the property named `loc` on `node` and look for the `start` property. <u>Remember from the last section that whenever there's a colon in a destructuring pattern, it means the identifier before the colon is giving a location to inspect, and the right side assigns a value.</u> <u>**When there's a curly brace after the colon, that indicates that the destination is nested another level into the object**</u>.
 
 You can go one step further and use a different name for the local variable as well:
 
@@ -238,7 +238,7 @@ A>// no variables declared!
 A>let { loc: {} } = node;
 A>```
 A>
-A>There are no bindings declared in this statement. Due to the curly braces on the right, `loc` is used as a location to inspect rather than a binding to create. In such a case, it's likely that the intent was to use `=` to define a default value rather than `:` to define a location. It's possible that this syntax will be made illegal in the future, but for now, this is a gotcha to look out for.
+A>There are no bindings declared in this statement. <u>Due to the curly braces on the right, `loc` is used as a location to inspect rather than a binding to create</u>. In such a case, it's likely that the intent was to use `=` to define a default value rather than `:` to define a location. It's possible that this syntax will be made illegal in the future, but for now, this is a gotcha to look out for.
 
 ## Array Destructuring
 

@@ -18,6 +18,18 @@ let newObj = {
 // newObj.func();
 // console.log(newObj.baz());
 
-let obj1 = {
-    
-}
+let createNewPerson = (name, age) => (
+    {
+        name,
+        age
+    }
+)
+
+let aPerson = createNewPerson("chen", 23);
+let bPerson = createNewPerson("lele", 10);
+
+console.log(
+    aPerson,
+    bPerson
+)
+
