@@ -253,7 +253,7 @@ console.log(firstColor);        // "red"
 console.log(secondColor);       // "green"
 ```
 
-Here, array destructuring pulls out the values `"red"` and `"green"` from the `colors` array and stores them in  the `firstColor` and `secondColor` variables. Those values are chosen because of their position in the array; the actual variable names could be anything. Any items not explicitly mentioned in the destructuring pattern are ignored. Keep in mind that the array itself isn't changed in any way.
+Here, array destructuring pulls out the values `"red"` and `"green"` from the `colors` array and stores them in  the `firstColor` and `secondColor` variables. Those values are chosen because of their position in the array; the actual variable names could be anything. Any items not explicitly mentioned in the destructuring pattern are ignored. <u>Keep in mind that the array itself isn't changed in any way.</u>
 
 You can also omit items in the destructuring pattern and only provide variable names for the items you're interested in. If, for example, you just want the third value of an array, you don't need to supply variable names for the first and second items. Here's how that works:
 
@@ -336,7 +336,7 @@ In this code, the `colors` array has only one item, so there is nothing for `sec
 
 #### Nested Destructuring
 
-You can destructure nested arrays in a manner similar to destructuring nested objects. By inserting another array pattern into the overall pattern, the destructuring will descend into a nested array, like this:
+You can destructure nested arrays in a manner similar to destructuring nested objects. <u>By inserting another array pattern into the overall pattern, the destructuring will descend into a nested array, like this:</u>
 
 ```js
 let colors = [ "red", [ "green", "lightgreen" ], "blue" ];
@@ -390,7 +390,7 @@ console.log(clonedColors);      //"[red,green,blue]"
 
 In this example, rest items are used to copy values from the `colors` array into the `clonedColors` array. While it's a matter of perception as to whether this technique makes the developer's intent clearer than using the `concat()` method, this is a useful ability to be aware of.
 
-W> Rest items must be the last entry in the destructured array and cannot be followed by a comma. Including a comma after rest items is a syntax error.
+W> <u>Rest items must be the last entry in the destructured array and cannot be followed by a comma. Including a comma after rest items is a syntax error.</u>
 
 ## Mixed Destructuring
 
@@ -467,7 +467,7 @@ setCookie("type", "js", {
 
 This function behaves similarly to the previous example, but now, the third argument uses destructuring to pull out the necessary data. The parameters outside the destructured parameter are clearly expected, and at the same time, it's clear to someone using `setCookie()` what options are available in terms of extra arguments. And of course, if the third argument is required, the values it should contain are crystal clear. The destructured parameters also act like regular parameters in that they are set to `undefined` if they are not passed.
 
-A>Destructured parameters have all of the capabilities of destructuring that you've learned so far in this chapter. You can use default values, mix object and array patterns, and use variable names that differ from the properties you're reading from.
+A><u>Destructured parameters have all of the capabilities of destructuring that you've learned so far in this chapter. You can use default values, mix object and array patterns, and use variable names that differ from the properties you're reading from.</u>
 
 ### Destructured Parameters are Required
 
@@ -526,7 +526,7 @@ Each property in the destructured parameter has a default value in this code, so
 
 Destructuring makes working with objects and arrays in JavaScript easier. Using the familiar object literal and array literal syntax, you can pick data structures apart to get at just the information you're interested in. Object patterns allow you to extract data from objects while array patterns let you extract data from arrays.
 
-Both object and array destructuring can specify default values for any property or item that is `undefined` and both throw errors when the right side of an assignment evaluates to `null` or `undefined`. You can also navigate deeply nested data structures with object and array destructuring, descending to any arbitrary depth.
+<u>Both object and array destructuring can specify default values for any property or item that is `undefined` and both throw errors when the right side of an assignment evaluates to `null` or `undefined`.</u> You can also navigate deeply nested data structures with object and array destructuring, descending to any arbitrary depth.
 
 Destructuring declarations use `var`, `let`, or `const` to create variables and must always have an initializer. Destructuring assignments are used in place of other assignments and allow you to destructure into object properties and already-existing variables.
 

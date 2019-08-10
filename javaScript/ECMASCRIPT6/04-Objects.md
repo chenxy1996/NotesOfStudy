@@ -45,7 +45,7 @@ function createPerson(name, age) {
 }
 ```
 
-When a property in an object literal only has a name, the JavaScript engine looks into the surrounding scope for a variable of the same name. If it finds one, that variable's value is assigned to the same name on the object literal. In this example, the object literal property `name` is assigned the value of the local variable `name`.
+<u>When a property in an object literal only has a name, the JavaScript engine looks into the surrounding scope for a variable of the same name.</u> If it finds one, that variable's value is assigned to the same name on the object literal. In this example, the object literal property `name` is assigned the value of the local variable `name`.
 
 This extension makes object literal initialization even more succinct and helps to eliminate naming errors. Assigning a property with the same name as a local variable is a very common pattern in JavaScript, making this extension a welcome addition.
 

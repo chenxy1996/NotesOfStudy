@@ -1,12 +1,12 @@
 # Symbols and Symbol Properties
 
-Symbols are a primitive type introduced in ECMAScript 6, joining the existing primitive types: strings, numbers, booleans, `null`, and `undefined`. Symbols began as a way to create private object members, a feature JavaScript developers wanted for a long time. Before symbols, any property with a string name was easy to access regardless of the obscurity of the name, and the "private names" feature was meant to let developers create non-string property names. That way, normal techniques for detecting these private names wouldn't work.
+Symbols are a primitive type introduced in ECMAScript 6, j<u>oining the existing primitive types: strings, numbers, booleans, `null`, and `undefined</u>`. Symbols began as a way to create private object members, a feature JavaScript developers wanted for a long time. Before symbols, any property with a string name was easy to access regardless of the obscurity of the name, and <u>the "private names" feature was meant to let developers create non-string property names</u>. That way, normal techniques for detecting these private names wouldn't work.
 
 The private names proposal eventually evolved into ECMAScript 6 symbols, and this chapter will teach you how to use symbols effectively. While the implementation details remained the same (that is, they added non-string values for property names), the goal of privacy was dropped. Instead, symbol properties are categorized separately from other object properties.
 
 ## Creating Symbols
 
-Symbols are unique among JavaScript primitives in that they don't have a literal form, like `true` for booleans or `42` for numbers. You can create a symbol by using the global `Symbol` function, as in this example:
+<u>Symbols are unique among JavaScript primitives in that they don't have a literal form</u>, like `true` for booleans or `42` for numbers. You can create a symbol by using the global `Symbol` function, as in this example:
 
 ```js
 let firstName = Symbol();
@@ -18,9 +18,9 @@ console.log(person[firstName]);     // "Nicholas"
 
 Here, the symbol `firstName` is created and used to assign a new property on the `person` object. That symbol must be used each time you want to access that same property. Naming the symbol variable appropriately is a good idea, so you can easily tell what the symbol represents.
 
-W> Because symbols are primitive values, calling `new Symbol()` throws an error when called. You can create an instance of `Symbol` via `new Object(yourSymbol)` as well, but it's unclear when this capability would be useful.
+W> **Because symbols are primitive values, calling `new Symbol()` throws an error when called**. You can create an instance of `Symbol` via `new Object(yourSymbol)` as well, but it's unclear when this capability would be useful.
 
-The `Symbol` function also accepts an optional argument that is the description of the symbol. The description itself cannot be used to access the property, but is used for debugging purposes. For example:
+<u>The `Symbol` function also accepts an optional argument that is the description of the symbol. The description itself cannot be used to access the property, but is used **for debugging purposes**. For example:</u>
 
 ```js
 let firstName = Symbol("first name");
@@ -33,11 +33,11 @@ console.log(person[firstName]);             // "Nicholas"
 console.log(firstName);                     // "Symbol(first name)"
 ```
 
-A symbol's description is stored internally in the `[[Description]]` property. This property is read whenever the symbol's `toString()` method is called either explicitly or implicitly. The `firstName` symbol's `toString()` method is called implictly by `console.log()` in this example, so the description gets printed to the log. It is not otherwise possible to access `[[Description]]` directly from code. I recommended always providing a description to make both reading and debugging symbols easier.
+A symbol's description is stored internally in the `[[Description]]` property. This property is read whenever the symbol's `toString()` method is called either explicitly or implicitly. The `firstName` symbol's `toString()` method is called implicitly by `console.log()` in this example, so the description gets printed to the log. It is not otherwise possible to access `[[Description]]` directly from code. I recommended **always providing a description to make both reading and debugging symbols easier**.
 
 A> ### Identifying Symbols
 A>
-A>Since symbols are primitive values, you can use the `typeof` operator to determine if a variable contains a symbol. ECMAScript 6 extends `typeof` to return `"symbol"` when used on a symbol. For example:
+A><u>Since symbols are primitive values, you can use the `typeof` operator to determine if a variable contains a symbol</u>. ECMAScript 6 extends `typeof` to return `"symbol"` when used on a symbol. For example:
 A>
 A>```js
 A>let symbol = Symbol("test symbol");
@@ -82,7 +82,7 @@ While symbols can be used in any place that computed property names are allowed,
 
 You may find that you want different parts of your code to use the same symbols. For example, suppose you have two different object types in your application that should use the same symbol property to represent a unique identifier. Keeping track of symbols across files or large codebases can be difficult and error-prone. That's why ECMAScript 6 provides a global symbol registry that you can access at any point in time.
 
-When you want to create a symbol to be shared, use the `Symbol.for()` method instead of calling the `Symbol()` method. The `Symbol.for()` method accepts a single parameter, which is a string identifier for the symbol you want to create. That parameter is also used as the symbol's description. For example:
+When you want to create a symbol to be shared, use the `Symbol.for()` method instead of calling the `Symbol()` method. <u>The `Symbol.for()` method accepts a single parameter, which is a string identifier for the symbol you want to create.</u> <u>That parameter is also used as the symbol's description. For example:</u>
 
 ```js
 let uid = Symbol.for("uid");
@@ -94,7 +94,7 @@ console.log(object[uid]);       // "12345"
 console.log(uid);               // "Symbol(uid)"
 ```
 
-The `Symbol.for()` method first searches the global symbol registry to see if a symbol with the key `"uid"` exists. If so, the method returns the existing symbol. If no such symbol exists, then a new symbol is created and registered to the global symbol registry using the specified key. The new symbol is then returned. That means subsequent calls to `Symbol.for()` using the same key will return the same symbol, as follows:
+<u>The `Symbol.for()` method first searches the global symbol registry to see if a symbol with the key `"uid"` exists. If so, the method returns the existing symbol. If no such symbol exists, then a new symbol is created and registered to the global symbol registry using the specified key.</u> The new symbol is then returned. That means subsequent calls to `Symbol.for()` using the same key will return the same symbol, as follows:
 
 ```js
 let uid = Symbol.for("uid");
@@ -114,7 +114,7 @@ console.log(uid2);              // "Symbol(uid)"
 
 In this example, `uid` and `uid2` contain the same symbol and so they can be used interchangeably. The first call to `Symbol.for()` creates the symbol, and the second call retrieves the symbol from the global symbol registry.
 
-Another unique aspect of shared symbols is that you can retrieve the key associated with a symbol in the global symbol registry by calling the `Symbol.keyFor()` method. For example:
+<u>Another unique aspect of shared symbols is that you can retrieve the key associated with a symbol in the global symbol registry by calling the `Symbol.keyFor()` method. For example</u>:
 
 ```js
 let uid = Symbol.for("uid");
@@ -127,13 +127,13 @@ let uid3 = Symbol("uid");
 console.log(Symbol.keyFor(uid3));   // undefined
 ```
 
-Notice that both `uid` and `uid2` return the `"uid"` key. The symbol `uid3` doesn't exist in the global symbol registry, so it has no key associated with it and `Symbol.keyFor()` returns `undefined`.
+**Notice that both `uid` and `uid2` return the `"uid"` key. The symbol `uid3` doesn't exist in the global symbol registry, so it has no key associated with it and `Symbol.keyFor()` returns `undefined`.**
 
 W> The global symbol registry is a shared environment, just like the global scope. That means you can't make assumptions about what is or is not already present in that environment. Use namespacing of symbol keys to reduce the likelihood of naming collisions when using third-party components. For example, jQuery code might use `"jquery."` to prefix all keys, for keys like `"jquery.element"` or similar.
 
 ## Symbol Coercion
 
-Type coercion is a significant part of JavaScript, and there's a lot of flexibility in the language's ability to coerce one data type into another. Symbols, however, are quite inflexible when it comes to coercion because other types lack a logical equivalent to a symbol. Specifically, symbols cannot be coerced into strings or numbers so that they cannot accidentally be used as properties that would otherwise be expected to behave as symbols.
+Type coercion is a significant part of JavaScript, and there's a lot of flexibility in the language's ability to coerce one data type into another. Symbols, however, are quite inflexible when it comes to coercion because other types lack a logical equivalent to a symbol. **Specifically, symbols cannot be coerced into strings or numbers so that they cannot accidentally be used as properties that would otherwise be expected to behave as symbols**.
 
 The examples in this chapter have used `console.log()` to indicate the output for symbols, and that works because `console.log()` calls `String()` on symbols to create useful output. You can use `String()` directly to get the same result. For instance:
 
@@ -160,11 +160,11 @@ let uid = Symbol.for("uid"),
     sum = uid / 1;            // error!
 ```
 
-This example attempts to divide the symbol by 1, which causes an error. Errors are thrown regardless of the mathematical operator used (logical operators do not throw an error because all symbols are considered equivalent to `true`, just like any other non-empty value in JavaScript).
+This example attempts to divide the symbol by 1, which causes an error. Errors are thrown regardless of the mathematical operator used (<u>logical operators do not throw an error because all symbols are considered equivalent to `true`, just like any other non-empty value in JavaScript</u>).
 
 ## Retrieving Symbol Properties
 
-The `Object.keys()` and `Object.getOwnPropertyNames()` methods can retrieve all property names in an object. The former method returns all enumerable property names, and the latter returns all properties regardless of enumerability. Neither method returns symbol properties, however, to preserve their ECMAScript 5 functionality. Instead, the `Object.getOwnPropertySymbols()` method was added in ECMAScript 6 to allow you to retrieve property symbols from an object.
+The `Object.keys()` and `Object.getOwnPropertyNames()` methods can retrieve all property names in an object. **The former method returns all enumerable property names, and the latter returns all properties regardless of enumerability**. <u>Neither method returns symbol properties, however, to preserve their ECMAScript 5 functionality</u>. Instead, the `Object.getOwnPropertySymbols()` method was added in ECMAScript 6 to allow you to retrieve property symbols from an object.
 
 The return value of `Object.getOwnPropertySymbols()` is an array of own property symbols. For example:
 
@@ -207,11 +207,11 @@ The well-known symbols are:
 
 Some commonly used well-known symbols are discussed in the following sections, while others are discussed throughout the rest of the book to keep them in the correct context.
 
-I> Overwriting a method defined with a well-known symbol changes an ordinary object to an exotic object because this changes some internal default behavior. There is no practical impact to your code as a result, it just changes the way the specification describes the object.
+I> <u>Overwriting a method defined with a well-known symbol changes an ordinary object to an exotic object because this changes some internal default behavior. There is no practical impact to your code as a result, it just changes the way the specification describes the object.</u>
 
 ### The Symbol.hasInstance Property
 
-Every function has a `Symbol.hasInstance` method that determines whether or not a given object is an instance of that function. The method is defined on `Function.prototype` so that all functions inherit the default behavior for the `instanceof` property and the method is nonwritable and nonconfigurable as well as nonenumerable, to ensure it doesn't get overwritten by mistake.
+<u>Every function has a `Symbol.hasInstance` method that determines whether or not a given object is an instance of that function.</u> The method is defined on `Function.prototype` so that all functions inherit the default behavior for the `instanceof` property and <u>the method is **SpecialNumber** and **nonconfigurable** as well as **nonenumerable**, to ensure it doesn't get overwritten by mistake.</u>
 
 The `Symbol.hasInstance` method accepts a single argument: the value to check. It returns true if the value passed is an instance of the function. To understand how `Symbol.hasInstance` works, consider the following code:
 
@@ -245,7 +245,29 @@ let obj = new MyObject();
 console.log(obj instanceof MyObject);       // false
 ```
 
-You must use `Object.defineProperty()` to overwrite a nonwritable property, so this example uses that method to overwrite the `Symbol.hasInstance` method with a new function. The new function always returns `false`, so even though `obj` is actually an instance of the `MyObject` class, the `instanceof` operator returns `false` after the `Object.defineProperty()` call.
+**You must use `Object.defineProperty()` to overwrite a <u>nonwritable</u> property, so this example uses that method to overwrite the `Symbol.hasInstance` method with a new function.** The new function always returns `false`, so even though `obj` is actually an instance of the `MyObject` class, the `instanceof` operator returns `false` after the `Object.defineProperty()` call.
+
+```js
+// 笔记 NOTE
+// 如果按照普通的给属性赋值，在严格模式下会报错
+// 在非严格模式下不会被赋值
+// 原因：
+// 原型属性如果是 writable: false, 其“后代“同名属性都不能改写
+
+let a =  Object.defineProperty({}, "name", {
+    value: "chen",
+});
+
+let b = {};
+
+Object.setPrototypeOf(b, a);
+
+b.name = "lele";
+
+console.log(b.name);
+```
+
+
 
 Of course, you can also inspect the value and decide whether or not a value should be considered an instance based on any arbitrary condition. For instance, maybe numbers with values between 1 and 100 are to be considered instances of a special number type. To achieve that behavior, you might write code like this:
 
@@ -295,7 +317,7 @@ console.log(colors2);           // ["red","green","blue","black","brown"]
 
 Here, the extra argument `"brown"` is passed to `concat()` and it becomes the fifth item in the `colors2` array. Why is an array argument treated differently than a string argument? The JavaScript specification says that arrays are automatically split into their individual items and all other types are not. Prior to ECMAScript 6, there was no way to adjust this behavior.
 
-The `Symbol.isConcatSpreadable` property is a boolean value indicating that an object has a `length` property and numeric keys, and that its numeric property values should be added individually to the result of a `concat()` call. Unlike other well-known symbols, this symbol property doesn't appear on any standard objects by default. Instead, the symbol is available as a way to augment how `concat()` works on certain types of objects, effectively short-circuiting the default behavior. You can define any type to behave like arrays do in a `concat()` call, like this:
+<u>The `Symbol.isConcatSpreadable` property is a boolean value indicating that an object has a `length` property and numeric keys, and that its numeric property values should be added individually to the result of a `concat()` call. Unlike other well-known symbols, this symbol property doesn't appear on any standard objects by default. Instead, the symbol is available as a way to augment how `concat()` works on certain types of objects, effectively short-circuiting the default behavior.</u> You can define any type to behave like arrays do in a `concat()` call, like this:
 
 ```js
 let collection = {
@@ -387,27 +409,27 @@ The `hasLengthOf10` object is intended to work like a regular expression that ma
 
 While this is a simple example, the ability to perform more complex matches than are currently possible with regular expressions opens up a lot of possibilities for custom pattern matchers.
 
-### The Symbol.toPrimitive Method
+### ==The Symbol.toPrimitive Method==
 
 JavaScript frequently attempts to convert objects into primitive values implicitly when certain operations are applied. For instance, when you compare a string to an object using the double equals (`==`) operator, the object is converted into a primitive value before comparing. Exactly what primitive value should be used was previously an internal operation, but ECMAScript 6 exposes that value (making it changeable) through the `Symbol.toPrimitive` method.
 
-The `Symbol.toPrimitive` method is defined on the prototype of each standard type and prescribes what should happen when the object is converted into a primitive. When a primitive conversion is needed, `Symbol.toPrimitive` is called with a single argument, referred to as `hint` in the specification. The `hint` argument is one of three string values. If `hint` is `"number"` then `Symbol.toPrimitive` should return a number. If `hint` is `"string"` then a string should be returned, and if it's `"default"` then the operation has no preference as to the type.
+<u>**The `Symbol.toPrimitive` method is defined on the ==prototype of each standard type== and prescribes what should happen when the object is converted into a primitive.**</u> When a primitive conversion is needed, `Symbol.toPrimitive` is called with a single argument, referred to as `hint` in the specification. The `hint` argument is one of three string values. If `hint` is `"number"` then `Symbol.toPrimitive` should return a number. If `hint` is `"string"` then a string should be returned, and if it's `"default"` then the operation has no preference as to the type.
 
-For most standard objects, number mode has the following behaviors, in order by priority:
+For most standard objects, **number mod**e has the following behaviors, in order by priority:
 
 1. Call the `valueOf()` method, and if the result is a primitive value, return it.
 1. Otherwise, call the `toString()` method, and if the result is a primitive value, return it.
 1. Otherwise, throw an error.
 
-Similarly, for most standard objects, the behaviors of string mode have the following priority:
+Similarly, for most standard objects, the behaviors of **string mode** have the following priority:
 
 1. Call the `toString()` method, and if the result is a primitive value, return it.
 1. Otherwise, call the `valueOf()` method, and if the result is a primitive value, return it.
 1. Otherwise, throw an error.
 
-In many cases, standard objects treat default mode as equivalent to number mode (except for `Date`, which treats default mode as equivalent to string mode). By defining an `Symbol.toPrimitive` method, you can override these default coercion behaviors.
+<u>In many cases, standard objects treat default mode as equivalent to number mode (except for `Date`, which treats default mode as equivalent to string mode).</u> By defining an `Symbol.toPrimitive` method, you can override these default coercion behaviors.
 
-I> Default mode is only used for the `==` operator, the `+` operator, and when passing a single argument to the `Date` constructor. Most operations use string or number mode.
+I> <u>**Default mode is only used for the `==` operator, the `+` operator, and when passing a single argument to the `Date` constructor**. Most operations use string or number mode.</u>
 
 To override the default conversion behaviors, use `Symbol.toPrimitive` and assign a function as its value. For example:
 
@@ -437,9 +459,9 @@ console.log(freezing / 2);              // 16
 console.log(String(freezing));          // "32°"
 ```
 
-This script defines a `Temperature` constructor and overrides the default `Symbol.toPrimitive` method on the prototype. A different value is returned depending on whether the `hint` argument indicates string, number, or default mode (the `hint` argument is filled in by the JavaScript engine). In string mode, the `Symbol.toPrimitive` method returns the temperature with the Unicode degrees symbol. In number mode, it returns just the numeric value, and in default mode, it appends the word "degrees" after the number.
+This script defines a `Temperature` constructor and overrides the default `Symbol.toPrimitive` method on the prototype. A different value is returned depending on whether the `hint` argument indicates string, number, or default mode (t<u>he `hint` argument is filled in by the JavaScript engine</u>). In string mode, the `Symbol.toPrimitive` method returns the temperature with the Unicode degrees symbol. In number mode, it returns just the numeric value, and in default mode, it appends the word "degrees" after the number.
 
-Each of the log statements triggers a different `hint` argument value. The `+` operator triggers default mode by setting `hint` to `"default"`, the `/` operator triggers number mode by setting `hint` to `"number"`, and the `String()` function triggers string mode by setting `hint` to `"string"`. Returning different values for all three modes is possible, it's much more common to set the default mode to be the same as string or number mode.
+Each of the log statements triggers a different `hint` argument value. <u>The `+` operator triggers default mode by setting `hint` to `"default"`, the `/` operator triggers number mode by setting `hint` to `"number"`, and the `String()` function triggers string mode by setting `hint` to `"string"</u>`. Returning different values for all three modes is possible, it's much more common to set the default mode to be the same as string or number mode.
 
 ### The Symbol.toStringTag Symbol
 
