@@ -481,7 +481,7 @@ function isArray(value) {
 console.log(isArray([]));   // true
 ```
 
-This may look a bit roundabout, but it worked quite well for identifying arrays in all browsers. The `toString()` method on arrays isn't useful for identifying an object because it returns a string representation of the items the object contains. But the `toString()` method on `Object.prototype` had a quirk: it included internally-defined name called `[[Class]]` in the returned result. Developers could use this method on an object to retrieve what the JavaScript environment thought the object's data type was.
+This may look a bit roundabout, but it worked quite well for identifying arrays in all browsers. The `toString()` method on arrays isn't useful for identifying an object because it returns a string representation of the items the object contains. But the `toString()` method on `Object.prototype` had a quirk: <u>it included internally-defined name called `[[Class]]` in the returned result. Developers could use this method on an object to retrieve what the JavaScript environment thought the object's data type was.</u>
 
 Developers quickly realized that since there was no way to change this behavior, it was possible to use the same approach to distinguish between native objects and those created by developers. The most important case of this was the ECMAScript 5 `JSON` object.
 
@@ -498,7 +498,7 @@ The same characteristic of `Object.prototype` that allowed developers to identif
 
 #### The ECMAScript 6 Answer
 
-ECMAScript 6 redefines this behavior through the `Symbol.toStringTag` symbol. This symbol represents a property on each object that defines what value should be produced when `Object.prototype.toString.call()` is called on it. For an array, the value that function returns is explained by storing `"Array"` in the `Symbol.toStringTag` property.
+ECMAScript 6 redefines this behavior through the `Symbol.toStringTag` symbol. <u>This symbol represents a property on each object that defines what value should be produced when `Object.prototype.toString.call()` is called on it.</u> For an array, the value that function returns is explained by storing `"Array"` in the `Symbol.toStringTag` property.
 
 Likewise, you can define the `Symbol.toStringTag` value for your own objects:
 
@@ -569,7 +569,7 @@ let values = [];
 console.log(Object.prototype.toString.call(values));    // "[object Magic]"
 ```
 
-Even though `Symbol.toStringTag` is overwritten for arrays in this example, the call to `Object.prototype.toString()` results in `"[object Magic]"` instead. While I recommended not changing built-in objects in this way, there's nothing in the language that forbids doing so.
+<u>Even though `Symbol.toStringTag` is overwritten for arrays in this example, the call to `Object.prototype.toString()` results in `"[object Magic]"` instead.</u> While I recommended not changing built-in objects in this way, there's nothing in the language that forbids doing so.
 
 ### The Symbol.unscopables Symbol
 
@@ -619,12 +619,12 @@ In general, you shouldn't need to define `Symbol.unscopables` for your objects u
 
 ## Summary
 
-Symbols are a new type of primitive value in JavaScript and are used to create properties that can't be accessed without referencing the symbol.
+**Symbols are a new type of primitive value in JavaScript and are used to create properties that can't be accessed without referencing the symbol.**
 
 While not truly private, these properties are harder to accidentally change or overwrite and are therefore suitable for functionality that needs a level of protection from developers.
 
 You can provide descriptions for symbols that allow for easier identification of symbol values. There is a global symbol registry that allows you to use shared symbols in different parts of code by using the same description. In this way, the same symbol can be used for the same reason in multiple places.
 
-Methods like `Object.keys()` or `Object.getOwnPropertyNames()` don't return symbols, so a new method called `Object.getOwnPropertySymbols()` was added in ECMAScript 6 to allow retrieval of symbol properties. You can still make changes to symbol properties by calling the `Object.defineProperty()` and `Object.defineProperties()` methods.
+<u>Methods like `Object.keys()` or `Object.getOwnPropertyNames()` don't return symbols, so a new method called `Object.getOwnPropertySymbols()` was added in ECMAScript 6 to allow retrieval of symbol properties.</u> You can still make changes to symbol properties by calling the `Object.defineProperty()` and `Object.defineProperties()` methods.
 
 Well-known symbols define previously internal-only functionality for standard objects and use globally-available symbol constants, such as the `Symbol.hasInstance` property. These symbols use the prefix `Symbol.` in the specification and allow developers to modify standard object behavior in a variety of ways.
