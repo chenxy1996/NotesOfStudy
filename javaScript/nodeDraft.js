@@ -20,18 +20,26 @@ let Person; // Constructor function to create Person instances
     }
 }
 
-let aPerson = new Person("chen");
-let bPerson = new Person("lele");
+// mimic iterator before ES6
+function createIterator(items) {
+    var i = 0;
 
-console.log(
-    aPerson.getName(),
-    bPerson.getName()
-)
+    return {
+        next: function() {
+            
+            var done = (i >= items.length);
+            var value = !done ? items[i++] : undefined;
 
-aPerson = null;
-bPerson = null;
+            return {
+                done: done,
+                value: value
+            };
+        }
+    }
+}
 
-console.log(
-    aPerson.getName(),
-    bPerson.getName()
-)
+var iterator = createIterator([1, 2, 3]);
+
+function Person() {
+    return name;
+}
