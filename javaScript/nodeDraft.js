@@ -20,26 +20,37 @@ let Person; // Constructor function to create Person instances
     }
 }
 
-// mimic iterator before ES6
-function createIterator(items) {
-    var i = 0;
+// mimicking iterator before ES6
+// function createIterator(items) {
+//     var i = 0;
 
-    return {
-        next: function() {
+//     return {
+//         next: function() {
             
-            var done = (i >= items.length);
-            var value = !done ? items[i++] : undefined;
+//             var done = (i >= items.length);
+//             var value = !done ? items[i++] : undefined;
 
-            return {
-                done: done,
-                value: value
-            };
-        }
+//             return {
+//                 done: done,
+//                 value: value
+//             };
+//         }
+//     }
+// }
+
+// var iterator = createIterator([1, 2, 3]);
+
+function *createIterator(...itmes) {
+    for (let i = 0; i < itmes.length; i++) {
+        console.log("inner" + i);
+        yield itmes[i];
     }
 }
 
-var iterator = createIterator([1, 2, 3]);
+let newIterator = createIterator(1, 2, 3, 4);
 
-function Person() {
-    return name;
-}
+console.log(newIterator.next());
+
+// for (let eachVaule of newIterator) {
+//     console.log(eachVaule);
+// }
