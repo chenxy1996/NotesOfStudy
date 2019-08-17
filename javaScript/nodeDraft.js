@@ -40,17 +40,49 @@ let Person; // Constructor function to create Person instances
 
 // var iterator = createIterator([1, 2, 3]);
 
-function *createIterator(...itmes) {
-    for (let i = 0; i < itmes.length; i++) {
-        console.log("inner" + i);
-        yield itmes[i];
+let aString = "chen";
+
+let aArray = new Array();
+
+aArray.push(1);
+aArray.push(2)
+
+// for (let key of aArray.keys()) {
+//     console.log(key);
+// }
+
+function *createIterator() {
+    let first = yield 1;
+    let second;
+
+    try {
+        second = yield first + 2;
+    } catch (ex) {
+        second = 6;
     }
+
+    yield second + 3;
 }
 
-let newIterator = createIterator(1, 2, 3, 4);
+let newIterator = createIterator();
 
-console.log(newIterator.next());
+function *createIterator1() {
+    yield 1;
+    yield 2;
+    yield 3;
+}
 
-// for (let eachVaule of newIterator) {
-//     console.log(eachVaule);
-// }
+let newIterator1 = createIterator1();
+
+function *iterate(nums) {
+    yield * nums;
+}
+
+let a = iterate([1, 2, 3]);
+
+let testArray = [[1, 2, 3], [4, 5, 6]];
+
+testArray.forEach(
+    (value) => setTimeout(() => console.log(value), 0)
+);
+console.log("hehe");
