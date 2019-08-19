@@ -980,7 +980,7 @@ function fetchData() {
 
 This version of `fetchData()` introduces a 50ms delay before calling the callback, demonstrating that this pattern works equally well for synchronous and asynchronous code. You just have to make sure each function that wants to be called using `yield` follows the same pattern.
 
-With a good understanding of how a function can signal that it's an asynchronous process, you can modify the task runner to take that fact into account. Anytime `result.value` is a function, the task runner will execute it instead of just passing that value to the `next()` method. Here's the updated code:
+With a good understanding of how a function can signal that it's an asynchronous process, you can modify the task runner to take that fact into account. <u>Anytime `result.value` is a function, the task runner will execute it instead of just passing that value to the `next()` method. Here's the updated code:</u>
 
 ```js
 function run(taskDef) {
