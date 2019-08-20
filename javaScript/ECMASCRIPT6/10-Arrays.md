@@ -62,7 +62,7 @@ let items = createArray(Array.of, value);
 
 In this code, the `createArray()` function accepts an array creator function and a value to insert into the array. You can pass `Array.of()` as the first argument to `createArray()` to create a new array. It would be dangerous to pass `Array` directly if you cannot guarantee that `value` won't be a number.
 
-I> The `Array.of()` method does not use the `Symbol.species` property (discussed in Chapter 9) to determine the type of return value. Instead, it uses the current constructor (`this` inside the `of()` method) to determine the correct data type to return.
+I> <u>The `Array.of()` method does not use the `Symbol.species` property (discussed in Chapter 9) to determine the type of return value. Instead, it uses the current constructor (`this` inside the `of()` method) to determine the correct data type to return.</u>
 
 ### The Array.from() Method
 
@@ -104,7 +104,7 @@ This code is functionally equivalent to the previous example, and it works becau
 
 Even though this technique requires less typing, calling `Array.prototype.slice.call(arrayLike)` doesn't obviously translate to, "Convert `arrayLike` to an array." Fortunately, ECMAScript 6 added the `Array.from()` method as an obvious, yet clean, way to convert objects into arrays.
 
-Given either an iterable or an array-like object as the first argument, the `Array.from()` method returns an array. Here's a simple example:
+<u>Given either an **iterable or an array-like object** as the first argument, the `Array.from()` method returns an array. Here's a simple example:</u>
 
 ```js
 function doSomething() {
@@ -116,7 +116,7 @@ function doSomething() {
 
 The `Array.from()` call creates a new array based on the items in `arguments`. So `args` is an instance of `Array` that contains the same values in the same positions as `arguments`.
 
-I> The `Array.from()` method also uses `this` to determine the type of array to return.
+I> <u>The `Array.from()` method also uses `this` to determine the type of array to return.</u>
 
 #### Mapping Conversion
 
@@ -174,7 +174,7 @@ console.log(numbers2);              // 2,3,4
 
 Since the `numbers` object is an iterable, you can pass `numbers` directly to `Array.from()` to convert its values into an array. The mapping function adds one to each number so the resulting array contains 2, 3, and 4 instead of 1, 2, and 3.
 
-I> If an object is both array-like and iterable, then the iterator is used by `Array.from()` to determine the values to convert.
+I> <u>If an object is both array-like and iterable, then the iterator is used by `Array.from()` to determine the values to convert.</u>
 
 ## New Methods on All Arrays
 
@@ -184,7 +184,7 @@ Continuing the trend from ECMAScript 5, ECMAScript 6 adds several new methods to
 
 Prior to ECMAScript 5, searching through arrays was cumbersome because there were no built-in methods for doing so. ECMAScript 5 added the `indexOf()` and `lastIndexOf()` methods, finally allowing developers to search for specific values inside an array. These two methods were a big improvement, yet they were still fairly limited because you could only search for one value at a time. For example, if you wanted to find the first even number in a series of numbers, you'd need to write your own code to do so. ECMAScript 6 solved that problem by introducing the `find()` and `findIndex()` methods.
 
-Both `find()` and `findIndex()` accept two arguments: a callback function and an optional value to use for `this` inside the callback function. The callback function is passed an array element, the index of that element in the array, and the array itself--the same arguments passed to methods like `map()` and `forEach()`. The callback should return `true` if the given value matches some criteria you define. Both `find()` and `findIndex()` also stop searching the array the first time the callback function returns `true`.
+<u>Both `find()` and `findIndex()` accept two arguments: a callback function and an optional value to use for `this` inside the callback function.</u> The callback function is passed an array element, the index of that element in the array, and the array itself--the same arguments passed to methods like `map()` and `forEach()`. The callback should return `true` if the given value matches some criteria you define. <u>Both `find()` and `findIndex()` also stop searching the array the first time the callback function returns `true`.</u>
 
 The only difference between these methods is that `find()` returns the value whereas `findIndex()` returns the index at which the value was found. Here's an example to demonstrate:
 
@@ -227,7 +227,7 @@ console.log(numbers.toString());    // 1,0,0,1
 
 In the `numbers.fill(1,2)` call, the `2` indicates to start filling elements at index 2. The exclusive end index isn't specified with a third argument, so `numbers.length` is used as the end index, meaning the last two elements in `numbers` are filled with `1`. The `numbers.fill(0, 1, 3)` operation fills array elements at indices 1 and 2 with `0`. Calling `fill()` with the second and third arguments allows you to fill multiple array elements at once without overwriting the entire array.
 
-I> If either the start or end index are negative, then those values are added to the array's length to determine the final location. For instance, a start location of `-1` gives `array.length - 1` as the index, where `array` is the array on which `fill()` is called.
+I> <u>If either the start or end index are negative, then those values are added to the array's length to determine the final location. For instance, a start location of `-1` gives `array.length - 1` as the index, where `array` is the array on which `fill()` is called.</u>
 
 ### The copyWithin() Method
 
@@ -268,9 +268,9 @@ The use cases for `fill()` and `copyWithin()` may not be obvious to you at this 
 
 ## Typed Arrays
 
-Typed arrays are special-purpose arrays designed to work with numeric types (not all types, as the name might imply). The origin of typed arrays can be traced to WebGL, a port of Open GL ES 2.0 designed for use in web pages with the `<canvas>` element. Typed arrays were created as part of the port to provide fast bitwise arithmetic in JavaScript.
+<u>Typed arrays are special-purpose arrays designed to work with numeric types (not all types, as the name might imply).</u> The origin of typed arrays can be traced to WebGL, a port of Open GL ES 2.0 designed for use in web pages with the `<canvas>` element. Typed arrays were created as part of the port to provide fast bitwise arithmetic in JavaScript.
 
-Arithmetic on native JavaScript numbers was too slow for WebGL because the numbers were stored in a 64-bit floating-point format and converted to 32-bit integers as needed. Typed arrays were introduced to circumvent this limitation and provide better performance for arithmetic operations. The concept is that any single number can be treated like an array of bits and thus can use the familiar methods available on JavaScript arrays.
+Arithmetic on native JavaScript numbers was too slow for WebGL because the numbers were stored in a 64-bit floating-point format and converted to 32-bit integers as needed. Typed arrays were introduced to circumvent this limitation and provide better performance for arithmetic operations. <u>The concept is that any single number can be treated like an array of bits and thus can use the familiar methods available on JavaScript arrays.</u>
 
 ECMAScript 6 adopted typed arrays as a formal part of the language to ensure better compatibility across JavaScript engines and interoperability with JavaScript arrays. While the ECMAScript 6 version of typed arrays is not exactly the same as the WebGL version, there are enough similarities to make the ECMAScript 6 version an evolution of the WebGL version rather than a different approach.
 
@@ -289,7 +289,7 @@ JavaScript numbers are stored in IEEE 754 format, which uses 64 bits to store a 
 
 If you represent a number that fits in an int8 as a normal JavaScript number, you'll waste 56 bits. Those bits might better be used to store additional int8 values or any other number that requires less than 56 bits. Using bits more efficiently is one of the use cases typed arrays address.
 
-All of the operations and objects related to typed arrays are centered around these eight data types. In order to use them, though, you'll need to create an array buffer to store the data.
+All of the operations and objects related to typed arrays are centered around these eight data types. <u>In order to use them, though, you'll need to create an array buffer to store the data.</u>
 
 I> In this book, I will refer to these types by the abbreviations I showed in parentheses. Those abbreviations don't appear in actual JavaScript code; they're just a shorthand for the much longer descriptions.
 
@@ -322,11 +322,11 @@ In this code, `buffer2` is created by extracting the bytes at indices 4 and 5. J
 
 Of course, creating a storage location isn't very helpful without being able to write data into that location. To do so, you'll need to create a view.
 
-I> An array buffer always represents the exact number of bytes specified when it was created. You can change the data contained within an array buffer, but never the size of the array buffer itself.
+I> **An array buffer always represents the exact number of bytes specified when it was created. You can change the data contained within an array buffer, but never the size of the array buffer itself.**
 
 ### Manipulating Array Buffers with Views
 
-Array buffers represent memory locations, and *views* are the interfaces you'll use to manipulate that memory. A view operates on an array buffer or a subset of an array buffer's bytes, reading and writing data in one of the numeric data types. The `DataView` type is a generic view on an array buffer that allows you to operate on all eight numeric data types.
+<u>Array buffers represent memory locations, and *views* are the interfaces you'll use to manipulate that memory. A view operates on an array buffer or a subset of an array buffer's bytes, reading and writing data in one of the numeric data types. The `DataView` type is a generic view on an array buffer that allows you to operate on all eight numeric data types.</u>
 
 To use a `DataView`, first create an instance of `ArrayBuffer` and use it to create a new `DataView`. Here's an example:
 
@@ -462,7 +462,7 @@ Typed array operations only work on a particular type of data. For example, all 
 
 A> ### Element Size
 A>
-A> Each typed array is made up of a number of elements, and the element size is the number of bytes each element represents. This value is stored on a `BYTES_PER_ELEMENT` property on each constructor and each instance, so you can easily query the element size:
+A> Each typed array is made up of a number of elements, and the element size is the number of bytes each element represents. <u>This value is stored on a `BYTES_PER_ELEMENT` property on each constructor and each instance, so you can easily query the element size</u>:
 A>
 A> ```js
 A> console.log(UInt8Array.BYTES_PER_ELEMENT);      // 1

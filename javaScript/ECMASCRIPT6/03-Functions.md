@@ -1095,9 +1095,9 @@ Tail calls as implemented in ECMAScript 5 engines are handled just like any othe
 
 ECMAScript 6 seeks to reduce the size of the call stack for certain tail calls in strict mode (nonstrict mode tail calls are left untouched). With this optimization, <u>instead of creating a new stack frame for a tail call, the current stack frame is cleared and reused so long as the following conditions are met:</u>
 
-1. The tail call does not require access to variables in the current stack frame (meaning the function is not a closure)
-1. The function making the tail call has no further work to do after the tail call returns
-1. The result of the tail call is returned as the function value
+1. **The tail call does not require access to variables in the current stack frame (meaning the function is not a closure)**
+1. **The function making the tail call has no further work to do after the tail call returns**
+1. **The result of the tail call is returned as the function value**
 
 As an example, this code can easily be optimized because it fits all three criteria:
 

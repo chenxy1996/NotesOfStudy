@@ -2,7 +2,7 @@
 
 One of the most powerful aspects of JavaScript is how easily it handles asynchronous programming. As a language created for the Web, JavaScript needed to be able to respond to asynchronous user interactions such as clicks and key presses from the beginning. Node.js further popularized asynchronous programming in JavaScript by using callbacks as an alternative to events. As more and more programs started using asynchronous programming, events and callbacks were no longer powerful enough to support everything developers wanted to do. *Promises* are the solution to this problem.
 
-Promises are another option for asynchronous programming, and they work like futures and deferreds do in other languages. A promise specifies some code to be executed later (as with events and callbacks) and also explicitly indicates whether the code succeeded or failed at its job. You can chain promises together based on success or failure in ways that make your code easier to understand and debug.
+<u>Promises are another option for asynchronous programming, and they work like futures and deferreds do in other languages.</u> A promise specifies some code to be executed later (as with events and callbacks) and also explicitly indicates whether the code succeeded or failed at its job. You can chain promises together based on success or failure in ways that make your code easier to understand and debug.
 
 To have a good understanding of how promises work, however, it's important to understand some of the basic concepts upon which they are built.
 
@@ -10,7 +10,7 @@ To have a good understanding of how promises work, however, it's important to un
 
 JavaScript engines are built on the concept of a single-threaded event loop. *Single-threaded* means that only one piece of code is ever executed at a time. Contrast this with languages like Java or C++, where threads can allow multiple different pieces of code to execute at the same time. Maintaining and protecting state when multiple pieces of code can access and change that state is a difficult problem and a frequent source of bugs in thread-based software.
 
-JavaScript engines can only execute one piece of code at a time, so they need to keep track of code that is meant to run. That code is kept in a *job queue*. Whenever a piece of code is ready to be executed, it is added to the job queue. When the JavaScript engine is finished executing code, the event loop executes the next job in the queue. The *event loop* is a process inside the JavaScript engine that monitors code execution and manages the job queue. Keep in mind that as a queue, job execution runs from the first job in the queue to the last.
+<u>JavaScript engines can only execute one piece of code at a time, so they need to keep track of code that is meant to run. That code is kept in a ***job queue***.</u> <u>Whenever a piece of code is ready to be executed, it is added to the job queue. When the JavaScript engine is finished executing code, the event loop executes the next job in the queue.</u> <u>The *event loop* is a process inside the JavaScript engine that monitors code execution and manages the job queue. Keep in mind that **as a queue, job execution runs from the first job in the queue to the last.**</u>
 
 ### The Event Model
 
@@ -44,7 +44,7 @@ console.log("Hi!");
 
 This example uses the traditional Node.js *error-first* callback style. The `readFile()` function is intended to read from a file on disk (specified as the first argument) and then execute the callback (the second argument) when complete. If there's an error, the `err` argument of the callback is an error object; otherwise, the `contents` argument contains the file contents as a string.
 
-Using the callback pattern, `readFile()` begins executing immediately and pauses when it starts reading from the disk. That means `console.log("Hi!")` is output immediately after `readFile()` is called, before `console.log(contents)` prints anything. When `readFile()` finishes, it adds a new job to the end of the job queue with the callback function and its arguments. That job is then executed upon completion of all other jobs ahead of it.
+Using the callback pattern, `readFile()` begins executing immediately and pauses when it starts reading from the disk. That means `console.log("Hi!")` is output immediately after `readFile()` is called, before `console.log(contents)` prints anything. <u>When `readFile()` finishes, it adds a new job to the end of the job queue with the callback function and its arguments. **That job is then executed upon completion of all other jobs ahead of it.**</u>
 
 The callback pattern is more flexible than events because chaining multiple calls together is easier with callbacks. For example:
 
@@ -109,23 +109,23 @@ In these cases, you'd need to track multiple callbacks and cleanup operations, a
 
 ## Promise Basics
 
-A promise is a placeholder for the result of an asynchronous operation. Instead of subscribing to an event or passing a callback to a function, the function can return a promise, like this:
+**A promise is a placeholder for the result of an asynchronous operation.** Instead of subscribing to an event or passing a callback to a function, the function can return a promise, like this:
 
 ```js
 // readFile promises to complete at some point in the future
 let promise = readFile("example.txt");
 ```
 
-In this code, `readFile()` doesn't actually start reading the file immediately; that will happen later. Instead, the function returns a promise object representing the asynchronous read operation so you can work with it in the future. Exactly when you'll be able to work with that result depends entirely on how the promise's lifecycle plays out.
+In this code, `readFile()` doesn't actually start reading the file immediately; that will happen later. I<u>nstead, the function returns a promise object representing the asynchronous read operation so you can work with it in the future.</u> Exactly when you'll be able to work with that result depends entirely on how the promise's lifecycle plays out.
 
 ### The Promise Lifecycle
 
-Each promise goes through a short lifecycle starting in the *pending* state, which indicates that the asynchronous operation hasn't completed yet. A pending promise is considered *unsettled*. The promise in the last example is in the pending state as soon as the `readFile()` function returns it. Once the asynchronous operation completes, the promise is considered *settled* and enters one of two possible states:
+Each promise goes through a short lifecycle starting in the *pending* state, which indicates that the asynchronous operation hasn't completed yet. **A pending promise is considered *unsettled*.** The promise in the last example is in the pending state as soon as the `readFile()` function returns it. **Once the asynchronous operation completes, the promise is considered *settled* and enters one of two possible states:**
 
 1. *Fulfilled*: The promise's asynchronous operation has completed successfully.
 1. *Rejected*: The promise's asynchronous operation didn't complete successfully due to either an error or some other cause.
 
-An internal `[[PromiseState]]` property is set to `"pending"`, `"fulfilled"`, or `"rejected"` to reflect the promise's state. This property isn't exposed on promise objects, so you can't determine which state the promise is in programmatically. But you can take a specific action when a promise changes state by using the `then()` method.
+An internal `[[PromiseState]]` property is set to `"pending"`, `"fulfilled"`, or `"rejected"` to reflect the promise's state. This property isn't exposed on promise objects, so you can't determine which state the promise is in programmatically. <u>But you can take a specific action when a promise changes state by using the `then()` method.</u>
 
 The `then()` method is present on all promises and takes two arguments. The first argument is a function to call when the promise is fulfilled. Any additional data related to the asynchronous operation is passed to this fulfillment function. The second argument is a function to call when the promise is rejected. Similar to the fulfillment function, the rejection function is passed any additional data related to the rejection.
 
@@ -175,7 +175,7 @@ promise.then(null, function(err) {
 
 The intent behind `then()` and `catch()` is for you to use them in combination to properly handle the result of asynchronous operations. This system is better than events and callbacks because it makes whether the operation succeeded or failed completely clear. (Events tend not to fire when there's an error, and in callbacks you must always remember to check the error argument.) Just know that if you don't attach a rejection handler to a promise, all failures will happen silently. Always attach a rejection handler, even if the handler just logs the failure.
 
-A fulfillment or rejection handler will still be executed even if it is added to the job queue after the promise is already settled. This allows you to add new fulfillment and rejection handlers at any time and guarantee that they will be called. For example:
+**A fulfillment or rejection handler will still be executed even if it is added to the job queue after the promise is already settled.** This allows you to add new fulfillment and rejection handlers at any time and guarantee that they will be called. For example:
 
 ```js
 let promise = readFile("example.txt");
@@ -197,7 +197,7 @@ I> Each call to `then()` or `catch()` creates a new job to be executed when the 
 
 ### Creating Unsettled Promises
 
-New promises are created using the `Promise` constructor. This constructor accepts a single argument: a function called the *executor*, which contains the code to initialize the promise. The executor is passed two functions named `resolve()` and `reject()` as arguments. The `resolve()` function is called when the executor has finished successfully to signal that the promise is ready to be resolved, while the `reject()` function indicates that the executor has failed.
+<u>New promises are created using the `Promise` constructor. This constructor accepts a single argument: a function called the ***executor***, which contains the code to initialize the promise.</u> The executor is passed two functions named `resolve()` and `reject()` as arguments. The `resolve()` function is called when the executor has finished successfully to signal that the promise is ready to be resolved, while the `reject()` function indicates that the executor has failed.
 
 Here's an example that uses a promise in Node.js to implement the `readFile()` function from earlier in this chapter:
 
@@ -239,7 +239,7 @@ promise.then(function(contents) {
 
 In this example, the native Node.js `fs.readFile()` asynchronous call is wrapped in a promise. The executor either passes the error object to the `reject()` function or passes the file contents to the `resolve()` function.
 
-Keep in mind that the executor runs immediately when `readFile()` is called. When either `resolve()` or `reject()` is called inside the executor, a job is added to the job queue to resolve the promise. This is called *job scheduling*, and if you've ever used the `setTimeout()` or `setInterval()` functions, then you're already familiar with it. In job scheduling, you add a new job to the job queue to say, "Don't execute this right now, but execute it later." For instance, the `setTimeout()` function lets you specify a delay before a job is added to the queue:
+**Keep in mind that the executor runs immediately when `readFile()` is called.** When either `resolve()` or `reject()` is called inside the executor, a job is added to the job queue to resolve the promise. This is called ***job scheduling***, and if you've ever used the `setTimeout()` or `setInterval()` functions, then you're already familiar with it. In job scheduling, you add a new job to the job queue to say, "Don't execute this right now, but execute it later." For instance, the `setTimeout()` function lets you specify a delay before a job is added to the queue:
 
 ```js
 // add this function to the job queue after 500ms have passed
@@ -259,7 +259,7 @@ Timeout
 
 Thanks to the 500ms delay, the output that the function passed to `setTimeout()` was shown after the output from the `console.log("Hi!")` call.
 
-Promises work similarly. The promise executor executes immediately, before anything that appears after it in the source code. For instance:
+Promises work similarly. **The promise executor executes immediately, before anything that appears after it in the source code.** For instance:
 
 ```js
 let promise = new Promise(function(resolve, reject) {
@@ -277,7 +277,7 @@ Promise
 Hi!
 ```
 
-Calling `resolve()` triggers an asynchronous operation. Functions passed to `then()` and `catch()` are executed asynchronously, as these are also added to the job queue. Here's an example:
+**Calling `resolve()` triggers an asynchronous operation**. Functions passed to `then()` and `catch()` are executed asynchronously, as these are also added to the job queue. Here's an example:
 
 ```js
 let promise = new Promise(function(resolve, reject) {
@@ -334,7 +334,7 @@ promise.catch(function(value) {
 
 Any additional rejection handlers added to this promise would be called, but not fulfillment handlers.
 
-I> If you pass a promise to either the `Promise.resolve()` or `Promise.reject()` methods, the promise is returned without modification.
+I> **If you pass a promise to either the `Promise.resolve()` or `Promise.reject()` methods, the promise is returned without modification.**
 
 #### Non-Promise Thenables
 

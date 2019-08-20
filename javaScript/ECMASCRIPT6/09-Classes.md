@@ -966,7 +966,7 @@ class Square extends Rectangle {
 var obj = new Square(3);      // outputs false
 ```
 
-`Square` is calling the `Rectangle` constructor, so `new.target` is equal to `Square` when the `Rectangle` constructor is called. This is important because it gives each constructor the ability to alter its behavior based on how it's being called. For instance, you can create an abstract base class (one that can't be instantiated directly) by using `new.target` as follows:
+`Square` is calling the `Rectangle` constructor, so `new.target` is equal to `Square` when the `Rectangle` constructor is called. This is important because it gives each constructor the ability to alter its behavior based on how it's being called. <u>For instance, you can create an abstract base class (one that can't be instantiated directly) by using `new.target` as follows:</u>
 
 ```js
 // abstract base class
@@ -994,7 +994,7 @@ console.log(y instanceof Shape);    // true
 
 In this example, the `Shape` class constructor throws an error whenever `new.target` is `Shape`, meaning that `new Shape()` always throws an error. However, you can still use `Shape` as a base class, which is what `Rectangle` does. The `super()` call executes the `Shape` constructor and `new.target` is equal to `Rectangle` so the constructor continues without error.
 
-I> Since classes can't be called without `new`, the `new.target` property is never `undefined` inside of a class constructor.
+I> **Since classes can't be called without `new`, the `new.target` property is never `undefined` inside of a class constructor.**
 
 ## Summary
 
@@ -1004,6 +1004,6 @@ ECMAScript 6 classes work with prototypal inheritance by defining non-static met
 
 Class-based inheritance allows you to derive a class from another class, function, or expression. This ability means you can call a function to determine the correct base to inherit from, allowing you to use mixins and other different composition patterns to create a new class. Inheritance works in such a way that inheriting from built-in objects like `Array` is now possible and works as expected.
 
-You can use `new.target` in class constructors to behave differently depending on how the class is called. The most common use is to create an abstract base class that throws an error when instantiated directly but still allows inheritance via other classes.
+You can use `new.target` in class constructors to behave differently depending on how the class is called. <u>The most common use is to create an abstract base class that throws an error when instantiated directly but still allows inheritance via other classes.</u>
 
 Overall, classes are an important addition to JavaScript. They provide a more concise syntax and better functionality for defining custom object types in a safe, consistent manner.
