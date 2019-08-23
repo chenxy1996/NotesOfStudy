@@ -340,7 +340,7 @@ I> **If you pass a promise to either the `Promise.resolve()` or `Promise.reject(
 
 Both `Promise.resolve()` and `Promise.reject()` also accept non-promise thenables as arguments. When passed a non-promise thenable, these methods create a new promise that is called after the `then()` function.
 
-A non-promise thenable is created when an object has a `then()` method that accepts a `resolve` and a `reject` argument, like this:
+<u>A non-promise thenable is created when an object has a `then()` method that accepts a `resolve` and a `reject` argument, like this:</u>
 
 ```js
 let thenable = {
@@ -384,7 +384,7 @@ p1.catch(function(value) {
 
 This example is similar to the last except that `thenable` is rejected. When `thenable.then()` executes, a new promise is created in the rejected state with a value of 42. That value is then passed to the rejection handler for `p1`.
 
-`Promise.resolve()` and `Promise.reject()` work like this to allow you to easily work with non-promise thenables. A lot of libraries used thenables prior to promises being introduced in ECMAScript 6, so the ability to convert thenables into formal promises is important for backwards-compatibility with previously existing libraries. When you're unsure if an object is a promise, passing the object through `Promise.resolve()` or `Promise.reject()` (depending on your anticipated result) is the best way to find out because promises just pass through unchanged.
+`Promise.resolve()` and `Promise.reject()` work like this to allow you to easily work with non-promise thenables. A lot of libraries used thenables prior to promises being introduced in ECMAScript 6, so the ability to convert thenables into formal promises is important for backwards-compatibility with previously existing libraries. **When you're unsure if an object is a promise, passing the object through `Promise.resolve()` or `Promise.reject()` (depending on your anticipated result) is the best way to find out because promises just pass through unchanged.**
 
 ### Executor Errors
 
@@ -400,7 +400,7 @@ promise.catch(function(error) {
 });
 ```
 
-In this code, the executor intentionally throws an error. There is an implicit `try-catch` inside every executor such that the error is caught and then passed to the rejection handler. The previous example is equivalent to:
+In this code, the executor intentionally throws an error. **There is an implicit `try-catch` inside every executor such that the error is caught and then passed to the rejection handler.** The previous example is equivalent to:
 
 ```js
 let promise = new Promise(function(resolve, reject) {
@@ -449,7 +449,7 @@ In Node.js, there are two events on the `process` object related to promise reje
 
 These events are designed to work together to help identify promises that are rejected and not handled.
 
-The `unhandledRejection` event handler is passed the rejection reason (frequently an error object) and the promise that was rejected as arguments. The following code shows `unhandledRejection` in action:
+**The `unhandledRejection` event handler is passed the rejection reason (frequently an error object) and the promise that was rejected as arguments.** The following code shows `unhandledRejection` in action:
 
 ```js
 let rejected;

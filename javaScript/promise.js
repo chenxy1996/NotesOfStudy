@@ -1,26 +1,33 @@
 "use strict"
 
-const fs = require("fs");
+// let rejected;
 
-function readFile(filePath) {
-    return new Promise((resolve, reject) => {
-        console.log("first");
-        fs.readFile(filePath, {encoding: "utf-8"}, function(err, data) {
-            if (err) {
-                reject(err);
-                return;
-            }
-            resolve(data);
-        });
-    });
+// process.on("rejectionHandled", function(promise) {
+//     console.log(rejected === promise);              // true
+// });
+
+// rejected = Promise.reject(new Error("Explosion!"));
+
+// wait to add the rejection handler
+// setTimeout(function() {
+//     rejected.catch(function(value) {
+//         console.log(value.message);     // "Explosion!"
+//     });
+// }, 1000);
+
+const newObj = {
+    name: "chen",
+    age: 23,
+    school: {
+        name: "WHU"
+    }
 }
 
-const promise = readFile("test.txt");
+let school = newObj.school;
+school = "HNU";
 
-promise.then((data) => {
-    console.log(data);
+const newObj1 = {...newObj, sex: "male"};
 
-    promise.then((data) => console.log(data));
-});
+console.log(newObj1);
 
-console.log("hehe");
+
