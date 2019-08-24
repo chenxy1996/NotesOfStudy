@@ -1,0 +1,4 @@
+/* pages/about/about.wxss */
+.info {
+  font: 20px bolder;
+}
