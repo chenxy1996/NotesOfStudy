@@ -1,4 +1,3 @@
-const util = require('../../utils/util.js');
 const myUtil = require('../../myUtils/myUtils.js');
 
 // pages/about/about.js
@@ -8,14 +7,14 @@ Page({
    * 页面的初始数据
    */
   data: {
-    "currentTime": util.formatTime(new Date())
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-
+    // 动态更新现在的时间
+    myUtil.updateCurrentTime(this, "currentTime", "now");
   },
 
   /**
@@ -23,9 +22,7 @@ Page({
    */
   onReady: function () {
 
-    // 动态更新现在的时间
-    myUtil.updateCurrentTime("currentTime", this);
-    myUtil.updateCurrentTime("now", this);
+    
   },
   /**
    * 生命周期函数--监听页面显示

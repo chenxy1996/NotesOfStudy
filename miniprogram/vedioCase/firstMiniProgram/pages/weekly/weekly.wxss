@@ -1,0 +1,13 @@
+/* pages/weekly/weekly.wxss */
+.weekly-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100vh;
+  justify-content: space-around;
+}
+
+.weekly-image {
+  height: 281rpx;
+  width: 375rpx;
+}

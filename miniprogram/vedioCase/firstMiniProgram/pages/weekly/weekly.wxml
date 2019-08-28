@@ -1,0 +1,6 @@
+<!--pages/weekly/weekly.wxml-->
+<view class="weekly-container">
+  <text>本周推荐</text>
+  <image src="/static/images/neko.jpg" class="weekly-image"></image>
+  <text>この座っておれをみてる猫ちゃんがとてもかわいい!!</text>
+</view>

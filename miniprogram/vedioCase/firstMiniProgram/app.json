@@ -2,7 +2,9 @@
   "pages": [
     "pages/about/about",
     "pages/index/index",
-    "pages/logs/logs"
+    
+    "pages/logs/logs",
+    "pages/weekly/weekly"
   ],
   "window": {
     "backgroundTextStyle": "light",
@@ -10,5 +12,22 @@
     "navigationBarTitleText": "WeChat",
     "navigationBarTextStyle": "black"
   },
-  "sitemapLocation": "sitemap.json"
+  "sitemapLocation": "sitemap.json",
+  "tabBar": {
+    "list": [
+      {
+        "text": "每周推荐",
+        "pagePath": "pages/weekly/weekly",
+        "iconPath": "/static/icons/lines.png",
+        "selectedIconPath": "/static/icons/lines1.png"
+
+      },
+      {
+        "text": "关于",
+        "pagePath": "pages/about/about",
+        "iconPath": "/static/icons/login.png",
+        "selectedIconPath": "/static/icons/login_dark.png"
+      }
+    ]
+  }
 }

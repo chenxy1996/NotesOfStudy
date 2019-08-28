@@ -1,4 +1,23 @@
 /* pages/about/about.wxss */
-.info {
-  font: 20px bolder;
+.container {
+  height: 100vh;
+  padding: 70rpx 0;
+  justify-content: space-around;
+}
+
+.inner {
+  padding: 20rpx 0;
+}
+
+.about-banner {
+  width: 375rpx;
+  height: 375rpx;
+}
+
+.nav-default {
+  font: bolder;
+}
+
+.nav-hover {
+  color: red;
 }

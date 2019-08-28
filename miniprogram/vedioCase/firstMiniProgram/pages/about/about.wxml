@@ -1,3 +1,12 @@
 <!--pages/about/about.wxml-->
-<text class="info">Now: {{currentTime}}</text>
-<view>Another time bar: {{now}}</view>
+<view class="container">
+  <text class="info">Now: {{currentTime}}</text>
+  <view class="container inner">
+    <image src="/static/images/cabinet.jpg" class="about-banner"></image>
+    <navigator url="/pages/weekly/weekly" open-type="switchTab" hover-class="nav-hover" class="nav-default">电影周周看</navigator>
+    <text>每天推荐一部好片</text>
+  </view>
+</view>
+
+
+

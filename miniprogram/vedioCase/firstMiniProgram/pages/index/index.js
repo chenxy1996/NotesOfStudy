@@ -1,6 +1,7 @@
 //index.js
 //获取应用实例
-const app = getApp()
+const app = getApp();
+const myUtil = require("../../myUtils/myUtils.js");
 
 Page({
   data: {
@@ -12,7 +13,7 @@ Page({
   //事件处理函数
   bindViewTap: function() {
     wx.navigateTo({
-      url: '../logs/logs'
+      url: '../about/about'
     })
   },
   onLoad: function () {
@@ -42,6 +43,8 @@ Page({
         }
       })
     }
+
+    myUtil.updateCurrentTime(this, "now", "anotherNow");
   },
   getUserInfo: function(e) {
     console.log(e)
