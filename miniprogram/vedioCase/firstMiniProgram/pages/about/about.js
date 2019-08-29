@@ -15,6 +15,20 @@ Page({
   onLoad: function (options) {
     // 动态更新现在的时间
     myUtil.updateCurrentTime(this, "currentTime", "now");
+
+    wx.request({
+      url: "https://www.chen1996.com/info/get/10", //仅为示例，并非真实的接口地址
+      data: {
+        x: '',
+        y: ''
+      },
+      header: {
+        'content-type': 'application/json' // 默认值
+      },
+      success(res) {
+        console.log(res.data)
+      }
+    })
   },
 
   /**

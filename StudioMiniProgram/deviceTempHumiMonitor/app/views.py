@@ -5,6 +5,7 @@ import sys
 sys.path.append("..")
 
 from my_util.test_util import *
+from my_util.util import Account
 from configure import *
 
 
@@ -23,4 +24,14 @@ class Mimicking_Info_Sender(View):
             return_json_data["dataTotalNumber"] = 0
 
         return JsonResponse(return_json_data, safe=False)
+
+
+class Monitor(View):
+    # 刷新数据库中 Device 的信息，全部设置为从目标网页爬取的原始信息
+    def get(self, request):
+        pass
+
+if __name__ == "__main__":
+    print(my_util)
+
         

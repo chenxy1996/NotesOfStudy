@@ -1,2 +1,6 @@
 # 所能请求的最多温湿度信息数量
 MAX_DATA_REQUEST_NUMBER = 500
+
+# 登陆爬取网页的用户名和密码
+USER_NAME = "15773122754"
+PASSWORD = "123456"
