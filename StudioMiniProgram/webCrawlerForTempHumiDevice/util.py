@@ -5,8 +5,9 @@ from datetime import datetime
 from configure import USER_NAME, PASSWORD
 
 
-'''账号类：每个账户下的设备信息'''
+
 class Account(object):
+    '''账号类：每个账户下的设备信息'''
 
     headers_list = [
         {"User-Agent" : "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.81 Safari/537.36"},
@@ -57,8 +58,9 @@ class Account(object):
         return data
 
 
-'''class : Data of temperature and humidity'''
+
 class DataOfTH(Account): # 温湿度记录仪
+    '''class : Data of temperature and humidity'''
 
     def __init__(self, id = 159147, source = "http://www.e-elitech.cn/deviceDataAction.do?method=getGridData"):
         # The id of target device
@@ -119,8 +121,8 @@ class DataOfTH(Account): # 温湿度记录仪
         return ret
 
 
-'''气象台'''
 class WeatherStation(object):
+    '''气象台'''
 
     headers_list = [
         {"User-Agent" : "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.81 Safari/537.36"},
@@ -140,9 +142,11 @@ class WeatherStation(object):
 
 
 
-'''将数据存入 mongodb 数据库当中'''
-'''data_list 为列表, 形式为[{...}, {...}, ...]'''
 def insert_to_database(mongodb_config, data_list=None):
+    '''将数据存入 mongodb 数据库当中。 
+    data_list 为列表, 形式为[{...}, {...}, ...]
+    '''
+    
     db_url = "mongodb://%s:%s@%s:%s/%s" % (
         mongodb_config["user"],
         mongodb_config["pwd"],
