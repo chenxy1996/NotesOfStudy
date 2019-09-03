@@ -96,7 +96,7 @@ def updateDatabase():
 
     for each_user in users:
         user = Account(user_name = each_user.user_name, password = each_user.user_password)
-        device_info = user.getDevices()
+        device_info = user.getDevicesInfo()
         for each_device in device_info:
             try:
                 device = Device.objects.get(device_id = each_device["id"])

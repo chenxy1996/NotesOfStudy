@@ -4,9 +4,15 @@
 USER_NAME = "15773122754"
 PASSWORD = "123456"
 
-# mongodb 数据库设置
-MONGODB_ACCOUNT = None
-MONGODB_PASSWORD = None
+# mongodb 数据库连接设置
+MONGODB_CONFIGURE = {
+    "user": "chen",
+    "pwd": "chen",
+    "ip": "101.132.47.221",
+    # "ip": "127.0.0.1", # 部署到服务器端
+    "port": "27017",
+    "db": "monitor",
+}
 
 # 程序运行设置
-INTERVAL = 30 * 60 # 每隔 INTERVAL 启动爬虫主程序。 单位：秒
+INTERVAL = 10 * 60 # 每隔 INTERVAL 启动爬虫主程序。 单位：秒

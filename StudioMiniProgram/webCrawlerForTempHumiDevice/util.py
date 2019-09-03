@@ -2,8 +2,7 @@
 import json
 import random
 from datetime import datetime
-from configure import * 
-import pymongo
+from configure import USER_NAME, PASSWORD
 
 
 '''账号类：每个账户下的设备信息'''
@@ -140,11 +139,56 @@ class WeatherStation(object):
         return res_data
 
 
+
 '''将数据存入 mongodb 数据库当中'''
+'''data_list 为列表, 形式为[{...}, {...}, ...]'''
+def insert_to_database(mongodb_config, data_list=None):
+    db_url = "mongodb://%s:%s@%s:%s/%s" % (
+        mongodb_config["user"],
+        mongodb_config["pwd"],
+        mongodb_config["ip"],
+        mongodb_config["port"],
+        mongodb_config["db"]
+    )
+
+    ret = {
+        "count": 0,
+        "executing_time": None,
+        "inserted": [],
+    }
+
+    try:
+        client = MongoClient(db_url)
+    except NameError:
+        from pymongo import MongoClient
+        client = MongoClient(db_url)
+
+    db = client["monitor"]
+
+    for each_data in data_list:
+        col = db[str(each_data["id"])]
+        if not col.find_one({"time": each_data["time"]}):
+            ret["count"] += 1
+            col.insert_one(each_data)
+            ret["inserted"].append({
+                "name": each_data["name"],
+                "id": each_data["id"],
+                "time": each_data["time"]
+            })
+        ret["executing_time"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+    client.close()
+    client = None
+
+    return ret
 
 if __name__ == "__main__":
-    account = Account()
-    print(account.getDevicesInfo())
+    from configure import MONGODB_CONFIGURE
+ 
+    user = Account(USER_NAME, PASSWORD)
+    data_list = user.getDevicesInfo()
+    print(insert_to_database(MONGODB_CONFIGURE, data_list))
+
 
         
 
