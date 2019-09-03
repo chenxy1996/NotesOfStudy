@@ -21,6 +21,7 @@ from configure import MAX_DATA_REQUEST_NUMBER, USER_NAME, PASSWORD, MONGODB_CONF
 
 class Mimicking_Info_Sender(View):
     '''
+    在 Monitor 类还没有写成时使用
     测试用：Mimicking_Info_Sender： 模拟从数据库中得到 http request 需要的数据并发送 json 数据对象
     '''
     def get(self, request, num):
@@ -39,30 +40,54 @@ class Mimicking_Info_Sender(View):
 class Monitor(View):
     '''监听从数据库中获得数据信息的请求'''
     def get(self, request, num):
+        return_json_data = {
+            "status": None,
+            "msg": None,
+            "data": []
+        }
+
+        # 检测请求的数据条数有没有超过预先设定的最大请求数量
         if num <= MAX_DATA_REQUEST_NUMBER:
-            return_json_data = get_data_from_database(MONGODB_CONFIGURE, {},\
-                                    {"_id": 0, "name": 0, "guid": 0, "id": 0}, sort_query=[("_id", -1)],\
-                                             limit_num=num)
-            for each in return_json_data:
+            raw_data = get_data_from_database(MONGODB_CONFIGURE, {},\
+                                    {"_id": 0, "name": 0, "guid": 0, "id": 0},\
+                                         sort_query=[("_id", -1)], limit_num=num)
+            for each in raw_data:
                 id = each["id"]
                 try:
-                    target = Device.objects.get(device_id = id)
+                    filter = ["device_user_id", "device_name", "device_id",\
+                                 "device_guid", "device_setted_latitude",\
+                                            "device_setted_longitude", "device_address"]
+                    target = Device.objects.filter(device_id = id).values(*filter)[0]
                     # 之后的想法：
-                    # 只返回已经注册的设备信息，没有注册的设备信息不返回。除非注册
-                except Exception:
+                    # 只返回已经注册的设备信息，没有注册的设备信息不返回。除非注册：
+                    # 注册url info/device/register
+                    for key, value in target.items():
+                        each[key] = value
+                    return_json_data["data"].append(each)
+                    return_json_data["msg"] = "success"
+                    return_json_data["status"] = 1
+                
+                # 如果出现 IndexError 说明某个设备还没有注册，即在
+                # 上面 Device.objects.filter(device_id = id) 这一步出错
+                # 继续进行
+                except IndexError:
                     # 之前的想法：
                     # 数据库中还有设备没有在 django 自带的 models 中注册, 
-                    # 要使用 redirect 方法重新向至 /info/device/register 页面注册
+                    # 自动使用 redirect 方法重新向至 /info/device/register 页面注册
                     # 新设备
                     # return redirect(reverse("register"))
                     pass
+                except Exception as e:
+                    return_json_data["status"] = 0
+                    return_json_data["msg"] = str(e)
+
+        # 超过了最大请求数量
         else:
-            return_json_data = {}
-            return_json_data["msg"] = "queried data count should never be greater than %d" % \
-                                                    MAX_DATA_REQUEST_NUMBER
+            return_json_data["status"] = 0
+            return_json_data["msg"] = "queried data count should never be greater than %d"\
+                                              % MAX_DATA_REQUEST_NUMBER
     
         return JsonResponse(return_json_data, safe=False)
-
 
 
 class Register(View):

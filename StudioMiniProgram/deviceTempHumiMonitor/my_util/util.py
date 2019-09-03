@@ -60,7 +60,7 @@ class Account(object):
         return data
 
 
-def get_data_from_database(mongodb_config, query={}, projection=None, col_list=None, sort_query=None, limit_num=None):
+def get_data_from_database(mongodb_config, query={}, projection={}, col_list=None, sort_query=None, limit_num=None):
     '''
     query: 字典格式的查询条件；col_list: 当前 db 下需要查询的所有 collection 的
     名称， 封装在列表中；sort: 列表[(filed, 1)]，查询返回数据的顺序; limit: 整型数字指定在每
@@ -86,7 +86,11 @@ def get_data_from_database(mongodb_config, query={}, projection=None, col_list=N
 
     for each_col in col_list:
         current_col = db.get_collection(each_col)
-        data = current_col.find(query, projection=projection, sort=sort_query, limit=limit_num)
+        if isinstance(limit_num, int) and limit_num >= 0:
+            data = current_col.find(query, projection=projection, sort=sort_query,\
+                                 limit=limit_num)
+        else:
+             data = current_col.find(query, projection=projection, sort=sort_query)
         ret.append({
             "id": each_col,
             "data": list(data)
