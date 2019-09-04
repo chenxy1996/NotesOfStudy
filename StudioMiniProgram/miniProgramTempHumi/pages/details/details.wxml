@@ -1,0 +1,18 @@
+<!--该设备的温湿度记录信息-->
+<view class="deviceContainer">
+    <view class="deviceName">名称: {{device.device_name}}</view>
+    <view class="deviceId">ID: {{device.device_id}}</view>
+    <view class="deviceGuid">GUID: {{device.device_guid}}</view>
+    <view class="deviceAddress">地址: {{device.device_address}}</view>
+    <view class="deviceLatitude">纬度: {{device.device_setted_latitude}}</view>
+    <view class="deviceLongitude">经度: {{device.device_setted_longitude}}</view>
+    <form bindsubmit="formSubmit">
+      <input placeholder="查询数量" name="num" type="number" value="{{numInput}}"></input>
+      <button form-type="submit" type="primary" size="mini">查询</button>
+    </form>
+    
+    <view wx:for="{{device.data.data}}">
+      <text class="tempHumi">{{item.time}} 温度: {{item.temperature}}℃; 湿度: {{item.humidity}}%</text>
+    </view>
+    
+</view>

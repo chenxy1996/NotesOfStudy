@@ -11,6 +11,11 @@ Page({
   makertap: function (e) {
     var that = this;
     var id = e.markerId;
+
+    // test
+
+    console.log(e)
+    
     that.showSearchInfo(wxMarkerData, id);
     that.changeMarkerColor(wxMarkerData, id);
   },
@@ -25,6 +30,9 @@ Page({
     };
     var success = function (data) {
       wxMarkerData = data.wxMarkerData;
+      // 测试用
+      console.log(data);
+
       that.setData({
         markers: wxMarkerData
       });
@@ -46,6 +54,7 @@ Page({
       iconTapPath: '../../static/image/marker_red.png'
     });
   },
+
   showSearchInfo: function (data, i) {
     var that = this;
     that.setData({

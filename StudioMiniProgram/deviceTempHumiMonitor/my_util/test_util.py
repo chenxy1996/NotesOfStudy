@@ -5,10 +5,11 @@
 from datetime import datetime
 from random import randint, random
 
-'''
-返回任意一个随机字典对象数据
-'''
+
 def get_one_arbitary_data():
+    '''
+    返回任意一个随机字典对象数据
+    '''
     return {
         "time": datetime.now().strftime("%b %d %Y %H:%M:%S"),
         "temperature": str((randint(10, 39) + random()))[0:5],
@@ -16,10 +17,10 @@ def get_one_arbitary_data():
     }
 
 
-'''
-返回多个随机字典对象数据，封装在列表中
-'''
 def get_arbitary_data_list(nums=0):
+    '''
+    返回多个随机字典对象数据，封装在列表中
+    '''
     return_data = []
     i = 0
 

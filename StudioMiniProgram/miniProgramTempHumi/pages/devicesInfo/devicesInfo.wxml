@@ -1,0 +1,13 @@
+<!--pages/devicesInfo/devicesInfo.wxml-->
+<block wx:for="{{deviceArray}}" wx:for-item="eachDevice">
+  <view class="deviceContainer">
+    <view class="deviceName">名称: {{eachDevice.device_name}}</view>
+    <view class="deviceId">ID: {{eachDevice.device_id}}</view>
+    <view class="deviceGuid">GUID: {{eachDevice.device_guid}}</view>
+    <view class="deviceAddress">地址: {{eachDevice.device_address}}</view>
+    <view class="deviceLatitude">纬度: {{eachDevice.device_setted_latitude}}</view>
+    <view class="deviceLongitude">经度: {{eachDevice.device_setted_longitude}}  </view>
+    <button bindtap="redirectToTempHumiDetails" id="deviceId{{eachDevice.device_id}}" type="primary" size="mini">温湿度详细信息</button>
+  </view>
+</block>
+<button bindtap="registerNewDevices" type="primary">注册新设备</button>

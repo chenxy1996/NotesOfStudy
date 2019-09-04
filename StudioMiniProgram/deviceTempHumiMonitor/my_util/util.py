@@ -68,7 +68,6 @@ def get_data_from_database(mongodb_config, query={}, projection={}, col_list=Non
     '''
     ret = []
     
-    
     db_url = "mongodb://%s:%s@%s:%s/%s" % (
         mongodb_config["user"],
         mongodb_config["pwd"],
@@ -86,6 +85,7 @@ def get_data_from_database(mongodb_config, query={}, projection={}, col_list=Non
 
     for each_col in col_list:
         current_col = db.get_collection(each_col)
+        # 判断有没有设置有效的 limit_num
         if isinstance(limit_num, int) and limit_num >= 0:
             data = current_col.find(query, projection=projection, sort=sort_query,\
                                  limit=limit_num)
@@ -101,8 +101,6 @@ def get_data_from_database(mongodb_config, query={}, projection={}, col_list=Non
 
     return ret
 
-
-    
 
 if __name__ == "__main__":
     my_account = Account()
