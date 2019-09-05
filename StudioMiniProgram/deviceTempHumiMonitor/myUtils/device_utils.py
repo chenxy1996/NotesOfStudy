@@ -1,7 +1,10 @@
+'''
+直接从网页上获取取设备信息的 utils 
+'''
+
 from datetime import datetime
 import requests
 import random
-from pymongo import MongoClient
 
 # 登陆爬取网页的默认的用户名和密码
 DEFAULT_USER_NAME = "15773122754"
@@ -41,7 +44,7 @@ class Account(object):
         }
         data = []
 
-        # 会话窗口，用于储存cookies
+        # 会话窗口，用于距离cookies
         s = requests.Session()
         s.post(self.login_source, headers = headers, data = login_post)
         info = s.get(self.device_id_source, headers = headers).json()["rows"]
@@ -58,48 +61,6 @@ class Account(object):
                 "humidity": each["sensor2"]
             })
         return data
-
-
-def get_data_from_database(mongodb_config, query={}, projection={}, col_list=None, sort_query=None, limit_num=None):
-    '''
-    query: 字典格式的查询条件；col_list: 当前 db 下需要查询的所有 collection 的
-    名称， 封装在列表中；sort: 列表[(filed, 1)]，查询返回数据的顺序; limit: 整型数字指定在每
-    个 collection 查询返回的 document 个数
-    '''
-    ret = []
-    
-    db_url = "mongodb://%s:%s@%s:%s/%s" % (
-        mongodb_config["user"],
-        mongodb_config["pwd"],
-        mongodb_config["ip"],
-        mongodb_config["port"],
-        mongodb_config["db"]
-    )
-
-    client = MongoClient(db_url)
-    db = client["monitor"]
-    
-    # 如果没有指定要查询的 collection, 就是要查询所有 collection
-    if not col_list:
-        col_list = db.list_collection_names(session=None)
-
-    for each_col in col_list:
-        current_col = db.get_collection(each_col)
-        # 判断有没有设置有效的 limit_num
-        if isinstance(limit_num, int) and limit_num >= 0:
-            data = current_col.find(query, projection=projection, sort=sort_query,\
-                                 limit=limit_num)
-        else:
-             data = current_col.find(query, projection=projection, sort=sort_query)
-        ret.append({
-            "id": each_col,
-            "data": list(data)
-        })
-
-    client.close()
-    client = None
-
-    return ret
 
 
 if __name__ == "__main__":

@@ -1,5 +1,5 @@
 '''
-前端测试所用接口
+前端测试接口需要的 utils （还未写正式接口时拱前端开发所用）
 '''
 
 from datetime import datetime

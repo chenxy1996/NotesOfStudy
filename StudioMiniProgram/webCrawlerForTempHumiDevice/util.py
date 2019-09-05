@@ -191,7 +191,8 @@ if __name__ == "__main__":
  
     user = Account(USER_NAME, PASSWORD)
     data_list = user.getDevicesInfo()
-    print(insert_to_database(MONGODB_CONFIGURE, data_list))
+    print(data_list)
+    # print(insert_to_database(MONGODB_CONFIGURE, data_list))
 
 
         
