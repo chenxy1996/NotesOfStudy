@@ -15,8 +15,10 @@ class Account(object):
     '''账号类：每个账户下的设备信息'''
 
     headers_list = [
-        {"User-Agent" : "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.81 Safari/537.36"},
-        {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.140 Safari/537.36 Edge/17.17134"},
+        {"User-Agent" : "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"\
+                                " (KHTML, like Gecko) Chrome/72.0.3626.81 Safari/537.36"},
+        {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"\
+                " (KHTML, like Gecko) Chrome/64.0.3282.140 Safari/537.36 Edge/17.17134"},
     ]
 
     def __init__(self, user_name = DEFAULT_USER_NAME, password = DEFAULT_PASSWORD):
@@ -24,7 +26,8 @@ class Account(object):
         self.password = password
         self.checkinput = '6b9s'
         self.login_source = "http://www.e-elitech.cn/loginAction2.do?method=login"
-        self.device_id_source = "http://www.e-elitech.cn/deviceAction2.do?method=getGridData"
+        self.device_id_source = "http://www.e-elitech.cn/deviceAction2.do?"\
+                                                                    "method=getGridData"
 
     def currentTime(self):
         now = datetime.now()
