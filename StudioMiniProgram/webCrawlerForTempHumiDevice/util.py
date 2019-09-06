@@ -161,6 +161,7 @@ def insert_to_database(mongodb_config, data_list=None):
         "inserted": [],
     }
 
+    # 如果没有引入 pymongo 中 MongoClient类
     try:
         client = MongoClient(db_url)
     except NameError:
@@ -171,6 +172,8 @@ def insert_to_database(mongodb_config, data_list=None):
 
     for each_data in data_list:
         col = db[str(each_data["id"])]
+        
+        # 如果当前 collectoion 中没有相应的 document, 则存入此 collection
         if not col.find_one({"time": each_data["time"]}):
             ret["count"] += 1
             col.insert_one(each_data)

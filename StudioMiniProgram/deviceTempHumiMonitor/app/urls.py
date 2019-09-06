@@ -5,6 +5,7 @@ from .views_devices import Devices_monitor
 from .views_register import Register
 from .views_temp_humi import get_device_temp_humi
 
+
 urlpatterns = [
     # 路由：返回特定设备温湿度信息
     path('get/id=<int:id>/', get_device_temp_humi), 
