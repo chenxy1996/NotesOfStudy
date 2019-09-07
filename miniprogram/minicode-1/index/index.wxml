@@ -1,4 +1,3 @@
-<!--pages/map/map.wxml-->
 <view class="page-body">
   <view class="page-section page-section-gap">
     <map
@@ -18,4 +17,3 @@
     <button bindtap="includePoints" class="page-body-button" type="primary">缩放视野展示所有经纬度</button>
   </view>
 </view>
-
