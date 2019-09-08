@@ -1,27 +1,14 @@
 // pages/map/map.js
+const app = getApp();
+
 Page({
 
   /**
    * 页面的初始数据
    */
   data: {
-    latitude: 23.099994,
-    longitude: 113.324520,
-    markers: [{
-      id: 1,
-      latitude: 23.099994,
-      longitude: 113.324520,
-      name: 'T.I.T 创意园'
-    }],
-    covers: [{
-      latitude: 23.099994,
-      longitude: 113.344520,
-      iconPath: '/static/image/location.png'
-    }, {
-      latitude: 23.099994,
-      longitude: 113.304520,
-      iconPath: '/static/image/location.png'
-    }]
+    latitude: 30.54155000,
+    longitude: 114.37122300,
   },
   
 
@@ -29,14 +16,34 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
+    // app 静态方法: 在 pageObj 这个 Page 对象上显示各个设备的位置 
+    app.showDevicesLocation = (pageObj) => {
+      const devicesInfo = app.globalData.devicesInfo;
+      devicesInfo.forEach(eachDevice => {
+        eachDevice.iconPath = app.globalData.mapMarkerPath
+      });
+      pageObj.setData({
+        markers: devicesInfo
+      });
+    };
 
+    if (app.globalData.devicesInfo) {
+      app.showDevicesLocation(this);
+    } else {
+      // 由于 app 初始化中 fetchDevicesInfoPromise 是网络请求，
+      // 可能会在 Page.onLoad 之后才返回
+      // 所以此处加入 callback 以防止这种情况
+      app.devicesInfoReadyCallbak = data => {
+        app.showDevicesLocation(this);
+      }
+    }
   },
 
   /**
    * 生命周期函数--监听页面初次渲染完成
    */
   onReady: function (e) {
-    this.mapCtx = wx.createMapContext('myMap')
+    this.mapCtx = wx.createMapContext('myMap');
   },
 
 
@@ -44,7 +51,6 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
-
   },
 
   getCenterLocation: function () {
@@ -76,14 +82,8 @@ Page({
 
   includePoints: function () {
     this.mapCtx.includePoints({
-      padding: [10],
-      points: [{
-        latitude: 23.10229,
-        longitude: 113.3345211,
-      }, {
-        latitude: 23.00229,
-        longitude: 113.3345211,
-      }]
+      padding: [30, 30, 30, 30],
+      points: this.data.markers
     })
   },
   /**
@@ -121,3 +121,8 @@ Page({
 
   }
 })
+
+// const get = require("../../utils/http.js").get;
+// const newPromise = get("https://www.chen1996.com/info/devices/");
+
+// newPromise.then((data) => console.info(data.data));
