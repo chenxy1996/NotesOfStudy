@@ -2,34 +2,44 @@
 const get = require("/utils/http.js").get;
 
 App({
+  /*app 对象静态方法：格式化从远处服务器中获得的设备信息数据*/
+  formatDevicesInfo(devicesRawInfo) {
+    const propertyNames = Object.getOwnPropertyNames(devicesRawInfo[0]);
+    const devicesInfo = [];
+
+    devicesRawInfo.forEach(eachDevice => {
+      const device = {};
+      propertyNames.forEach(eachPropertyName => {
+        const splitName = eachPropertyName.split('_');
+        device[splitName[splitName.length - 1]] = eachDevice[eachPropertyName];
+      });
+      devicesInfo.push(device);
+    });
+
+    return devicesInfo;
+  },
+
   /*app 对象静态方法：从远处服务器中获得设备信息数据，并格式化*/
   fetchDevicesInfo() {
     return new Promise((resolve) => {
       const fetchDataPromise = get("https://www.chen1996.com/info/devices/");
 
       fetchDataPromise.then(data => {
-        const devicesRawInfo = data.data.data; // 得到未经格式化的原始数据;
-        const devicesInfo = [];
+        const devicesData = data.data; // 得到未经格式化的原始数据;
+        let devicesInfo;
 
-        if (devicesRawInfo.length !== 0) {
+        if (devicesData.status === 1) {
           // 如果有设备信息，非空列表
-
           // 格式化数据
-          const propertyNames = Object.getOwnPropertyNames(devicesRawInfo[0]);
-  
-          devicesRawInfo.forEach(eachDevice => {
-            const device = {};
-            propertyNames.forEach(eachPropertyName => {
-              const splitName = eachPropertyName.split('_');
-              device[splitName[splitName.length - 1]] = eachDevice[eachPropertyName];
-            });
-            devicesInfo.push(device);
-          });
-
-          resolve(devicesInfo)
+          const devicesRawInfo = devicesData.data;
+          devicesInfo = this.formatDevicesInfo(devicesRawInfo);
+          // resolve(devicesInfo)
         } else {
           // 无设备信息，空列表
+          // 则将 devicesInfo 改为对象, 附带一个 msg 字段消息
+          devicesInfo = {"msg": "no devices"};
         }
+        resolve(devicesInfo);
       });
       fetchDataPromise.catch((err) => console.log(err));
     })

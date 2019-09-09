@@ -3,7 +3,6 @@
   <view class="map">
     <map
       id="myMap"
-      
       latitude="{{latitude}}"
       longitude="{{longitude}}"
       markers="{{markers}}"
@@ -12,10 +11,10 @@
     ></map>
   </view>
   <view class="btn-area">
-    <button bindtap="getCenterLocation" class="page-body-button" type="primary">获取位置</button>
-    <button bindtap="moveToLocation" class="page-body-button" type="primary">移动位置</button>
+  <button bindtap="moveToLocation" class="page-body-button" type="primary">当前位置</button>
+    <button bindtap="includePoints" class="page-body-button" type="primary">显示所有设备</button>
+    <button bindtap="registerNewDevices" class="page-body-button" type="primary">注册并更新设备</button>
     <button bindtap="translateMarker" class="page-body-button" type="primary">移动标注</button>
-    <button bindtap="includePoints" class="page-body-button" type="primary">缩放视野展示所有经纬度</button>
   </view>
 </view>
 
