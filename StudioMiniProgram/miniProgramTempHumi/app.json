@@ -3,7 +3,6 @@
     "pages/map/map",
     "pages/devicesInfo/devicesInfo",
     "pages/details/details",
-    "pages/index/index",
     "pages/logs/logs"
   ],
   "window": {

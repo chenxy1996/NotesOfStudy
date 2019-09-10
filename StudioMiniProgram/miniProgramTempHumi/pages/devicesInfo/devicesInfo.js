@@ -5,7 +5,7 @@ Page({
    * 页面的初始数据
    */
   data: {
-
+    hasMarkers: false
   },
 
   /**
@@ -32,7 +32,7 @@ Page({
     });
   },
 
-  // 跳转至温湿度信息详情页面
+  // 跳转至详情页面
   redirectToTempHumiDetails(e) {
     const id = e.target.id.slice(8)
     // console.log(id);

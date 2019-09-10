@@ -3,18 +3,17 @@
   <view class="map">
     <map
       id="myMap"
-      latitude="{{latitude}}"
-      longitude="{{longitude}}"
       markers="{{markers}}"
+      wx:if="{{hasMarkers}}"
       show-location
       show-compass
     ></map>
   </view>
   <view class="btn-area">
-  <button bindtap="moveToLocation" class="page-body-button" type="primary">当前位置</button>
+  <button bindtap="updateDevicesInfo" class="page-body-button" type="primary">更新设备信息</button>
     <button bindtap="includePoints" class="page-body-button" type="primary">显示所有设备</button>
-    <button bindtap="registerNewDevices" class="page-body-button" type="primary">注册并更新设备</button>
-    <button bindtap="translateMarker" class="page-body-button" type="primary">移动标注</button>
+    <button bindtap="registerNewDevices" class="page-body-button" type="primary">注册新设备</button>
+    <button bindtap="navigateToDevicesInfo" class="page-body-button" type="primary">查看设备详细信息</button>
   </view>
 </view>
 
