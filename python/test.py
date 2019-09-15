@@ -1,39 +1,29 @@
-class Score:
-    def __init__(self, subject):
-        self.subject = subject
-
-    def __get__(self, instance, owner):
-        print("TestDesc __get__")
-        if instance:
-            return instance.__dict__[self.subject]
-        else:
-            return 10
+class MyDecorator:
+    def __init__(self, get_func=None):
+        self.get = get_func
     
-    def __set__(self, instance, value):
-        print("TestDesc __set__")
-        if not 0 <= value <= 100:
-            raise AttributeError("Invalid Score")
-        else:
-            instance.__dict__[self.subject] = value
-        
-class Student:
-    math = Score("math")
-    english = Score("math")
-    chinese = Score("chinese")
+    def __get__(self, instance, owner):
+        def return_function(*args):
+            print("MyDecorator")
+            return self.get(owner, *args)
+        return return_function
 
-    def __init__(self, name, math, english, chinese):
-        self.name = name
-        self.english = english
-        self.math = math
-        self.chinese = chinese
-
+class TestClass:
+    
+    @MyDecorator
+    def add(self, a, b):
+        return a + b
+    
+    @MyDecorator
+    def sub(self, a, b):
+        return a - b
 
 if __name__ == "__main__":
-    a_student = Student("chenxiangyu", 100, 100, 100)
-    print(a_student.math, a_student.english, a_student.chinese)
+    instance1 = TestClass()
+    print(TestClass.__dict__)
+    # print(instance1.sub(8, 5))
+    # print(instance1.add(8, 5))
 
-    b_student = Student("lele", 99, 99, 99)
-    print(b_student.math, b_student.english, b_student.chinese)
-
-    print(Student.math)
+            
+        
         
