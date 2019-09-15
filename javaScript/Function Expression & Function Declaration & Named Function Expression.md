@@ -1,11 +1,11 @@
-[toc]
+[TOC]
 # Function Declaration
 ```js
 function x() {
     console.log('x');
 }
 ```
-A function declaration is a *declaration*; <u>it's not a statement or expression.</u> As sun, you don't follow it with a `;`(althougu doing so is harmless)
+A function declaration is a *declaration*; <u>it's not a statement or expression.</u> As seen, you don't follow it with a `;`(althougu doing so is harmless)
 
 ## Function Hoisting
 A function declaration is processed when execution enters the context in which it appears, ==**before** any step-by-step code is executed==. The function it creates is given a proper name(`x` in the example above), and <u>that name is put in the scope in which the declaration appears.</u>

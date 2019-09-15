@@ -1,41 +1,46 @@
-class TestDescriptor:
-    def __init__(self, name):
-        self.name = name
+class Meta(type):
+    def __getattribute__(*args):
+        print("Metaclass getattribute invoked")
+        return type.__getattribute__(*args)
 
-    def __get__(self, instance, owner=None):
-        print("Descriptor __get__ method")
-        return instance.__dict__[self.name]
+class C(object):
+    def __len__(self):
+        return 10
     
+    def __getattribute__(*args):
+        return object.__getattribute__(*args)
 
-class Person:
-    name = TestDescriptor("name")
+# c = C()
+# print(C.__len__(c))
 
-    def __init__(self, person_name):
-        self.name = person_name
+'''
+C.__getattribute__:
+via type.__getattribute__: C -> object
+via object.__getattribute: C -> type(C) -> object
+'''
 
-if __name__ == "__main__":
-    class Timer:
-        def __init__(self, initial_number):
-            self.number = initial_number
-        
-        @property
-        def times(self):
-            '''return the times of current instance'''
-            ret = self.__dict__["number"]
-            self.__dict__["number"] += 1
-            return ret
-        
-        def say_times(self):
-            return self.times
-        
-        def __getattribute__(self, name):
-            print("----------------")
-            return super().__getattribute__(name)
-        
-    new_timer = Timer(0)
-    print(new_timer.times)
-    print(new_timer.times)
-    
-    print(new_timer.__dict__)
+class A:
+    x = 10
 
-    print(new_timer.times)
+class B(A, metaclass=Meta):
+    def __getattribute__(self, name):
+        print("__getattribute__")
+        return super().__getattribute__(name)
+
+print(B.x)
+b = B()
+print(b.x)
+
+'''
+B.x: 
+via type.__getattribute__: B -> A -> object
+
+b.x:
+via object.__getattibute__: b -> type(b)/B -> A -> object
+
+object.get__attribute__(B, "x"):
+via object.__getattibute__: B -> type(B)/type -> object  ERROR!!!
+
+type.get__attribute__(B, "x"):
+via type.__getattibute__: B -> A -> object
+'''
