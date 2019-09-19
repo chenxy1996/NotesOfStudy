@@ -1,6 +1,7 @@
 package test;
 
 import java.math.BigDecimal;
+import static objectLearning.Hello.sayHello;
 import java.time.LocalDate;
 import java.util.Arrays;
 
@@ -11,9 +12,7 @@ public class Welcome {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		LocalDate nowDate = LocalDate.now();
-		LocalDate aThousandDaysLater = nowDate.plusDays(1000);
-		System.out.println(aThousandDaysLater);
 	}
 
 }
+

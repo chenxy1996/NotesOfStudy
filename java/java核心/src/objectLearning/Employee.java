@@ -3,29 +3,35 @@ package objectLearning;
 import java.time.LocalDate;
 
 public class Employee {
+	
+	private static int nextId = 1;
 	private String name;
-	private double salary;
-	private LocalDate hireDay;
+	private int id = nextId;
 	
-	public Employee(String n, double s, int year, int month, int day) {
-		// TODO Auto-generated constructor stub
-		name = n;
-		salary = s;
-		hireDay = LocalDate.of(year, month, day);
+	{
+		System.out.println("Not static!");
+		
 	}
 	
-	public 	String getName() {
-		return this.name;
+	static {
+		System.out.println("Static!");
 	}
 	
-	public void raiseSlary(double byPercent) {
-		double raise = this.salary * byPercent / 100;
-		this.salary += raise;
+	public Employee(String name) {
+		this.name = name;
 	}
-
+	
+	public String  getDescription() {
+		return "id: " + this.id + "\n" + "name: " + this.name;
+	}
+	
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-
+		Employee a = new Employee("chen");
+		Employee b = new Employee("lele");
+		Employee c = new Employee("xiaobai");
+		
+		System.out.println(a.getDescription());
+		System.out.println(b.getDescription());
+		System.out.println(c.getDescription());
 	}
-
 }

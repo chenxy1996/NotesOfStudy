@@ -2,7 +2,6 @@
 <qualifiedTypeNameHistroy>
     <fullyQualifiedTypeName name="java.io.PipedInputStream"/>
     <fullyQualifiedTypeName name="test.Welcome.Size"/>
-    <fullyQualifiedTypeName name="java.lang.String"/>
     <fullyQualifiedTypeName name="com.sun.tools.javac.code.Attribute.Array"/>
     <fullyQualifiedTypeName name="com.sun.java_cup.internal.runtime.Scanner"/>
     <fullyQualifiedTypeName name="sun.jvm.hotspot.oops.java_lang_Class"/>
@@ -18,6 +17,15 @@
     <fullyQualifiedTypeName name="java.lang.Object"/>
     <fullyQualifiedTypeName name="java.util.Arrays"/>
     <fullyQualifiedTypeName name="java.lang.Package"/>
-    <fullyQualifiedTypeName name="java.lang.StringBuilder"/>
     <fullyQualifiedTypeName name="test.Student"/>
+    <fullyQualifiedTypeName name="java.time.LocalDate"/>
+    <fullyQualifiedTypeName name="java.lang.StringBuilder"/>
+    <fullyQualifiedTypeName name="com.sun.org.apache.bcel.internal.generic.ARETURN"/>
+    <fullyQualifiedTypeName name="objectLearning.Employee"/>
+    <fullyQualifiedTypeName name="objectLearning.Hello"/>
+    <fullyQualifiedTypeName name="test.Say"/>
+    <fullyQualifiedTypeName name="test.Welcome"/>
+    <fullyQualifiedTypeName name="objectLearning.Person"/>
+    <fullyQualifiedTypeName name="objectLearning.Student"/>
+    <fullyQualifiedTypeName name="java.lang.String"/>
 </qualifiedTypeNameHistroy>
