@@ -2,6 +2,11 @@ package objectLearning;
 
 import java.time.LocalDate;
 
+/**
+ * break up classes that have too many responsibilities
+ * @author ≥¬œË”Ó
+ *
+ */
 public class Employee {
 	
 	private static int nextId = 1;
@@ -17,21 +22,14 @@ public class Employee {
 		System.out.println("Static!");
 	}
 	
-	public Employee(String name) {
-		this.name = name;
-	}
+
 	
 	public String  getDescription() {
 		return "id: " + this.id + "\n" + "name: " + this.name;
 	}
 	
 	public static void main(String[] args) {
-		Employee a = new Employee("chen");
-		Employee b = new Employee("lele");
-		Employee c = new Employee("xiaobai");
-		
-		System.out.println(a.getDescription());
-		System.out.println(b.getDescription());
-		System.out.println(c.getDescription());
+		Employee aeEmployee = new Employee();
+		System.out.println(aeEmployee.name);
 	}
 }
