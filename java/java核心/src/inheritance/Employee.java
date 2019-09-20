@@ -2,10 +2,9 @@ package inheritance;
 
 import java.time.LocalDate;
 
-public class Employee {
+public class Employee extends Person{
 	private static int nextId = 0;
 	
-	private String name;
 	private LocalDate hireDay;
 	private double salary;
 	private int id = Employee.nextId++;
@@ -16,15 +15,17 @@ public class Employee {
 	
 	public Employee(String name, double salary, int year, int month, int day) {
 		// TODO Auto-generated constructor stub
-		this.name = name;
+		super(name);
 		this.salary = salary;
 		this.hireDay = LocalDate.of(year, month, day);
 	}
 	
-	
-	public String getName() {
-		return this.name;
+	@Override
+	public String getDescription() {
+		return "name: " + super.getName() + '\n' + "salary: " + this.salary + '\n' 
+				 																+ "hireDay: " + this.hireDay;
 	}
+	
 	
 	public LocalDate getHireDay() {
 		return this.hireDay;
@@ -45,19 +46,17 @@ public class Employee {
 	
 	
 	public static void main(String[] args) {
-		Employee aEmployee = new Employee("chen", 30000, 2022, 9, 1);
-		System.out.println(aEmployee.getSalary());
-		aEmployee.raiseSalary(50);
-		System.out.println(aEmployee.getSalary());
-		System.out.println(Employee.getNextId());
-		System.out.println(aEmployee.getHireDay());
+		Person[] persons = new Person[2];
+		persons[0] = new Employee("chen", 60000, 2021, 9, 2);
+		persons[1] = new Student("lele", "Computer Science");
 		
-		Employee bEmployee = new Employee("lele", 50000, 2023, 9, 1);
-		System.out.println(bEmployee.getSalary());
-		bEmployee.raiseSalary(50);
-		System.out.println(bEmployee.getSalary());
-		System.out.println(Employee.getNextId());
-		System.out.println(bEmployee.getHireDay());
+		for(Person eachPerson : persons) {
+			System.out.println(eachPerson.getDescription());
+			System.out.println("--·Ö" + "---------------" + "¸ô" + "---------------" + "Ïß--");
+		}
+		
+		Employee aEmployee = new Employee("aHuang", 50000, 2021, 9, 3);
+		System.out.println(aEmployee.salary);
 	}
 }	
 	

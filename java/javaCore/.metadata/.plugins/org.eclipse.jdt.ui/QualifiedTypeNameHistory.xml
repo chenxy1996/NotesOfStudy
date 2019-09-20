@@ -18,14 +18,18 @@
     <fullyQualifiedTypeName name="java.util.Arrays"/>
     <fullyQualifiedTypeName name="java.lang.Package"/>
     <fullyQualifiedTypeName name="test.Student"/>
-    <fullyQualifiedTypeName name="java.time.LocalDate"/>
     <fullyQualifiedTypeName name="java.lang.StringBuilder"/>
     <fullyQualifiedTypeName name="com.sun.org.apache.bcel.internal.generic.ARETURN"/>
-    <fullyQualifiedTypeName name="objectLearning.Employee"/>
     <fullyQualifiedTypeName name="objectLearning.Hello"/>
     <fullyQualifiedTypeName name="test.Say"/>
     <fullyQualifiedTypeName name="test.Welcome"/>
     <fullyQualifiedTypeName name="objectLearning.Person"/>
     <fullyQualifiedTypeName name="objectLearning.Student"/>
+    <fullyQualifiedTypeName name="objectLearning.Employee"/>
+    <fullyQualifiedTypeName name="java.lang.Double"/>
+    <fullyQualifiedTypeName name="sun.security.action.GetBooleanAction"/>
+    <fullyQualifiedTypeName name="java.time.LocalDate"/>
     <fullyQualifiedTypeName name="java.lang.String"/>
+    <fullyQualifiedTypeName name="inheritance.Manager"/>
+    <fullyQualifiedTypeName name="inheritance.Employee"/>
 </qualifiedTypeNameHistroy>
