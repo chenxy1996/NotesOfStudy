@@ -91,3 +91,7 @@ public class SubClass1 extends SupClass {
 
 之前给出的代码例子中，在不同包中直接通过创建父类对象来访问这个 `protected` 成员是不可行的。**通过继承的方式是指：创建子类对象实现访问这个 `protected` 成员。**
 
+```java
+
+```
+
