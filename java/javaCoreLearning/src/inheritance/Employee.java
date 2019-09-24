@@ -46,15 +46,24 @@ public class Employee extends Person {
         }
 
         Employee other = (Employee) otherObject;
-        return this.getId() == other.getId();
+        return this.id == other.id;
     }
 
-    public static void main(String[] args) {
+    @Override
+    public final int hashCode() {
+        return Objects.hashCode(this.id);
+    }
+
+    @Override
+    public final String toString() {
+        return this.getClass().getName() + "[name=" + super.getName() + ", salary=" + this.getSalary()
+                + "]";
+    }
+
+    public static void main(String[] args) throws ClassNotFoundException {
         Employee aEmployee = new Employee("chen", 50000, 2021, 9, 1);
         Employee bEmployee = new Employee("chen", 50000, 2021, 9, 2);
         Employee cEmployee = aEmployee;
-        System.out.println(aEmployee.getDescription());
-        System.out.println(bEmployee.getDescription());
-        System.out.println(aEmployee.equals(cEmployee));
+        System.out.println(aEmployee);
     }
 }

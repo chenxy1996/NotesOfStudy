@@ -17,4 +17,10 @@ public abstract class Person {
 
     @Override
     public abstract boolean equals(Object otherObject);
+
+    @Override
+    public abstract int hashCode();
+
+    @Override
+    public abstract String toString();
 }

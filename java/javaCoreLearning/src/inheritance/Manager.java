@@ -16,13 +16,17 @@ public class Manager extends Employee {
         return super.getSalary() + this.bonus;
     }
 
-    public static void main(String[] args) {
-        Manager aManager = new Manager("chenxiangyu", 90000, 2021, 9, 1);
-        Manager bManager = new Manager("chenxiangyu", 90000, 2021, 9, 1);
-        aManager.setBonus(50000);
-        aManager.raiseSalary(10);
-        System.out.println(aManager.getDescription());
-        System.out.println(bManager.getDescription());
-        System.out.println(aManager.equals(bManager));
+    public static double add(double... args) {
+        double sum = 0;
+        for (double eachNum : args) {
+            sum += eachNum;
+        }
+        return sum;
+    }
+
+    public static void main(String[] args) throws ClassNotFoundException {
+        Employee aManager = new Manager("chenxiangyu", 90000, 2022, 9, 1);
+        String className = aManager.getClass().getName();
+        Class cl = Class.forName(className);
     }
 }
