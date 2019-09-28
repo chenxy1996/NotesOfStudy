@@ -25,8 +25,5 @@ public class Manager extends Employee {
     }
 
     public static void main(String[] args) throws ClassNotFoundException {
-        Employee aManager = new Manager("chenxiangyu", 90000, 2022, 9, 1);
-        String className = aManager.getClass().getName();
-        Class cl = Class.forName(className);
     }
 }
