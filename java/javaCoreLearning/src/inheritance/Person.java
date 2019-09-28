@@ -23,4 +23,8 @@ public abstract class Person {
 
     @Override
     public abstract String toString();
+
+    public static String sayName() {
+        return "chenxiangyu is a good man!";
+    }
 }

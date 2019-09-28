@@ -2,8 +2,9 @@ package inheritance;
 
 import java.time.LocalDate;
 import java.util.Objects;
+import interfaceTest.Comparable;
 
-public class Employee extends Person {
+public class Employee extends Person implements Comparable<Employee>, Cloneable{
     private static int nextId = 0;
 
     private LocalDate hireDay;
@@ -60,10 +61,17 @@ public class Employee extends Person {
                 + "]";
     }
 
-    public static void main(String[] args) throws ClassNotFoundException {
-        Employee aEmployee = new Employee("chen", 50000, 2021, 9, 1);
-        Employee bEmployee = new Employee("chen", 50000, 2021, 9, 2);
-        Employee cEmployee = aEmployee;
-        System.out.println(aEmployee);
+    @Override
+    public int compareTo(Employee other) {
+        return Double.compare(this.salary, other.salary);
+    }
+
+    @Override
+    public Employee clone() throws CloneNotSupportedException {
+        return (Employee) super.clone();
+    }
+
+    public static void main(String[] args) throws CloneNotSupportedException {
+
     }
 }

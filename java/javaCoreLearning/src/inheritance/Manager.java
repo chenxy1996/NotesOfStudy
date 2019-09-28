@@ -16,14 +16,12 @@ public class Manager extends Employee {
         return super.getSalary() + this.bonus;
     }
 
-    public static double add(double... args) {
-        double sum = 0;
-        for (double eachNum : args) {
-            sum += eachNum;
-        }
-        return sum;
-    }
 
-    public static void main(String[] args) throws ClassNotFoundException {
+
+    public static void main(String[] args) throws CloneNotSupportedException {
+        Manager a = new Manager("chenxiangyu", 200000, 2021, 9, 1);
+        Manager b = (Manager) a.clone();
+        System.out.println(b);
+        System.out.println(a.equals(b));
     }
 }
