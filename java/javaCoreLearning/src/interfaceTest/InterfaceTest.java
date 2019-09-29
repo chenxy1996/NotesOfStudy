@@ -5,6 +5,12 @@ import org.jetbrains.annotations.NotNull;
 import inheritance.Person;
 import inheritance.Employee;
 
+import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
+import java.util.function.Function;
+import java.util.function.IntPredicate;
+
+
 public class InterfaceTest implements Interface, Interface1{
     private String name = "chen";
 
@@ -14,10 +20,11 @@ public class InterfaceTest implements Interface, Interface1{
     }
 
     public static void main(String[] args) throws CloneNotSupportedException {
-        Manager a = new Manager("chenxiangyu", 200000, 2021, 9, 1);
-        System.out.println(a);
-        Manager b = (Manager) a.clone();
-        System.out.println(b);
-        System.out.println(a.equals(b));
+        IntPredicate ifIntGreaterThanTree = (a) -> {
+            if (a > 3) return true;
+            return false;
+        };
+
+        System.out.println(ifIntGreaterThanTree.test(7));
     }
 }

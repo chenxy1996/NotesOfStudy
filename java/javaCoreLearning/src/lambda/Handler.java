@@ -1,5 +1,7 @@
 package lambda;
 
-public interface Handler {
-    double handle1(double x, double y, double z);
+@FunctionalInterface
+public interface Handler<T> {
+    T process(T... args);
 }
+
