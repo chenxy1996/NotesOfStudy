@@ -30,7 +30,7 @@ public abstract class Person {
         return "chenxiangyu is a good man!";
     }
 
-    public static void main(String[] args) throws CloneNotSupportedException {
+    public static void main(String[] args) throws CloneNotSupportedException, ClassNotFoundException {
         Person a = new Person("chen") {
             private String motto;
             {
@@ -61,5 +61,39 @@ public abstract class Person {
                 System.out.println(super.getName());
             }
         };
+        Person b = new Person("lele") {
+            private String motto;
+            {
+                this.motto = "Lele is an adorable dog!!!!!";
+                System.out.println(this.motto);
+            }
+            @Override
+            public String getDescription() {
+                return null;
+            }
+
+            @Override
+            public boolean equals(Object otherObject) {
+                return false;
+            }
+
+            @Override
+            public int hashCode() {
+                return 0;
+            }
+
+            @Override
+            public String toString() {
+                return null;
+            }
+
+            public void sayMyName() {
+                System.out.println(super.getName());
+            }
+        };
+        Class cls = Class.forName("inheritance.Person$1");
+        System.out.println(a.getClass() == cls);
+        System.out.println(Person.class);
+        System.out.println(new Object(){}.getClass().getEnclosingClass());
     }
 }

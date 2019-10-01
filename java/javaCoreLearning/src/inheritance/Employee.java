@@ -5,7 +5,7 @@ import java.util.Objects;
 import interfaceTest.Comparable;
 
 public class Employee extends Person implements Comparable<Employee>, Cloneable{
-    private static int nextId = 0;
+    public static int nextId = 0;
 
     private LocalDate hireDay;
     private int id = nextId++;

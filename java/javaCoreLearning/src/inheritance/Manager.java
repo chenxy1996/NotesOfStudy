@@ -23,5 +23,8 @@ public class Manager extends Employee {
         Manager b = (Manager) a.clone();
         System.out.println(b);
         System.out.println(a.equals(b));
+        System.out.println(Manager.nextId);
+        System.out.println(Employee.nextId);
+        System.out.println(Manager.sayName());
     }
 }

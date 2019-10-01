@@ -50,8 +50,6 @@ public class Student extends Person {
     }
 
     public static void main(String[] args) {
-        Student a = new Student("chenxiangyu", "computer science");
-        Class cl = a.getClass();
 
     }
 }
