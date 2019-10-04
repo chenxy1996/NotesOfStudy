@@ -1,14 +1,17 @@
 package inheritance;
 
+import java.lang.reflect.*;
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.Objects;
 import interfaceTest.Comparable;
+import myReflection.MemberGetter;
 
 public class Employee extends Person implements Comparable<Employee>, Cloneable{
     public static int nextId = 0;
 
     private LocalDate hireDay;
-    private int id = nextId++;
+    private final int id = nextId++;
     private double salary;
 
     public Employee(String name, double salary, int year, int month, int day) {
@@ -71,7 +74,11 @@ public class Employee extends Person implements Comparable<Employee>, Cloneable{
         return (Employee) super.clone();
     }
 
-    public static void main(String[] args) throws CloneNotSupportedException {
-
+    public static void main(String[] args) throws CloneNotSupportedException, IllegalAccessException, InvocationTargetException, InstantiationException {
+//        System.out.println(MemberGetter.getMembersInfo(Employee.class));
+        Constructor[] cons = Employee.class.getConstructors();
+        Constructor<Employee> con = cons[0];
+        Employee a = con.newInstance("chenxiangyu", 90000, 2021, 9, 1);
+        System.out.println(a.getSalary());
     }
 }

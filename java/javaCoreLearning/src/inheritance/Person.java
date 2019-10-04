@@ -2,6 +2,7 @@ package inheritance;
 
 import org.w3c.dom.ls.LSOutput;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Objects;
 
 public abstract class Person {
@@ -30,7 +31,7 @@ public abstract class Person {
         return "chenxiangyu is a good man!";
     }
 
-    public static void main(String[] args) throws CloneNotSupportedException, ClassNotFoundException {
+    public static void main(String[] args) throws CloneNotSupportedException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, InstantiationException {
         Person a = new Person("chen") {
             private String motto;
             {
