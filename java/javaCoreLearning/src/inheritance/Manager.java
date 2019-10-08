@@ -1,5 +1,7 @@
 package inheritance;
 
+import java.util.Arrays;
+
 public class Manager extends Employee {
     private double bonus;
 
@@ -19,12 +21,23 @@ public class Manager extends Employee {
 
 
     public static void main(String[] args) throws CloneNotSupportedException {
-        Manager a = new Manager("chenxiangyu", 200000, 2021, 9, 1);
-        Manager b = (Manager) a.clone();
-        System.out.println(b);
-        System.out.println(a.equals(b));
-        System.out.println(Manager.nextId);
-        System.out.println(Employee.nextId);
-        System.out.println(Manager.sayName());
+        Employee[] staff = new Manager[2];
+        staff[0] = new Manager("chenxiangyu", 200000, 2021, 9, 1);
+        staff[1] = new Manager("lele", 90000, 2021, 9, 1);
+
+        System.out.println(staff[0].getClass());
+
+//        Object[] a = staff;
+
+//        a[0] = staff[0];
+//        a[1] = staff[1];
+//        System.out.println(a == staff);
+//
+//        System.out.println(Arrays.toString(staff));
+//        System.out.println(Arrays.toString(a));
+//
+//        a[0] = new Manager("xiaobai", 20000, 2022, 9, 1);
+//        System.out.println(Arrays.toString(staff));
+//        System.out.println(Arrays.toString(a));
     }
 }

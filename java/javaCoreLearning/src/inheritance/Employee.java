@@ -76,9 +76,6 @@ public class Employee extends Person implements Comparable<Employee>, Cloneable{
 
     public static void main(String[] args) throws CloneNotSupportedException, IllegalAccessException, InvocationTargetException, InstantiationException {
 //        System.out.println(MemberGetter.getMembersInfo(Employee.class));
-        Constructor[] cons = Employee.class.getConstructors();
-        Constructor<Employee> con = cons[0];
-        Employee a = con.newInstance("chenxiangyu", 90000, 2021, 9, 1);
-        System.out.println(a.getSalary());
+        System.out.println(MemberGetter.getMembersInfo(Person.class));
     }
 }
