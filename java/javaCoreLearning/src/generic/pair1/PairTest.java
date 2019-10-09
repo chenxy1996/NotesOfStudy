@@ -14,12 +14,7 @@ import inheritance.*;
 
 public class PairTest {
     public static void main(String[] args) {
-        Manager a = new Manager("chen", 90000, 2021, 9, 1);
-        Manager b = new Manager("chen", 90000, 2021, 9, 1);
 
-        Function<Employee, String> getIdString = employee -> String.valueOf(employee.getId());
-        System.out.println(getIdString.apply(a));
-        System.out.println(getIdString.apply(b));
     }
 }
 
