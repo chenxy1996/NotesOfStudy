@@ -1,46 +1,48 @@
 package Collctions;
 
 import interfaceTest.Interface;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 
-public abstract class Dog {
+public class Dog implements Comparable<Dog>{
     private String name;
+    private int age;
 
-    public Dog(String name) {
+    public Dog(String name, int age) {
+        this.age = age;
         this.name = name;
     }
 
-    public abstract String sayName();
+    @Override
+    public int compareTo(@NotNull Dog o) {
+        return Integer.compare(age, o.age);
+    }
+
+    @Override
+    public String toString() {
+        return "[" + name + ", " + age + "]";
+    }
+
+    public String getName() {
+        return name;
+    }
 
     public static void main(String[] args) throws IOException {
-        HashSet<String> wordsSet= new HashSet<>();
-        Path filePath = Path.of("C:\\Users\\陈宇\\Desktop\\Alice in wonderland.txt");
-        long totalTime = 0;
-        try (Scanner in = new Scanner(filePath))
-        {
-            while (in.hasNext()) {
-                String word = in.next();
-                long callTime = System.currentTimeMillis();
-                wordsSet.add(word);
-                callTime = System.currentTimeMillis() - callTime;
-                totalTime += callTime;
-            }
-        } catch (Exception e) {
-            System.out.println(e);
-            for (StackTraceElement each : e.getStackTrace()) {
-                System.out.println(each);
-            }
-        }
+        TreeSet<Dog> dogSet = new TreeSet<>();
+        dogSet.add(new Dog("lele", 12));
+        dogSet.add(new Dog("xiaobao", 3));
+        dogSet.add(new Dog("ahuang", 19));
+        System.out.println(dogSet);
 
-        Iterator<String> iter = wordsSet.iterator();
-        for (int i = 0; i <= 20 && iter.hasNext(); i++) {
-            System.out.println(iter.next());
-        }
-        System.out.println("....");
-        System.out.println(wordsSet.size() + " distinct words.\n" + totalTime + " milliseconds.");
+        dogSet = new TreeSet<>(Comparator.comparing(Dog::getName));
+        dogSet.add(new Dog("lele", 12));
+        dogSet.add(new Dog("xiaobao", 3));
+        dogSet.add(new Dog("ahuang", 19));
+        System.out.println(dogSet);
     }
 }
