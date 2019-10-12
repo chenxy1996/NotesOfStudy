@@ -1,10 +1,13 @@
 package Collctions;
 
-import java.util.ArrayList;
-import java.util.Queue;
+import java.util.*;
 
 public class CollTest {
     public static void main(String[] args) {
+        ArrayList<Integer> a = new ArrayList<>();
+        a.add(null);
+        a.add(3);
+        System.out.println(a.contains(null));
     }
 }
 
