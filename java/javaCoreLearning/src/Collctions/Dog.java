@@ -10,8 +10,9 @@ import java.nio.file.Paths;
 import java.util.*;
 
 public class Dog implements Comparable<Dog>{
-    private String name;
+    transient String name;
     private int age;
+    transient int score;
 
     public Dog(String name, int age) {
         this.age = age;

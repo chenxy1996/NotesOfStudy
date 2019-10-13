@@ -19,28 +19,12 @@ public class CollTest {
                 }
             }
         }
-
         Set<Map.Entry<String, Integer>> wordEntrySet = wordSet.entrySet();
         List<Map.Entry<String, Integer>> wordEntryList = new ArrayList<>(wordEntrySet);
         wordEntryList.sort(Comparator.comparingInt(Map.Entry::getValue));
         for (int i = 0; i < 20; i++) {
             System.out.println(wordEntryList.get(wordEntryList.size() - 1 - i));
         }
-    }
-}
-
-class Outer {
-    private int num = 10;
-
-    private class Inner implements A{
-        @Override
-        public int getNum() {
-            return num;
-        }
-    }
-
-    public Inner bridge() {
-        return new Inner();
     }
 }
 
