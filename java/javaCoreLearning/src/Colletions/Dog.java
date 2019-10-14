@@ -1,12 +1,8 @@
-package Collctions;
+package Colletions;
 
-import interfaceTest.Interface;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.*;
 
 public class Dog implements Comparable<Dog>{

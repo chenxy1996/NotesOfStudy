@@ -1,4 +1,4 @@
-package Collctions;
+package Colletions;
 
 public class GoldenRetriver extends Dog {
     public GoldenRetriver(String name, int age) {

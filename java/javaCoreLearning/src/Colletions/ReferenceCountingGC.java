@@ -1,4 +1,4 @@
-package Collctions;
+package Colletions;
 
 public class ReferenceCountingGC {
     public Object instance = null;

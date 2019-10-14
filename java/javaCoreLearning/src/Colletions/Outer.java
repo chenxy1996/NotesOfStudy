@@ -1,11 +1,4 @@
-package Collctions;
-
-import jdk.swing.interop.SwingInterOpUtils;
-import org.w3c.dom.ls.LSOutput;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+package Colletions;
 
 public class Outer {
     class Inner {

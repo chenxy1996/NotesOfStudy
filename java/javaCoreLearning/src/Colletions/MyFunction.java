@@ -1,4 +1,4 @@
-package Collctions;
+package Colletions;
 
 import java.util.*;
 import java.util.function.Function;
@@ -19,18 +19,19 @@ public interface MyFunction<T, R> {
     }
 
     static void main(String[] args) {
-        Map<String, Integer> scores = new HashMap<>();
+        Map<String, Integer> scores = new LinkedHashMap<>(16, 0.75f, true) {
+          protected boolean removeEldestEntry(Map.Entry<String, Integer> eldest) {
+              return size() > 2;
+          }
+        };
+
         scores.put("chen", 100);
         scores.put("lele", 99);
+        System.out.println(scores);
+        scores.get("chen");
+        System.out.println(scores);
         scores.put("xiaobai", 98);
-        scores.put("ahuang", 99);
-        Set<Map.Entry<String, Integer>> scoresSet = scores.entrySet();
-        ArrayList<Map.Entry<String, Integer>> scoresList = new ArrayList<>(scoresSet);
-        scoresList.sort(Comparator.comparing((Map.Entry<String, Integer> a) -> a.getValue()).reversed());
 
-        scoresList.forEach((k) -> System.out.println(k.getKey() + ": " + k.getValue()));
-        scoresList.remove(2);
-        scoresList.forEach((k) -> System.out.println(k.getKey() + ": " + k.getValue()));
         System.out.println(scores);
     }
 }
