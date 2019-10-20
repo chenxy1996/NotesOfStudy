@@ -7,6 +7,13 @@ public class ThreadTest {
     static int count = 1000000000;
     static int[] nums = new int[count];
 
+    static {
+        for (int i = 0; i < count; i++) {
+            nums[i] = i;
+        }
+    }
+
+
     public static void incrementByMultithreading() throws InterruptedException {
         int threadCounts = 10;
         int step = count / threadCounts;
@@ -37,20 +44,36 @@ public class ThreadTest {
     }
     
     public static void main(String[] args) throws InterruptedException {
-        for (int i = 0; i < count; i++) {
-            nums[i] = i;
-        }
+        /*
+        创建一个新的线程
+         */
+        Runnable r1 = () -> {
+            for (int i = 0; i < 50 ; i++) {
+                System.out.println("r1: " + i);
+                try {
+                    Thread.sleep(300l);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        };
 
-        long t1 = System.currentTimeMillis();
-        incrementByMultithreading();
-        System.out.println("MultiThreads: " + (System.currentTimeMillis() - t1));
+        Runnable r2 = () -> {
+            for (int i = 0; i < 50 ; i++) {
+                System.out.println("r2: " + i);
+                try {
+                    Thread.sleep(300l);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        };
 
-        for (int i = 0; i < count; i++) {
-            nums[i] = i;
-        }
-
-        long t2 = System.currentTimeMillis();
-        increment();
-        System.out.println("Normal: " + (System.currentTimeMillis() - t2));
+        Thread t1 = new Thread(r1);
+        Thread t2 = new Thread(r2);
+        t1.start();
+        t2.start();
+        t1.join();
+        t2.join();
     }
 }
