@@ -18,7 +18,7 @@ void swap(int, int);
 int main() {
     int a = 3;
     int b = 4;
-  	printf("Address of a: %p\n", &a);
+    printf("Address of a: %p\n", &a);
     printf("Address of b: %p\n", &b);
     printf("a = %d\n", a);
     printf("b = %d\n", b);
