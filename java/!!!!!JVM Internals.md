@@ -10,7 +10,7 @@
 
 ![JMM](../image/JMM.png)
 
-***注：本图中把字符串常量池 String Constant Poll  也就是 Interned Sttrings 放在了  Non Heap 中，在 JDK8 之后包括 JDK8 ，字符串常量池被放进了堆 Heap 中。具体的实现机制可以参考 [深入解析String#intern](https://tech.meituan.com/2014/03/06/in-depth-understanding-string-intern.html)。这里的内存分配示意图和 JAVA VIRTUAL MACHINE SPECIFICATION 有一些不同，比较着来看。***
+***注：本图中把字符串常量池 String Constant Poll  也就是 Interned Sttrings 放在了  Non Heap 中，在 JDK8 之后包括 JDK8 ，字符串常量池被放进了堆 Heap 中。具体的实现机制可以参考 [深入解析 String#intern](https://tech.meituan.com/2014/03/06/in-depth-understanding-string-intern.html)。这里的内存分配示意图和 JAVA VIRTUAL MACHINE SPECIFICATION 有一些不同，比较着来看。***
 
  The components shown on this diagram are each explained below in two sections. [First section](http://blog.jamesdbloom.com/JVMInternals.html#threads) covers the components that are created for each thread and the [second section](http://blog.jamesdbloom.com/JVMInternals.html#shared_between_threads) covers the components that are created independently of threads. 
 
@@ -119,7 +119,7 @@ A local variable can be:
 - float
 - double
 - reference
-- returnAddress ***(The values of the returnAddress type are <u>pointers</u> to the opcodes of Java Virtual Machine instructions. Of the primitive types, only the returnAddress type is not directly associated with a Java programming language type.)***
+- returnAddress ***(根据 JVM SPECIFICATIONS: The values of the returnAddress type are <u>pointers</u> to the opcodes of Java Virtual Machine instructions. Of the primitive types, only the returnAddress type is not directly associated with a Java programming language type.)***
 
 <u>All types take a single slot in the local variable array except long and double which both take two consecutive slots because these types are double width (64-bit instead of 32-bit).</u>
 
@@ -146,7 +146,7 @@ Each frame contains a reference to the runtime constant pool. The reference poin
 
 C/C++ code is typically compiled to an object file then multiple object files are linked together to product a usable artifact such as an executable or dll. <u>During the linking phase symbolic references in each object file are replaced with an actual memory address relative to the final executable.</u> **In Java this linking phase is done dynamically at runtime.**
 
-When a Java class is **compiled**, all references ***（这里的 reference 引用要理解成 c++ 中所说的引用，也可以理解为名称 alias. 不能和 javaScript 中一样简单的理解）*** to variables and methods are stored in the class's constant pool as a symbolic reference. **A symbolic reference is a logical reference not a reference that actually points to a physical memory location.** ***(编译阶段)*** The JVM implementation can choose when to resolve symbolic references, this can happen when the class file is verified, after being loaded, called eager or static resolution, instead this can happen when the symbolic reference is used for the first time called lazy or late resolution. However the JVM has to behave as if the resolution occurred when each reference is first used and throw any resolution errors at this point. **Binding is the process of the field, method or class identified by the symbolic reference being replaced by a direct reference**, <u>this only happens once because the symbolic reference is completely replaced. If the symbolic reference refers to a class that has not yet been resolved then this class will be loaded. Each direct reference is stored as an offset against the storage structure associated with the runtime location of the variable ormethod.</u>
+When a Java class is **compiled**, all references ***（这里的 reference 引用要理解成 c++ 中所说的引用，也可以理解为名称 alias. 不能和 javaScript 中一样简单的理解）*** to variables and methods are stored in the class's constant pool as a symbolic reference. **A symbolic reference is a logical reference not a reference that actually points to a physical memory location.** ***(编译阶段)*** The JVM implementation can choose when to resolve symbolic references, this can happen when the class file is verified, after being loaded, called eager or static resolution, instead this can happen when the symbolic reference is used for the first time called lazy or late resolution. However the JVM has to behave as if the resolution occurred when each reference is first used and throw any resolution errors at this point. <u>**Binding is the process of the field, method or class identified by the symbolic reference being replaced by a direct reference**, ***（注：Binding: 符号引用转变为的直接引用）***this only happens once because the symbolic reference is completely replaced. If the symbolic reference refers to a class that has not yet been resolved then this class will be loaded. Each direct reference is stored as an offset against the storage structure associated with the runtime location of the variable or method.</u>
 
 ***注：上面这几段涉及到了类 Class 的加载过程，大体可以分为三阶段：Loading => Linking => Initiating. 其中 Linking 阶段也可以分成三个阶段：Verification => Preparation => Resolution。具体的实现细节可以参考 JAVA LANGUAGE SPECIFICATION 和 JAVA VIRTUAL MACHINE SPECIFICATION。***
 
@@ -157,4 +157,108 @@ When a Java class is **compiled**, all references ***（这里的 reference 引�
 The Heap is used to allocate class instances and arrays at runtime. ***(这里的 class instances 包括 Class Object)*** <u>Arrays and objects can never be stored on the stack because a frame is not designed to change in size after it has been created. The frame only stores references that point to objects or arrays on the heap. Unlike primitive variables and references in the local variable array (in each frame) objects are always stored on the heap so they are not removed when a method ends. Instead objects are only removed by the garbage collector.</u> 
 
 ***上面这段话非常重要，翻译（意译）一下：堆 Heap 用来在虚拟机运行时给类的实例对象和数组分配内存空间。实例和数组无法存储在栈中，因为栈帧在创建之后其大小就已经固定了，不能改变。栈帧中存储的只是指向堆中实例对象和数组的引用。和栈帧中本地变量数组 (local variable array) 储存的的原始类型和引用类型不同，对象实例总是被储存在堆中，所以当一个方法结束时它们无法随之被清除。只能通过垃圾回收器来将其移除。***
+
+To support garbage collection the heap is divided into three sections:
+
+- Young Generation
+  - Often split between Eden and Survivor ***（注：周志明的 《深入理解 JAVA 虚拟机》中介绍到  Young Generation 被分为三个区域 EDEN、From Survivor 和 To Survivor，三者的比例是8：1：1.）***
+- Old Generation (also called Tenured Generation)
+- Permanent Generation ***（可能会奇怪永久区为什么会在堆中，其实 PG 是方法区的别称呼，而方法区根据 JAVA VIRTUAL MACHINE 中所写的确实是在堆中 ，书中章节 2.5.4 写到：Although the method area is logically part of the heap, simple implementations may choose not to either garbage collect or compact is.）***
+
+### Memory Management
+
+Objects and Arrays are never explicitly de-allocated instead the garbage collector automatically reclaims them.
+
+Typically this works as follows:
+
+1. New objects and arrays are created into the young generation
+2. Minor garbage collection will operate in the young generation. Objects, that are still alive, will be moved from the eden space to the survivor space.
+3. Major garbage collection, which typically causes the application threads to pause, will move objects between generations. Objects, that are still alive, will be moved from the young generation to the old (tenured) generation.
+4. The permanent generation is collected every time the old generation is collected. They are both collected when either becomes full.
+
+### Non-Heap Memory
+
+***(有的地方把 Non-Heap、Tenured Generation 和 Method Area 看成是相同的概念，JAVA VIRTUAL MACHINE SPECIFICATIONS 2.5.4 直接将该区域称为 Method Area. 其写道： <u>It stores per-class structures such as run-time constant pool, field, and method data, and the code for methods and constructors, including the special methods used in class and interface initialization and instance initialization</u>)***
+
+Objects that are logically considered as part of the JVM mechanics are not created on the Heap.
+
+The non-heap memory includes:
+
+- Permanent Generation
+
+  that contains
+
+  - the method area
+  - interned strings ***(注：在 JDK8 之后包括 JDK8 ，字符串常量池被放进了堆 Heap 中。具体的实现机制可以参考 [深入解析 String#intern](https://tech.meituan.com/2014/03/06/in-depth-understanding-string-intern.html))***
+
+- **Code Cache** used for compilation and storage of methods that have been compiled to native code by the JIT compiler
+
+### Just In Time (JIT) Compilation 
+
+Java byte code is interpreted however this is not as fast as directly executing native code on the JVM’s host CPU. To improve performance the Oracle Hotspot VM looks for “hot” areas of byte code that are executed regularly and compiles these to native code. The native code is then stored in the code cache in non-heap memory. In this way the Hotspot VM tries to choose the most appropriate way to trade-off the extra time it takes to compile code verses the extra time it take to execute interpreted code. 
+
+### Method Area
+
+The method area stores per-class information such as:
+
+- Classloader Reference
+- Run Time Constant Pool
+  - Numeric constants
+  - Field references
+  - Method References
+  - Attributes
+- Field data
+  - Per field
+    - Name
+    - Type
+    - Modifiers
+    - Attributes
+- Method data
+  - Per method
+    - Name
+    - Return Type
+    - Parameter Types (in order)
+    - Modifiers
+    - Attributes
+- Method code
+  - Per method
+    - Bytecodes
+    - Operand stack size
+    - Local variable size
+    - Local variable table
+    - Exception table
+      - Per exception handler
+        - Start point
+        - End point
+        - PC offset for handler code
+        - Constant pool index for exception class being caught
+
+All threads share the same method area, so access to the method area data and the process of dynamic linking must be thread safe. If two threads attempt to access a field or method on a class that has not yet been loaded it must only be loaded once and both threads must not continue execution until it has been loaded.
+
+### Class File Structure
+
+A compiled class file consists of the following structure:
+
+```
+ClassFile {
+    u4			magic;
+    u2			minor_version;
+    u2			major_version;
+    u2			constant_pool_count;
+    cp_info		contant_pool[constant_pool_count – 1];
+    u2			access_flags;
+    u2			this_class;
+    u2			super_class;
+    u2			interfaces_count;
+    u2			interfaces[interfaces_count];
+    u2			fields_count;
+    field_info		fields[fields_count];
+    u2			methods_count;
+    method_info		methods[methods_count];
+    u2			attributes_count;
+    attribute_info	attributes[attributes_count];
+}
+```
+
+ 
 
