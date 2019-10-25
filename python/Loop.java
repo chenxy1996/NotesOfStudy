@@ -1,7 +1,15 @@
 class Loop {
-    public static final int a = 7;
+    public static final int ca = 7;
+    public static int cb = 17;
+    
+    public String s = "a";
 
     public int spin() {
+        String a = "a";
+        String b = "b";
+        String c = "c";
+        String abc = "a" + "b" + "c";
+
         int i;
         for (i = 5; i < 10; i++) {
             ;
@@ -13,6 +21,6 @@ class Loop {
         int i = 7;
         Loop aLoop = new Loop();
         aLoop.spin();
-        System.out.print(a);
+        System.out.print(ca);
     }
 }
