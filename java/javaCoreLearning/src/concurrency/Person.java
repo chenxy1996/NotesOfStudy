@@ -1,5 +1,7 @@
 package concurrency;
 
+import java.util.function.Function;
+
 public class Person {
     public static int count = 0;
     public static final String description = "Person class";
@@ -26,6 +28,9 @@ public class Person {
         System.out.println(aStudent.flag);
         Person bStudent = new Student("chenxiangyu", 9);
         System.out.println(bStudent.flag);
+
+        Function<Integer, String> fun = a -> String.valueOf(a);
+
     }
 }
 

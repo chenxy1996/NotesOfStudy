@@ -85,6 +85,8 @@ public class SubClass1 extends SupClass {
 
 下面给出具体的说明和解释。
 
+同一个报下所有的类通过实例化一个超类方位 `protected` 成员的原因是**它们在同一个包中**。
+
 ## 结论1
 
 ### 不同包下的类要想访问 `protected` 成员只能通过**继承**的方式。
