@@ -93,7 +93,29 @@ public class SubClass1 extends SupClass {
 
 之前给出的代码例子中，在不同包中直接通过创建父类对象来访问这个 `protected` 成员是不可行的。**通过继承的方式是指：创建子类对象实现访问这个 `protected` 成员。**
 
-```java
+例如用以下的方法就可以实现跨包访问：
 
+```java
+package AccessTest.package1;
+
+public class SupClass {
+	protected String motto = "This is a Protected field";
+}
 ```
+
+```java
+package AccessTest.package2;
+import AccessTest.package1.SupClass;
+
+public class SubClass extends SupClass{
+	public static void main(String... args) {
+		Subclass aSubclasss = new Subclass();
+        System.out.println(aSubclass.mottto); // In this case, the motto field 												 // can be successsfully accessed!
+	} 
+}
+```
+
+下面重点：
+
+**JAVA LANGUAGE SPECIFICATIONS 6.6.2 中： A protected member or constructor of an object may be accessed from outside the package in which it is declared only by code that is responsible for the implementation of that object.**
 

@@ -18,7 +18,7 @@ public class SubClass extends SuperClass {
 
     public static void main(String[] args) {
         SubClass s = new SubClass(5);
-        System.out.println(s.num);
+        System.out.println(s.motto);
     }
 }
 
