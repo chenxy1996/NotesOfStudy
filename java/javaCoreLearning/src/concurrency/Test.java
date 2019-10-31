@@ -5,20 +5,22 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class Test {
-    public final String name;
+    private int value = 0;
 
-    public int[] nums = new int[100];
-    private ReentrantReadWriteLock rwl = new ReentrantReadWriteLock();
-    private Lock readLock = rwl.readLock();
-    private Lock writeLock = rwl.writeLock();
+    public void setValue(int value) { this.value = value; };
 
-    public Test(String name) {
-        this.name = name;
-    }
+    public int getValue() { return value; };
 
     public static void main(String[] args) {
-        Test aTest = new Test("chen");
-        System.out.println(Arrays.toString(aTest.nums));
-        System.out.println(aTest.name);
+        Test t = new Test();
+        new Thread(() -> {
+            System.out.println(t.getValue());
+            t.setValue(10);
+        }).start();
+
+        new Thread(() -> {
+            System.out.println(t.getValue());
+            t.setValue(9);
+        }).start();
     }
 }
