@@ -4,27 +4,25 @@ package concurrency;
 use DLC algorithm:
  */
 public class StudentSingletonHolder {
-    class Student {
-        private String name;
-        private Student(String name) {
-            this.name = name;
-        }
-    }
-
-    private volatile Student singleton;
+    private volatile static StudentSingletonHolder instance;
+    public int a;
 
     private StudentSingletonHolder() {
-        singleton = new Student("chen");
+        a = 3;
     }
 
-    public Student getSingleton() {
-        if (singleton == null) {
-            synchronized (this) {
-                if (singleton == null) {
-                    singleton = new Student("chen");
+    public static StudentSingletonHolder getInstance() {
+        if (instance == null) {
+            synchronized (StudentSingletonHolder.class) {
+                if (instance == null) {
+                    instance = new StudentSingletonHolder();
                 }
             }
         }
-        return singleton;
+        return instance;
+    }
+
+    public static void main(String[] args) {
+
     }
 }
