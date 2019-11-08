@@ -84,4 +84,164 @@ There, too, are cases when such optimization will lead to counter-intuitive resu
 
 Concurrency is simple and easy, is it not? The problem is in steps (4) — (6). When **CPU 1** receives an **Invalidate** in (4), it queues it without processing. Then **CPU 1** gets **Read Response** in (6), while the corresponding **Read** has been sent earlier in (2). Despite this, we do not invalidate `value`, ending up with an assertion that fails. If only operation (N) has executed earlier. But alas, the damn optimization has spoiled everything! On the other hand, it grants us some significant performance boost. 
 
- The thing is that hardware engineers cannot know in advance when such an optimization is allowed, and when it is not. Which is why they leave the problem in our capable hands. They also give us a little something, with a note attached to it: “It’s dangerous to go alone! Take this!” 
+The thing is that hardware engineers cannot know in advance when such an optimization is allowed, and when it is not. Which is why they leave the problem in our capable hands. They also give us a little something, with a note attached to it: “It’s dangerous to go alone! Take this!” 
+
+### Hardware Memory Model
+
+The Magical Sword that software engineers who are setting out to fight Dragons are given, is not quite a sword. Rather, what the hardware guys have given us are the Rules As Written. They describe which values a processor can observe given the instructions this (or some other) processor has executed. What we could classify as Spells would be the Memory Barriers. For the MESI example of ours, they would be the following:
+
+- **Store Memory Barrier** (a.k.a. ST, SMB, smp_wmb) is the instruction that tells the processor to apply all the **stores** that are already in the **store buffer**, before it applies any that come after this instruction
+- **Load Memory Barrier** (a.k.a. LD, RMB, smp_rmb) is the instruction that tells the processor to apply all the **invalidates** that are already in the **invalidate queue**, before executing any loads
+
+So, these two Spells can prevent the two situations which we have come across earlier. We should use it:
+
+```java
+void executedOnCpu0() {
+    value = 10;
+    storeMemoryBarrier(); // Mighty Spell!
+    finished = true;
+}
+void executedOnCpu1() {
+    while(!finished);
+    loadMemoryBarrier(); // I am a Wizard!
+    assert value == 10;
+}
+```
+
+***上面的 storeMemoryBarrier 和 loadMemoryBarrier 都没有这个本地方法的***
+
+Yay! We are now safe. Time to write some high-performance *and* correct concurrent code!
+
+Oh, wait. It doesn’t even compile, says something about missing methods. What a mess.
+
+## Write Once @ Run Anywhere
+
+All those cache coherency protocols, memory barriers, dropped caches and whatnot seem to be awfully platform-specific things. Java Developers should not care for those at all. Java Memory Model has no notion of reordering, after all. 
+
+If you do not fully understand this last phrase, you should not continue reading this article. A better idea would be to go and learn some JMM instead. A good start would be this [FAQ](http://www.cs.umd.edu/~pugh/java/memoryModel/jsr-133-faq.html).
+
+But there *are* reorderings happening on deeper levels of abstractions. Should be interesting to see how JMM maps to the hardware model. Let’s start with a simple class ([github](https://github.com/gvsmirnov/java-perv/blob/master/labs/src/main/java/ru/gvsmirnov/perv/labs/concurrency/TestSubject.java)):
+
+```java
+public class TestSubject {
+ 
+    private volatile boolean finished;
+    private int value = 0;
+ 
+    void executedOnCpu0() {
+        value = 10;
+        finished = true;
+    }
+ 
+    void executedOnCpu1() {
+        while(!finished);
+        assert value == 10;
+    }
+ 
+}
+```
+
+If you have never before digged through the sources of OpenJDK (and even if you have, for that matter), it could be hard to find where the things that interest you lie. An easy way to narrow down the search space is getting the name of the bytecode instruction that interests you, and simply look for it. Alright, let’s do that: 
+
+```java
+$ javac TestSubject.java &amp; javap -c TestSubject
+void executedOnCpu0();
+  Code:
+     0: aload_0          // Push this to the stack
+     1: bipush        10 // Push 10 to the stack
+     3: putfield      #2 // Assign 10 to the second field(value) of this
+     6: aload_0          // Push this to the stack
+     7: iconst_1         // Push 1 to the stack
+     8: putfield      #3 // Assign 1 to the third field(finished) of this
+    11: return
+
+void executedOnCpu1();
+  Code:
+     0: aload_0          // Push this to the stack
+     1: getfield      #3 // Load the third field of this(finished) and push it to the stack
+     4: ifne          10 // If the top of the stack is not zero, go to label 10
+     7: goto          0  // One more iteration of the loop
+    10: getstatic     #4 // Get the static system field $assertionsDisabled:Z
+    13: ifne          33 // If the assertions are disabled, go to label 33(the end)
+    16: aload_0          // Push this to the stack
+    17: getfield      #2 // Load the second field of this(value) and push it to the stack
+    20: bipush        10 // Push 10 to the stack
+    22: if_icmpeq     33 // If the top two elements of the stack are equal, go to label 33(the end)
+    25: new           #5 // Create a new java/lang/AssertionError
+    28: dup              // Duplicate the top of the stack
+    29: invokespecial #6 // Invoke the constructor (the <init> method)
+    32: athrow           // Throw what we have at the top of the stack (an AssertionError)
+    33: return
+```
+
+There are two things of interest here:
+
+1. Assertions are disabled by default, as many people tend to forget. Use `-ea` to enable them.
+2. The names that we were looking for: `getfield` and `putfield`.
+
+### Down The Rabbit Hole
+
+As we can see, the instructions used for loading and storing are the same for both `volatile` and plain fields. So, it is a good idea to find where the compiler learns whether a field is `volatile` or not. Digging around a little, we end up in `share/vm/ci/ciField.hpp`. The method of interest is 
+
+```java
+bool is_volatile    () { return flags().is_volatile(); }
+```
+
+So, what we now are tasked with is finding the methods that handle loading and storing of fields and use investigate all the codepaths conditional on the result of invoking the method above. The Client Compiler processes them on the **Low-Level Intermediate Representation (LIR)** stage, in the file `share/vm/c1/c1_LIRGenerator.cpp`. 
+
+###  C1 Intermediate Representation
+
+Let’s start with the stores. The method that we are looking into is `void LIRGenerator::do_StoreField(StoreField* x)`, and resides at lines `1658:1751`. The first remarkable action that we see is 
+
+```java
+if (is_volatile && os::is_MP()) {
+  __ membar_release();
+}
+```
+
+Cool, a **memory barrier**! The two underscores are a macro that expand into `gen()->lir()->`, and the invoked method is defined in `share/vm/c1/c1_LIR.hpp`: 
+
+```java
+void membar_release()                          { append(new LIR_Op0(lir_membar_release)); }
+```
+
+So, what happened is that we have appended one more operation, `lir_membar_release`, to our representation. 
+
+```java
+if (is_volatile && !needs_patching) {
+  volatile_field_store(value.result(), address, info);
+}
+```
+
+The invoked method has platform-specific implementations. For x86 (`cpu/x86/vm/c1\_LIRGenerator\_x86.cpp`), it’s fairly simple: for 64-bit fields, we dabble in some Dark Magics to ensure write atomicity. Because the [spec says so](http://docs.oracle.com/javase/specs/jls/se7/html/jls-17.html#jls-17.7). This is a bit outdated, and may be reviewed in [Java 9](http://openjdk.java.net/jeps/188). The last thing that we want to see is one more memory barrier at the very end of the method: 
+
+```java
+if (is_volatile && os::is_MP()) {
+  __ membar();
+}
+void membar()                                  { append(new LIR_Op0(lir_membar)); }
+```
+
+That’s it for the stores.
+
+The loads are just a bit lower in the source code, and do not contain anything principally new. They have the same Dark Magic stuff for the atomicity of `long` and `double` fields, and add a `lir_membar_acquire` after the load is done.
+
+### **Memory Barrier Types And Abstraction Levels**
+
+By this time, you must be wondering what the **release** and **acquire** memory barriers are, for we have not yet introduced them. This is all because the **store** and **load** memory barriers which we have seen before are the operations in the MESI model, while we currently reside a couple of abstraction levels above it (or any other Cache Coherency Protocol). At this level, we have different terminology.
+
+Given that we have two kinds of operations, **Load** and **Store**, we have four ordered of pairs of them: **LoadLoad**, **LoadStore**, **StoreLoad** and **StoreStore**. It is therefore very convenient to have four types of memory barriers with the same names.
+
+If we have a **XY** memory barrier, it means that all **X** operations that come before the barrier must complete their execution before any **Y** operation after the barrier starts.
+
+For instance, all **Store** operations before a **StoreStore** barrier must complete earlier than any **Store** operation that comes after the barrier starts. The [JSR-133 Cookbook](http://g.oswego.edu/dl/jmm/cookbook.html) is a good read on the subject.
+
+Some people get confused and think that memory barriers take a variable as an argument, and then prohibit reorderings of the variable stores or loads across threads.
+
+Memory barriers work within one thread only. By combining them in the right way, you can ascertain that when some thread loads the values stored by another thread, it sees a consistent picture. More generally, all the abstractions that JMM goes on about are granted by the correct combination of memory barrers.
+
+Then there are the **Acquire** and **Release** semantics. A **write** operation that has **release** semantics requires that all the memory operations that come before it are finished before the operation itself starts its execution. The opposite is true for the **read-acquire** operations.
+
+One can see that a **Release Memory Barrier** can be implemented as a `LoadStore|StoreStore` combination, and the **Acquire Memory Barrier** is a `LoadStore|LoadLoad`. The `StoreLoad` is what we have seen above as `lir_membar`.
+
+...

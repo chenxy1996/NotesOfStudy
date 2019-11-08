@@ -1,8 +1,9 @@
 package test;
 
 public class Dog extends Animal{
-    public static int nums = 20;
+    public static final int nums = 20;
     public String name;
+
 
     public Dog(String name) {
         super();
