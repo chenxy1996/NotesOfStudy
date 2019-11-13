@@ -1,5 +1,11 @@
 package javaConcurrencyInPractice;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Hashtable;
+import java.util.concurrent.*;
+
 // 线程不安全
 public class NotSafeCacheTest {
     private volatile Integer key = 0;
@@ -43,6 +49,7 @@ public class NotSafeCacheTest {
                         value = calc(key);
                         test.setCache(key, value);
                     }
+
                     boolean res = ((char) (key + 97)) == value;
 
                     if (!res) {
@@ -55,6 +62,8 @@ public class NotSafeCacheTest {
             });
 
             t.start();
+
+            LinkedBlockingQueue
         }
     }
 }
