@@ -1,9 +1,6 @@
 package javaConcurrencyInPractice;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Hashtable;
+import java.util.*;
 import java.util.concurrent.*;
 
 // 线程不安全
@@ -62,8 +59,6 @@ public class NotSafeCacheTest {
             });
 
             t.start();
-
-            LinkedBlockingQueue
         }
     }
 }
