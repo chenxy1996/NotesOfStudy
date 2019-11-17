@@ -1,6 +1,7 @@
 package javaConcurrencyInPractice;
 
-import java.util.concurrent.CountDownLatch;
+import java.sql.SQLOutput;
+import java.util.concurrent.*;
 
 public class Test extends Thread implements Runnable{
     public Object obj = new Object();
@@ -25,12 +26,13 @@ public class Test extends Thread implements Runnable{
         }
     }
 
-    public static void main(String[] args) {
-        Test t = new Test();
-        t.start();
-        synchronized (t.obj) {
-        }
+    public static void cyclicBarrierTest(int threadCount) {
+        CyclicBarrier barrier = new CyclicBarrier(threadCount, () -> {
+            System.out.println(Thread.);
+        })
     }
 
-
+    public static void main(String[] args) {
+        Exchanger
+    }
 }

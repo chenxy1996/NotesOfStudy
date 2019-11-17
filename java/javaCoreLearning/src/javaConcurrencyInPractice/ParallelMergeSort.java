@@ -6,8 +6,8 @@ public class ParallelMergeSort extends MergeSort {
         if (end - start > 2) {
             int mid = (start + end) / 2;
 
-            // 如果 end - start >= 20 就用两个线程分别进行处理
-            if (end -start >= 40) {
+            // 如果 end - start >= 500 就用两个线程分别进行处理
+            if (end -start >= 500) {
                 Thread t1 = new Thread(() -> {
                     try {
                         partitionAndMerge(nums, start, mid);
