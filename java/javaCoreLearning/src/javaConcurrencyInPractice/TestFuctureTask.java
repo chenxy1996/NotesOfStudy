@@ -1,5 +1,6 @@
 package javaConcurrencyInPractice;
 
+import java.util.HashMap;
 import java.util.concurrent.*;
 
 public class TestFuctureTask {
@@ -12,10 +13,14 @@ public class TestFuctureTask {
     }
 
     public static void main(String[] args) throws ExecutionException, InterruptedException, TimeoutException {
-        FutureTask<String> f = new FutureTask<>(new MyCallable<String>());
-        Thread t = new Thread(f);
-        t.start();
-        System.out.println(f.get(5, TimeUnit.SECONDS));
-        System.out.println("chenxiangyu");
+//        FutureTask<String> f = new FutureTask<>(new MyCallable<String>());
+//        Thread t = new Thread(f);
+//        t.start();
+//        f.run();
+//        System.out.println(f.get());
+//        System.out.println("chenxiangyu");
+        int a = 11;
+        System.out.println(-1 >>> 32);
+
     }
 }

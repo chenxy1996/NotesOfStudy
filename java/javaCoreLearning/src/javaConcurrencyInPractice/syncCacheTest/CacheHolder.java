@@ -2,7 +2,7 @@ package javaConcurrencyInPractice.syncCacheTest;
 
 import java.util.concurrent.*;
 
-public class CacheHolder<U, T> {
+public class CacheHolder<U, T> implements Processor<U, T>{
     private final Processor<U, T> processor;
     private final ConcurrentHashMap<U, FutureTask<T>> cache = new ConcurrentHashMap<>();
 
@@ -10,7 +10,8 @@ public class CacheHolder<U, T> {
         this.processor = p;
     }
 
-    public T getCache(final U arg) throws ExecutionException, InterruptedException {
+    @Override
+    public T process(final U arg) throws InterruptedException, ExecutionException {
         while (true) {
             FutureTask<T> f = cache.get(arg);
             if (f == null) {
@@ -21,6 +22,7 @@ public class CacheHolder<U, T> {
                 // 如果执行 putIfAbsent 后发现返回是 null, 说明此时
                 // f 还没有执行 run 方法
                 if (f == null) {
+                    f = newf;
                     f.run();
                 }
             }
@@ -38,5 +40,43 @@ public class CacheHolder<U, T> {
                 cache.remove(arg, f);
             }
         }
+    }
+
+    public static void main(String[] args){
+        // 这是一个测试，
+        // 测试线程中执行 Thread.currentTimeMillis() 或者
+        // Thread.nanoTime() 方法
+        // 的时候, 或不会算上线程被阻塞或者被等待的时间
+        Semaphore semaphore = new Semaphore(0);
+
+        Runnable r1 = () -> {
+            try {
+                Thread.sleep(2000);
+                semaphore.release();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        };
+
+        Runnable r2 = () -> {
+            try {
+                long start = System.currentTimeMillis();
+                semaphore.acquire();
+                long end = System.currentTimeMillis();
+                System.out.println(end - start);
+
+                start = System.currentTimeMillis();
+                end = System.currentTimeMillis();
+                System.out.println(end - start);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        };
+
+        Thread t1 = new Thread(r1);
+        Thread t2 = new Thread(r2);
+
+        t2.start();
+        t1.start();
     }
 }

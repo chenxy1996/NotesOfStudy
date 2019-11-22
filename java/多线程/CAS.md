@@ -10,5 +10,13 @@ CPU 和物理内存之间的通行速度远远小于 CPU 的处理速度，所�
 
 ## CAS
 
+这里有一个 MESI 协议：
 
+M: MODIFIED.
+
+E: EXCLUSIVE
+
+S: SHARED
+
+I: INVALID
 
