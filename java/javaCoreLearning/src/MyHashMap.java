@@ -1,3 +1,5 @@
+import java.util.Map;
+
 public class MyHashMap {
     /*static field-----------------------------------------------------*/
     private static final int DEFAULT_INITIAL_CAPACITY = 16;
@@ -8,8 +10,9 @@ public class MyHashMap {
 
 
     /*instance field---------------------------------------------------*/
-    // 下一次扩大 (resize) 的时候，size 的大小
+    // 当超过 threshol 的时候,扩大 (resize)
     private int threshold;
+    // table 中实际所存的键值对个数
     private int size;
     private final float loadFactor;
 

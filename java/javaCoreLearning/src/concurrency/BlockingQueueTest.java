@@ -54,7 +54,7 @@ public class BlockingQueueTest {
         }
     }
 
-    // recursively enumerates all files in a given directory adn its subdirectories.
+    // recursively enumerates all files in a given directory and its subdirectories.
     private static void enumerate(File directory) throws InterruptedException {
         File[] files = directory.listFiles();
         for (File file : files) {
