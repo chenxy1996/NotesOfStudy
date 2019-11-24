@@ -23,18 +23,6 @@ public class MergeTest {
     }
 
     public static void main(String[] args) throws InterruptedException {
-        int[] numbers = {100, 200, 10000, 50000, 100000, 300000};
-        int[] nums;
-        int[] nums1;
-        MergeSort normalSort = new MergeSort();
-        MergeSort parallelSort = new ParallelMergeSort();
-
-        for (int eachNumber : numbers) {
-            nums = generateIntArrays(eachNumber, 256);
-            nums1 = Arrays.copyOf(nums, nums.length);
-
-            System.out.print(eachNumber + "------");
-            System.out.print("normalSort: " + sort(nums, normalSort) + " paralleclSort: " + sort(nums1, parallelSort) + "\n");
-        }
+        System.out.println(15);
     }
 }

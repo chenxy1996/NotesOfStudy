@@ -49,3 +49,19 @@ public HashMap(int initialCapacity, float loadFactor) {
 
 如果cap为0或1，最后结果是0.
 
+**补充：这里还有个算法可以让  `cap - 1` 的最左边的右边所有未都变为1：**
+
+```java
+int n = cap - 1;
+n |= n >>> 1;
+n |= n >>> 2;
+n |= n >>> 4;
+n |= n >>> 8;
+n |= n >>> 16;
+return n < 0 ? 1 : n + 1;
+// 这里没有考虑容量最大值的情况
+```
+
+
+
+## 2
