@@ -1,5 +1,6 @@
 package javaConcurrencyInPractice.syncCacheTest;
 
+import java.util.Dictionary;
 import java.util.concurrent.*;
 
 public class CacheHolder<U, T> implements Processor<U, T>{
@@ -78,5 +79,7 @@ public class CacheHolder<U, T> implements Processor<U, T>{
 
         t2.start();
         t1.start();
+
+        Dictionary
     }
 }
