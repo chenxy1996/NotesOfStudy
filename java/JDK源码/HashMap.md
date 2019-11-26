@@ -279,3 +279,121 @@ HashMap-----table--------linkedSingleList--------------------------------------
 
 **`do` 代码块中就是用来拆分旧 table  中所储存的单链表，将其拆封为两条单链表。一条链表中所有的节点的哈希值新增位上为0，另外一条则为1.（hiHead 就是这条单链表的头节点）**
 
+## 3 Map<K, V> 和 HashMap<K, V> 中的 get(Object) , getOrDefault(Object, V) , containsKey(Object) 方法
+
+HashMap<K, V> 继承 (implements) 了接口 Map<K, V>, 后者现在用来替代了接口 Dictionary<K, V>.
+
+```java
+public interface Map<K, V> {
+    /**
+     * Returns the value to which the specified key is mapped,
+     * or {@code null} if this map contains no mapping for the key.
+     *
+     * <p>More formally, if this map contains a mapping from a key
+     * {@code k} to a value {@code v} such that
+     * {@code Objects.equals(key, k)},
+     * then this method returns {@code v}; otherwise
+     * it returns {@code null}.  (There can be at most one such mapping.)
+     *
+     * <p>If this map permits null values, then a return value of
+     * {@code null} does not <i>necessarily</i> indicate that the map
+     * contains no mapping for the key; it's also possible that the map
+     * explicitly maps the key to {@code null}.  The {@link #containsKey
+     * containsKey} operation may be used to distinguish these two cases.
+     *
+     * @param key the key whose associated value is to be returned
+     * @return the value to which the specified key is mapped, or
+     *         {@code null} if this map contains no mapping for the key
+     * @throws ClassCastException if the key is of an inappropriate type for
+     *         this map
+     * (<a href="{@docRoot}/java.base/java/util/Collection.html#optional-restrictions">optional</a>)
+     * @throws NullPointerException if the specified key is null and this map
+     *         does not permit null keys
+     * (<a href="{@docRoot}/java.base/java/util/Collection.html#optional-restrictions">optional</a>)
+     */
+    V get(Object key);
+    
+    
+    /**
+     * Returns the value to which the specified key is mapped, or
+     * {@code defaultValue} if this map contains no mapping for the key.
+     *
+     * @implSpec
+     * The default implementation makes no guarantees about synchronization
+     * or atomicity properties of this method. Any implementation providing
+     * atomicity guarantees must override this method and document its
+     * concurrency properties.
+     *
+     * @param key the key whose associated value is to be returned
+     * @param defaultValue the default mapping of the key
+     * @return the value to which the specified key is mapped, or
+     * {@code defaultValue} if this map contains no mapping for the key
+     * @throws ClassCastException if the key is of an inappropriate type for
+     * this map
+     * (<a href="{@docRoot}/java.base/java/util/Collection.html#optional-restrictions">optional</a>)
+     * @throws NullPointerException if the specified key is null and this map
+     * does not permit null keys
+     * (<a href="{@docRoot}/java.base/java/util/Collection.html#optional-restrictions">optional</a>)
+     * @since 1.8
+     */
+    default V getOrDefault(Object key, V defaultValue) {
+        V v;
+        return (((v = get(key)) != null) || containsKey(key))
+            ? v
+            : defaultValue;
+    }
+    
+    
+    /**
+     * Returns {@code true} if this map contains a mapping for the specified
+     * key.  More formally, returns {@code true} if and only if
+     * this map contains a mapping for a key {@code k} such that
+     * {@code Objects.equals(key, k)}.  (There can be
+     * at most one such mapping.)
+     *
+     * @param key key whose presence in this map is to be tested
+     * @return {@code true} if this map contains a mapping for the specified
+     *         key
+     * @throws ClassCastException if the key is of an inappropriate type for
+     *         this map
+     * (<a href="{@docRoot}/java.base/java/util/Collection.html#optional-restrictions">optional</a>)
+     * @throws NullPointerException if the specified key is null and this map
+     *         does not permit null keys
+     * (<a href="{@docRoot}/java.base/java/util/Collection.html#optional-restrictions">optional</a>)
+     */
+    boolean containsKey(Object key);
+}
+```
+
+<u>首先我们来看一下 `get(Object)` 方法, 源码注释说如果 hashMap 中没有寻找的键值对，就会返回 null, 但是特别提出如果该类允许有 null 值（value）那么利用此方法返回 null 并不一定表示 hashMap 中没有该键（If this map permits null values, then a return value of does not  necessarily indicate that the map contains no mapping for the key; it's also possible that the map explicitly maps the key to null）。为了判断 hashMap 中是否含有某个特定的健值，要调用 `constainsKey(Object)` 这个方法，Map 接口要求该方法区分上面说的情况。</u>
+
+HashMap 中的 `containsKey(Object)` 的源码如下：
+
+```java
+public boolean containsKey(Object key) {
+        return getNode(hash(key), key) != null;
+    }
+
+final Node<K,V> getNode(int hash, Object key) {
+        Node<K,V>[] tab; Node<K,V> first, e; int n; K k;
+        if ((tab = table) != null && (n = tab.length) > 0 &&
+            (first = tab[(n - 1) & hash]) != null) {
+            if (first.hash == hash && // always check first node
+                ((k = first.key) == key || (key != null && key.equals(k))))
+                return first;
+            if ((e = first.next) != null) {
+                if (first instanceof TreeNode)
+                    return ((TreeNode<K,V>)first).getTreeNode(hash, key);
+                do {
+                    if (e.hash == hash &&
+                        ((k = e.key) == key || (key != null && key.equals(k))))
+                        return e;
+                } while ((e = e.next) != null);
+            }
+        }
+        return null;
+    }
+```
+
+**其并没有通过检测 get() 方法的值是多少来判断 hashMap 中是否存在这个键，而是判断储存该键的 node 是否存在。（node 实现了 Map.Entry 接口）**
+

@@ -1,6 +1,7 @@
 package javaConcurrencyInPractice.syncCacheTest;
 
 import java.util.Dictionary;
+import java.util.HashMap;
 import java.util.concurrent.*;
 
 public class CacheHolder<U, T> implements Processor<U, T>{
@@ -48,38 +49,42 @@ public class CacheHolder<U, T> implements Processor<U, T>{
         // 测试线程中执行 Thread.currentTimeMillis() 或者
         // Thread.nanoTime() 方法
         // 的时候, 或不会算上线程被阻塞或者被等待的时间
-        Semaphore semaphore = new Semaphore(0);
+//        Semaphore semaphore = new Semaphore(0);
+//
+//        Runnable r1 = () -> {
+//            try {
+//                Thread.sleep(2000);
+//                semaphore.release();
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
+//        };
+//
+//        Runnable r2 = () -> {
+//            try {
+//                long start = System.currentTimeMillis();
+//                semaphore.acquire();
+//                long end = System.currentTimeMillis();
+//                System.out.println(end - start);
+//
+//                start = System.currentTimeMillis();
+//                end = System.currentTimeMillis();
+//                System.out.println(end - start);
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
+//        };
+//
+//        Thread t1 = new Thread(r1);
+//        Thread t2 = new Thread(r2);
+//
+//        t2.start();
+//        t1.start();
 
-        Runnable r1 = () -> {
-            try {
-                Thread.sleep(2000);
-                semaphore.release();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        };
+        HashMap h = null;
 
-        Runnable r2 = () -> {
-            try {
-                long start = System.currentTimeMillis();
-                semaphore.acquire();
-                long end = System.currentTimeMillis();
-                System.out.println(end - start);
+        System.out.println();
 
-                start = System.currentTimeMillis();
-                end = System.currentTimeMillis();
-                System.out.println(end - start);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        };
-
-        Thread t1 = new Thread(r1);
-        Thread t2 = new Thread(r2);
-
-        t2.start();
-        t1.start();
-
-        Dictionary
+        LinkedBlockingQueue
     }
 }
