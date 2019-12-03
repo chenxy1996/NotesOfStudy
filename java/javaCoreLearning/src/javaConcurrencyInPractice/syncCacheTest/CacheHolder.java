@@ -44,7 +44,7 @@ public class CacheHolder<U, T> implements Processor<U, T>{
         }
     }
 
-    public static void main(String[] args){
+    public static void main(String[] args) {
         // 这是一个测试，
         // 测试线程中执行 Thread.currentTimeMillis() 或者
         // Thread.nanoTime() 方法
@@ -84,7 +84,5 @@ public class CacheHolder<U, T> implements Processor<U, T>{
         HashMap h = null;
 
         System.out.println();
-
-        LinkedBlockingQueue
     }
 }
