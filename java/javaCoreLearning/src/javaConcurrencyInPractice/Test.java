@@ -1,34 +1,37 @@
 package javaConcurrencyInPractice;
 
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodType;
 import java.sql.SQLOutput;
 import java.util.concurrent.*;
+import static java.lang.invoke.MethodHandles.lookup;
 
-public class Test extends Thread implements Runnable{
-    public Object obj = new Object();
-
-    @Override
-    public void run() {
-        try {
-            boolean flag = true;
-            while (!Thread.currentThread().isInterrupted()) {
-                if (flag) {
-                    System.out.println("in run() - about to sleep for 20 seconds.");
-                    flag = false;
-                }
-                synchronized (obj) {
-                    System.out.println();
-                }
-                Thread.sleep(20000);
-            }
-
-        } catch (InterruptedException e) {
-//            Thread.currentThread().interrupt();
+public class Test {
+    class GrandFather {
+        void thinking() {
+            System.out.println("i am grandfather");
         }
     }
 
-    public static void cyclicBarrierTest(int threadCount) {
+    class Father extends GrandFather {
+        void thinking() {
+            System.out.println("i am father");
+        }
+    }
+
+    class Son extends Father {
+        void thinking() {
+            try {
+                MethodType mt = MethodType.methodType(void.class);
+                MethodHandle mh = lookup().findSpecial(GrandFather.class,
+                        "thinking", mt, getClass());
+                mh.invoke(this);
+            } catch (Throwable e) {
+            }
+        }
     }
 
     public static void main(String[] args) {
+        (new Test().new Son()).thinking();
     }
 }

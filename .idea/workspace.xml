@@ -2,12 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="96a8c66c-9700-4bbf-bce3-d52f02a5e316" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/java/javaCoreLearning/src/Colletions/FinalizeEscapeGC.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/java/javaCoreLearning/out/production/javaCoreLearning/concurrency/Test.class" beforeDir="false" afterPath="$PROJECT_DIR$/java/javaCoreLearning/out/production/javaCoreLearning/concurrency/Test.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/java/javaCoreLearning/out/production/javaCoreLearning/test/Dog.class" beforeDir="false" afterPath="$PROJECT_DIR$/java/javaCoreLearning/out/production/javaCoreLearning/test/Dog.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/java/javaCoreLearning/src/concurrency/Test.java" beforeDir="false" afterPath="$PROJECT_DIR$/java/javaCoreLearning/src/concurrency/Test.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/java/javaCoreLearning/src/test/Dog.java" beforeDir="false" afterPath="$PROJECT_DIR$/java/javaCoreLearning/src/test/Dog.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/java/多线程/笔记Java_Memory_Model_Under_The_Hood.md" beforeDir="false" afterPath="$PROJECT_DIR$/java/多线程/笔记Java_Memory_Model_Under_The_Hood.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/miniprogram/test" beforeDir="false" afterPath="$PROJECT_DIR$/miniprogram/test" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/miniprogram/test/app.json" beforeDir="false" afterPath="$PROJECT_DIR$/miniprogram/test/app.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/raw/understandinges6/manuscript/00-Introduction.md" beforeDir="false" afterPath="$PROJECT_DIR$/raw/understandinges6/manuscript/00-Introduction.md" afterDir="false" />
@@ -26,7 +20,7 @@
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/java/javaCoreLearning" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
   </component>
   <component name="RunDashboard">
     <option name="ruleStates">
@@ -51,6 +45,7 @@
       <option name="presentableId" value="Default" />
       <updated>1573217413961</updated>
       <workItem from="1573217415284" duration="30000" />
+      <workItem from="1575699899326" duration="57000" />
     </task>
     <servers />
   </component>
@@ -62,7 +57,9 @@
       <map>
         <entry key="MAIN">
           <value>
-            <State />
+            <State>
+              <option name="COLUMN_ORDER" />
+            </State>
           </value>
         </entry>
       </map>
