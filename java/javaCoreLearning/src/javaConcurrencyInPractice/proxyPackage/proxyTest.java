@@ -17,7 +17,7 @@ public class proxyTest {
         void toShout();
     }
 
-    static class Dog implements Animal, Shout{
+    static class Dog implements Animal, Shout {
         @Override
         public void getSpecies() {
             System.out.println("This is a dog!");
