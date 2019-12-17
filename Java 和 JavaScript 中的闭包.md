@@ -10,7 +10,7 @@
 
 如果有人对值 value 和引用 reference 有不清楚的地方可以看看笔者之前写的 *C++ 中值传递、引用传递、指针传递*，或许会受到一些启发。
 
-## Closure In Java
+## Closure In Java Ⅰ
 
 下面的列表清单：
 
@@ -116,6 +116,43 @@ for (const i = 0; i < 5; i++) {
 ```
 
 最后在控制台只能看见打印出一个 0 后就报错：TypeError: Assignment to constant variable. 也是出于同样的原因，最后一步的 `i++` 。
+
+##  Closure In Java Ⅱ
+
+回到 java 闭包这一话题。
+
+之前的结论是 java 闭包捕获外界变量的方式是值捕获。**<u>编译器会复制一份被捕捉的外界变量。</u>** 对 java 虚拟机来说是无法识别出一个变量是否是由编译器复制捕获而复制产生的。内部类、局部方法中的类、lambda表达式如果涉及到闭包都是采用该方式。
+
+如下面的代码：
+
+```java
+int i = 0;
+Runnable r = () -> System.out.println(i);
+```
+
+编译器会在 `r` 对象中拷贝一份 `i` 的值。
+
+其具体的大概实现是：
+
+第一步：java 编译器会创建一个新类, 起名为 Runnable$1, 该名字是笔者随便取的，其名称由编译器自己决定。
+
+```java
+class Runnable$1 {
+    private int copyi;
+    public Runnable$1(int arg) {
+        copyi = arg;
+    }
+    public void run() {
+        System.out.println(copyi);
+    }
+}
+```
+
+第二部：实例化一个 `Runnable$1`. 将 `i` 作为构造函数的参数传入。
+
+```java
+Runnble r = new Runnable$1(i);
+```
 
 ## Closure In JavaScript
 
