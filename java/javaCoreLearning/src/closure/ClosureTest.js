@@ -18,4 +18,15 @@ function closureTest() {
     functionList.forEach((elem) => elem());
 }
 
-closureTest();
+// closureTest();
+function alterVariable() {
+    let a = 0;
+    for (let i = 0; i < 5; i++) {
+        (function() {
+            console.log(a);
+            a++;
+        })();
+    }
+}
+
+alterVariable();

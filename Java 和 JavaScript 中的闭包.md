@@ -1,6 +1,6 @@
 [toc]
 
-# Closure: Difference Between Java And JavaScript (闭包：Java 和 JavaScript 的不同)
+# Closure: Difference Between Java And JavaScript, Python (闭包：Java 和 JavaScript 以及 Python 的不同)
 
 ## Conclusion
 
@@ -237,7 +237,7 @@ ECMA6 之后则可以直接将 `for` 循环中的 `var i =0` 改为 `let i = 0`�
 
 ## 拓展：Python 的闭包
 
-Python 的闭包是引用捕获，但是无法对外界捕获变量进行赋值。除非声明捕获的变量为 `nonlocal`
+Python 的闭包是引用捕获，但是无法对外界捕获变量进行赋值, 除非声明捕获的变量为 `nonlocal`
 
 ```python
 def test():
@@ -260,5 +260,117 @@ def test():
 
 if __name__ == "__main__":
     test()
+```
+
+## 修改捕获的变量的值
+
+前面写那么多，读者自然会想到闭包能否修改捕获的外界变量的值呢？
+
+对于 java 来说是不行的，毕竟语言规定其捕获的变量必须是 final or effectively final. 但是对于 javaScript 来说则是完全可行的。
+
+先来看 javaScript：
+
+```js
+function alterVariable() {
+    let a = 0;
+    for (let i = 0; i < 5; i++) {
+        (function() {
+            console.log(a);
+            a++;
+        })();
+    }
+}
+
+alterVariable();
+```
+
+其在控制台输出的结果是：
+
+```js
+0
+1
+2
+3
+4
+```
+
+可以看到，javaScript 是可以通过引用来改变闭包中所捕获的外界变量的值的。
+
+再来看看 java:
+
+```java
+public class ClosureTest {
+    public static void main(String[] args) {
+        int a = 0;
+        
+        for (int i = 0; i < 5; i++) {
+            Runnable r = () -> {
+                System.out.println(a);
+                a++;
+            };
+            r.run();
+        }
+    }
+}
+```
+
+上述代码会被编译器检测到错误，原因之前也说了。
+
+但是既然不能直接改变 `a` 的值，我们可以通过将 `a` 声明成一个引用类型来改变，从而间接达到我们的目的：
+
+```java
+public class ClosureTest {
+    public static void main(String[] args) {
+        int[] a = {0};
+        
+        for (int i = 0; i < 5; i++) {
+            Runnable r = () -> {
+                System.out.println(a[0]);
+                a[0] += 1;
+            }；
+            r.run();
+        }
+    }
+}
+```
+
+`a` 是一个引用类型（int 数组）, `Runnbale r` 闭包捕获 `a`, 其 `run` 方法中并没有改变引用的值而是改变了引用所指向的对象的值。这样子间接可以达到我们想要的效果。读者可能会觉得这种写法会不会是一个“邪道”，大可不必有这样的担忧，在 jdk 源码内部也有不少代码是利用这种方式间接实现“改变”闭包捕获的外界的变量值的目的。
+
+最后作为一个拓展，也来看看 python 中能否实现：
+
+```python
+def closure_test():
+    a = 0 
+    
+    for i in range(0, 5):
+        def run():
+            print(a)
+            a += 1
+        run()
+        
+	return
+
+if __name__ == "__main__":
+    closure_test()
+```
+
+运行的时候发现出错，错误信息为：local variable 'a' referenced before assignment.
+
+原因之前也说过：Python 的闭包是引用捕获，但是无法对外界捕获变量进行赋值, 除非声明捕获的变量为 `nonlocal`。在 `run` 函数前面加上一句 `nonlocal a`, 就能运行成功.
+
+当然，也可以用把刚刚在 java 中用的方法:
+
+```python
+def closure_test():
+    a = [0]
+    
+    for i in range(0, 5):
+        def run():
+            print(a[0])
+            a[0] == 1
+        run()
+
+if __name__ == "__main__":
+    closure_test()
 ```
 

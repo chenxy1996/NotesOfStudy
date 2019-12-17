@@ -26,7 +26,15 @@ public class Test {
 //        System.out.println(i);
 //        System.out.println(aTest.j);
 //        System.out.println(aTest.k);
-        System.out.println(A.name);
+        int[] a = {0};
+
+        for (int i = 0; i < 5; i++) {
+            Runnable r = () -> {
+                System.out.println(a[0]);
+                a[0] += 1;
+            };
+            r.run();
+        }
     }
 }
 
