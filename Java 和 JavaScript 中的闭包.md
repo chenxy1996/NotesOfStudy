@@ -148,11 +148,117 @@ class Runnable$1 {
 }
 ```
 
-第二部：实例化一个 `Runnable$1`. 将 `i` 作为构造函数的参数传入。
+第二部：实例化一个 `Runnable$1` 对象， 并将 `i` 作为构造函数的参数传入。
 
 ```java
 Runnble r = new Runnable$1(i);
 ```
 
 ## Closure In JavaScript
+
+与 Java 相反， **JavaScript 闭包获取外界变量是通过引用捕获的方式**。
+
+看如下经典代码：
+
+```js
+function closureTest() {
+    var functionList =[];
+
+    // 开始给上面的数组中添加元素
+    for (var i = 0; i < 5; i++) {
+        functionList.push(() => {
+            console.log(i);
+        })
+    }
+
+    // 依次执行上面数组中所储存的函数
+    functionList.forEach((elem) => elem());
+}
+
+closureTest();
+```
+
+最后控制台打印的结果是：
+
+```js
+5
+5
+5
+5
+5
+```
+
+`i` 的 标识符为 `var` ，说明 `i` 是不在 `for` 循环的块状作用域中的，而是在函数 `closureTest` 的作用域中，`functionList` 里面的每一个函数都会捕获 `i` 的引用，而 `i` 的值是变化的直到等于5。
+
+仿照 java 的做法，在循环中定义一个新的变量 `j`：
+
+```js
+function closureTest() {
+    var functionList = [];
+    
+    for (var i = 0; i < 5; i++) {
+        var j = i;
+        functionList.push(() => {
+            console.log(j);
+        })
+    }
+}
+```
+
+但是结果确实：
+
+```js
+4
+4
+4
+4
+4
+```
+
+其原因和之前一样，`j` 看似是在循环的块作用域中，其实不是，它和直接声明在 `for` 之外的效果是一样的。
+
+为了得到想要的结果，就必须创建一个新的作用域来保存每一次循环中 `i` 的值，ECMA6 之前没有 `let` 和 `const`, 为了实现想要的效果，只能通过函数的作用域。所以可以创建一个立即执行函数：
+
+```js
+function closureTest() {
+    var functionList = [];
+    
+    for (var i = 0; i < 5; i++) {
+		(function(j) {
+            functionList.push(() => {
+                console.log(j);
+            })
+        })(i);
+    }
+}
+```
+
+ECMA6 之后则可以直接将 `for` 循环中的 `var i =0` 改为 `let i = 0`， 从而让每次循环都会产生一个块作用域。
+
+## 拓展：Python 的闭包
+
+Python 的闭包是引用捕获，但是无法对外界捕获变量进行赋值。除非声明捕获的变量为 `nonlocal`
+
+```python
+def test():
+    function_list = []
+    arg = 1
+    i = 0
+
+    # initialization
+    while (i < 5):
+        def innerFunction():
+            nonlocal arg
+            print(arg + i)
+            arg += 1
+            
+        function_list.append(innerFunction)
+        i += 1
+    
+    for each in function_list:
+        each()
+
+if __name__ == "__main__":
+    test()
+```
 
