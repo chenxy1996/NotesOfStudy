@@ -11,7 +11,10 @@ public class Test {
         iter.add("lele");
         System.out.println(iter.previous());
         iter.add("chen");
+        iter.add("xiaobai");
         System.out.println(al);
-        iter.remove();
+
+        String[] array = al.toArray(new String[0]);
+        System.out.println(Arrays.toString(array));
     }
 }
