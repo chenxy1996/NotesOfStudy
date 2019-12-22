@@ -1,20 +1,23 @@
 package Colletions;
 
+import interfaceTest.Interface;
+import org.w3c.dom.ls.LSOutput;
+
 import java.util.*;
 import java.util.function.Consumer;
 
 public class Test {
     public static void main(String[] args) {
-        List<String> al = new ArrayList<>();
-        ListIterator<String> iter = al.listIterator();
+        Set<Integer>  set = new TreeSet<>();
+        set.add(3);
+        set.add(7);
+        set.add(1);
+        set.add(8);
+        set.add(2);
+        set.add(9);
+        System.out.println(set);
 
-        iter.add("lele");
-        System.out.println(iter.previous());
-        iter.add("chen");
-        iter.add("xiaobai");
-        System.out.println(al);
+        Consumer<String> cons = (String str) -> System.out.println(str);
 
-        String[] array = al.toArray(new String[0]);
-        System.out.println(Arrays.toString(array));
     }
 }

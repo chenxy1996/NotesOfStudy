@@ -8,7 +8,7 @@
 
 但是今晚（20191218）想想还是得有这么个东西：一来是自己写笔记的过程也相当于是个梳理的过程，能加深对不熟悉部分的理解程度；二来是方便以后的复习。
 
-有些人看过的东西能永远记住，可惜的是我不是那类人，还是有些不甘心的。所以就将这份笔记的名称暂且设置为 “心有不甘但有用”。
+有些人看过的东西能永远记住，并且能灵活运用，可惜的是我不是那类人，还是有些不甘心的。所以就将这份笔记的名称暂且设置为 “心有可耻但有用”。
 
 # 正文
 
@@ -146,4 +146,166 @@ private int newCapacity(int minCapacity) {
      * which helps when add(E) is called in a C1-compiled loop.
      */
 ```
+
+和 JIT 的 c1 编译器优化有关。
+
+## 允许存储 null 的 Collection 和 Map
+
+- HashSet
+
+## Map
+
+### hashCode 方法 和 equals 方法
+
+如果 `a.euquals(b) == true` 那么 `a.hashCode() == b.hashCode()` ，把 `a` 或 `b` 可能为 `null`
+
+的情况考虑进去：如果 `Objects.hashCode(a) == Objects.hashCode(b)` 那么 `Objects.equals(a, b) == true`.
+
+## 排序 HashMap
+
+## 关于函数式接口 Functional Interface
+
+### 只有一个抽象方法的接口，Object 的 public 方法除外
+
+对于只有一个抽象方法的接口，需要这种接口的对象时，就可以提供一个 lambda 表达式。这种接口称为函数式接口 (Functional Interface)。
+
+另外，函数式接口中也可以定义 `Object` 类的 `pulibc`  的方法，注意：必须是 `public` 方法。
+
+```java
+@FunctionalInterface
+public interface Func {
+    boolean equals(Object obj);
+    void run();
+}
+```
+
+上面代码中的函数式接口 `Func` 是行得通的。
+
+下面的就不行.
+
+```java
+@FunctionalInterface
+public interface Func {
+    Object clone();
+    void run();
+}
+```
+
+因为 `clone()`  方法在 `Object` 类中是 `protected`。
+
+java API 中的一些接口会重新声明 `Object`  方法来附加 javadoc 注释。例如：
+
+```java
+@FunctionalInterface
+public interface Comparator<T> {
+    int compare(T o1, T o2);
+    
+    /**
+     * Indicates whether some other object is &quot;equal to&quot; this
+     * comparator.  This method must obey the general contract of
+     * {@link Object#equals(Object)}.  Additionally, this method can return
+     * {@code true} <i>only</i> if the specified object is also a comparator
+     * and it imposes the same ordering as this comparator.  Thus,
+     * {@code comp1.equals(comp2)} implies that {@code sgn(comp1.compare(o1,
+     * o2))==sgn(comp2.compare(o1, o2))} for every object reference
+     * {@code o1} and {@code o2}.<p>
+     *
+     * Note that it is <i>always</i> safe <i>not</i> to override
+     * {@code Object.equals(Object)}.  However, overriding this method may,
+     * in some cases, improve performance by allowing programs to determine
+     * that two distinct comparators impose the same order.
+     *
+     * @param   obj   the reference object with which to compare.
+     * @return  {@code true} only if the specified object is also
+     *          a comparator and it imposes the same ordering as this
+     *          comparator.
+     * @see Object#equals(Object)
+     * @see Object#hashCode()
+     */
+    boolean equals(Object obj);
+}
+```
+
+### 不能把 lambda 表达式赋给 Object 变量，Object 不是一个函数式接口
+
+如下：
+
+```java
+// 编译错误
+Object cons = (String x) -> System.out.println(x);
+```
+
+可以这样：
+
+```java
+Consumer<String> cons = (String x) -> System.out.println(x);
+Object obj = cons;
+```
+
+ ### 方法引用
+
+方法引用的三种形式：
+
+- instance::instanceMethod
+- class::staticMethod
+- class::instanceMethod
+
+都相当于一个 lambda 表达式。
+
+- instance::instanceMethod 相当于 (T... args)  -> **instance.instanceMethod(args);**
+
+- class::staticMethod 相当于 (T... args) -> **class.staticMethod(args);**
+
+- class::instanceMethod 相当于 (U instance, T... args) -> **instance.instanceMethod(args);**
+
+举个例子：
+
+```java
+public class Test {
+    private String attr;
+    private static String classAttr = "Test Class";
+
+    public Test(String arg) {
+        attr = arg;
+    }
+
+    public String getAttr(String description) {
+        return "instance " + attr + ": " + description;
+    }
+
+    public static String getClassAttr(String description) {
+        return "static " + classAttr + ": " + description;
+    }
+
+    public static void main(String[] args) {
+        Test aTest = new Test("chen");
+        Test bTest = new Test("lele");
+
+        // 相当于 aTestMethodRef = (String s) -> aTest.getAttr(s)
+        Function<String, String> aTestMethodRef = aTest::getAttr;
+        // 相当于 bTestMethodRef = (String s) => bTest.getAttr(s)
+        Function<String, String> bTestMethodRef = bTest::getAttr;
+
+        // instance chen: nihao
+        System.out.println(aTestMethodRef.apply("nihao"));
+        // instance lele: nihao
+        System.out.println(bTestMethodRef.apply("nihao"));
+
+        // -----------------------------------------------------------
+        Function<String, String> staticMethodRef = Test::getClassAttr;
+
+        System.out.println(staticMethodRef.apply("nihao"));
+
+        // -----------------------------------------------------------
+        BiFunction<Test, String, String> instanceMethodRef = Test::getAttr;
+
+        // instance chen: nihao
+        System.out.println(instanceMethodRef.apply(aTest, "nihao"));
+        // instance lele: nihao
+        System.out.println(instanceMethodRef.apply(bTest, "nihao"));
+    }
+}
+```
+
+
 
