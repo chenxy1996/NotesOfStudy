@@ -307,5 +307,13 @@ public class Test {
 }
 ```
 
+## Generic 泛型
+
+关于泛型，说实话掌握得也不是很好，但是碰到一点需要记住的就记下来吧，以后经常翻过来看看。
+
+### PECS 原则
+
+ *effective java* 一书中给出了该原则，即 Producer: <? extends T>; Consumer: <? super T>
+
 
 
