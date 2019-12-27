@@ -10,7 +10,7 @@ public class MyHashMap {
 
 
     /*instance field---------------------------------------------------*/
-    // 当超过 threshol 的时候,扩大 (resize)
+    // 当超过 threshold 的时候,扩大 (resize)
     private int threshold;
     // table 中实际所存的键值对个数
     private int size;

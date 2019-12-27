@@ -12,7 +12,17 @@
 
 # 正文
 
-## 其它笔记（未分类）
+## 创建子类的同时不会创建父类
+
+在 `java language specification` 中指出了子类调用构造函数时会先调用父类的构造函数，如果父类还有其父类，则再调用父类的父类的构造函数，依次递归 `recursion` 。
+
+但是**这不代表在内存中创建子类对象的时候会同时创建父类对象。**
+
+```java
+
+```
+
+
 
 ## Iterator
 
@@ -314,6 +324,121 @@ public class Test {
 ### PECS 原则
 
  *effective java* 一书中给出了该原则，即 Producer: <? extends T>; Consumer: <? super T>
+
+### （非常值得看）关于泛型的强制类型转换(自己摸索着总结的)
+
+**有一个最基本的原则是（以 `List` 举例）：假设类 `B` 继承了 类 `A`。**
+
+**那么 `List<B>` 是无法转强制换为 `List<A>` 的。**
+
+```java
+List<B> list = new ArrayList<>();
+List<A> newList = (List<A>) list; // 编译器会报错
+```
+
+就算把 `A` 换成 `Object` 也不行。
+
+```java
+List<Object> newList = (List<Object>) list; // 编译器报错
+```
+
+但是我们可以直接"骗过"编译器：
+
+```java
+List newList = list; //不会报错，可以这样；
+```
+
+如上面所示，此时编译器通过类型消除。使得 `newList` 中可以存储的是 `Object`. 
+
+```java
+newList.add(new Integer(1));
+```
+
+如果接下来通过 `newList` 来获取该元素 `get()`, 那么获取的元素的类型都将是 `Object`.
+
+但是如果通过 `list` 来获取该元素 `B b = list.get(1)`，将会出现`ClassCastException` 异常。
+
+因为骗过编译器后, 编译器会将放回的 `Integer` 对象强制转换为  `B` 类型，所以会出现该异常。
+
+### 泛型类向下强制转换
+
+对于上面如果很想将 `List<B> ` 强制转换为 `List<A>`. 可以用下面的方法：
+
+```java
+List<B> list = new ArrayList<>();
+List<?> helper = list; // List hlper = list 也可以
+List<A> newList = (List<A>) helper;  // 会出现警告，但是编译是可以通过的
+```
+
+上面第二步也可以写成以下各种方式，都可以：
+
+```java
+List<? extends Employee> helper = list;
+List<? extends Object> helper = list;
+List<? extends Manager> helper = list;
+List<? extends Executor> helper = list;
+
+List<? super Executor> helper = list;
+
+List helper = list;
+```
+
+都会出现警告，但是都可以编译成功。
+
+可以得出结论：
+
+<u>**（1）只要前一个泛型类型是个范围且包括后面要强制转换的泛型的类型 (或者是最原始的类型即什么都没有 `List` ), 就可以直接转换，在该步编译器和执行期都不会报错。**</u>
+
+具体的例子就不放了，上面有。
+
+<u>**（2）把一个静态类型 (static type) 为泛型类且其泛型类型是个范围(原始类型也可以，如 `List` ) 转换成具体泛型类型的时候编译器是不会报错的，只会出现警告。**</u>
+
+### 通配符
+
+除了上面的 PECS 原则外, 还有一些可以说的，关于通配符 `?`.
+
+```java
+class Employee {
+   	private final String name;
+    private final int id;
+
+    public Employee(String name, int id) {
+        this.name = name;
+        this.id = id;
+    }
+
+    public String getName() { return name; }
+    public int getId() { return id; }
+    public int getRank() { return rank; }
+
+    @Override
+    public String toString() {
+        return id + " " + name;
+    }
+}
+
+class Manager extends Empoyee {
+    public Manager(String name, int id) {
+        super(name, id);
+    }
+}
+
+class Executor extends Manager {
+    public Executor(String name, int id) {
+        super(name, id);
+    }
+}
+
+class WildCardTest {
+    public static void main(String[] args) {
+        List<Employee> list = new ArrayList<>();
+        list.add(new Employee("chen", 1));
+        List<?> aList = list;
+        Object obj = aList.get(0); // aList 取出的只能为 Object 类型
+        aList.add(new Employee("lele", 2)); // 错误, aList 无法添加新的元素
+    }
+}
+```
 
 
 
