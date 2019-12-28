@@ -317,6 +317,77 @@ public class Test {
 }
 ```
 
+### 延伸：方法引用能否用接口：`Interface::instanceMethod` 以及多态性
+
+上面三种方法引用方式，其中 instance::instanceMethod 和 class:staticMethod 的调用的具体方法在调用的时候就已经确定了。看最后一种方法引用：class::instanceMethod，这里有两个问题：1. 其是否会有多态性。2. 将 class 换成 interface 是否可行.
+
+先看第一个问题：
+
+```java
+public class InterfaceReferenceTest {
+    interface Greeting {
+        void sayHello(Object obj);
+    }
+
+    static class Dog implements Greeting {
+        @Override
+        public void sayHello(Object o) {
+            System.out.println("wang! " + o);
+        }
+    }
+
+    static class Cat implements Greeting {
+        @Override
+        public void sayHello(Object o) {
+            System.out.println("miao! " + o);
+        }
+    }
+
+    public static void main(String[] args) {
+        Cat aCat = new Cat();
+        Dog aDog = new Dog();
+        BiConsumer<Greeting, Object> binaryFunction = Greeting::sayHello;
+        // miao! chen
+        binaryFunction.accept(aCat, "chen");
+        // wang! chen
+        binaryFunction.accept(aDog, "chen");
+    }
+}
+```
+
+可以使用，说明是在虚拟机运行中使用了 `invokeinterface` 指令.
+
+第二个问题,:
+
+```java
+public class polymorphicTest {
+    static class SupClass {
+        public void saySomething() {
+            System.out.println("I'm SupClass!");
+        }
+    }
+
+    static class SubClass extends SupClass {
+        @Override
+        public void  saySomething() {
+            System.out.println("I'm SubClass");
+        }
+    }
+
+    public static void main(String[] args) {
+        Consumer<SupClass> cons = SupClass::saySomething;
+        cons.accept(new SupClass()); // I'm SupClass!
+        cons.accept(new SubClass()); // I'm SubClass
+    }
+}
+```
+
+
+
+
+
+
+
 ## Generic 泛型
 
 关于泛型，说实话掌握得也不是很好，但是碰到一点需要记住的就记下来吧，以后经常翻过来看看。

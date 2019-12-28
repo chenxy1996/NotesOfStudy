@@ -2,5 +2,5 @@ package schoolTest;
 
 public interface Teaching {
     String getSubject();
-    String setSubject(String newSubject);
+    void setSubject(String newSubject);
 }
