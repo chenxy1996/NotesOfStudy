@@ -1,7 +1,5 @@
 package methodReference;
 
-import java.util.function.Consumer;
-
 public class polymorphicTest {
     static class SupClass {
         public void saySomething() {
@@ -16,17 +14,11 @@ public class polymorphicTest {
         }
 
         public void saySomethingElse() {
-            System.out.println("")
+            System.out.println("This is another infomation");
         }
     }
 
     public static void main(String[] args) {
-        Consumer<? super SupClass> cons = SubClass::saySomething;
-        // cons.accept(? extends SupClass)
-        // 匹配过程：
-        // 1. cons.accept(new SupClass());
-        // 2. cons.accept(mew SubClass());
-        cons.accept(new SupClass());
-        cons.accept(new SubClass());
+
     }
 }

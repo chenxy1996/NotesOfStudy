@@ -74,7 +74,7 @@ System.out.println(iter.next())
 
 解释后半部分，直接看相关 jdk 源码会更容易说明一些, 解释。
 
-**以 `LinkedList` 源码中的 `ListItr` 内部类为例，他有个内部成员变量 `lastReturned`,  专门用来记录 `next()` 或是 `previous()`  方法返回的值。 如果其值为 `null` 那么将会抛出 `IlleagalStateException` 错误。并且在最后会把 `lastReturned` 重新设置为 `null`（仅 remove 方法会这样做，set 方法不会将其重新设置为 `null`）。add 方法也会将其设置为 `null`**
+**以 `LinkedList` 源码中的 `ListItr` 内部类为例，他有个内部成员变量 `lastReturned`,  专门用来记录 `next()` 或是 `previous()`  方法返回的值。 如果其值为 `null` 那么将会抛出 `IlleagalStateException` 错误。`remove` 在最后会把 `lastReturned` 重新设置为 `null`（仅 remove 方法会这样做，set 方法不会将其重新设置为 `null`）。add 方法也会将其设置为 `null`**
 
 明白了以上这一段，基本就能搞清楚 ListIterator 一系列的操作了。
 
@@ -382,11 +382,7 @@ public class polymorphicTest {
 }
 ```
 
-
-
-
-
-
+说明是可以使用的。
 
 ## Generic 泛型
 
@@ -462,7 +458,9 @@ List helper = list;
 
 具体的例子就不放了，上面有。
 
-<u>**（2）把一个静态类型 (static type) 为泛型类且其泛型类型是个范围(原始类型也可以，如 `List` ) 转换成具体泛型类型的时候编译器是不会报错的，只会出现警告。**</u>
+<u>**（2）把一个静态类型 (static type) 为泛型类且其泛型类型是个范围(原始类型也可以，如 `List` ) 转换成具体泛型类型的时候编译器是不会报错的，只会出现警告。 **</u>
+
+这就非常容易导致出错，恶意代码的注入。
 
 ### 通配符
 

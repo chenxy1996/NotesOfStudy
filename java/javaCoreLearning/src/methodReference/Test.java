@@ -40,6 +40,7 @@ public class Test {
         System.out.println(staticMethodRef.apply("nihao"));
 
         // -----------------------------------------------------------
+        // 相当于 instanceMethodRef = (Test obj, String s) -> obj.getAttr(s)
         BiFunction<Test, String, String> instanceMethodRef = Test::getAttr;
 
         // instance chen: nihao
