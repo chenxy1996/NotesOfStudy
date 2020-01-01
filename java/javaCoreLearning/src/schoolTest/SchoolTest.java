@@ -1,34 +1,23 @@
 package schoolTest;
 
-import java.util.Arrays;
-import java.util.Comparator;
+import methodReference.Employee;
+
+import java.util.*;
 
 public class SchoolTest {
+    public static <T> void  printAllNames(int... persons) {
+        System.out.println(persons.getClass().getSimpleName());
+    }
+
     public static void main(String[] args) {
-        SchoolStuff[] staff = new SchoolStuff[3];
-        Principal prin = new Principal("chen", 23);
-        staff[0] = prin;
-        staff[1] = new Teacher("xiaobai", 3, "math");
-        staff[2] = new GradeDirector("lele", 12, "chinese");
-
-        System.out.println(prin.getAuth());
-
-        System.out.println(Arrays.toString(staff));
-        Arrays.sort(staff);
-        System.out.println(Arrays.toString(staff));
-        Arrays.sort(staff, Comparator.comparingInt(Person::getAge).reversed());
-        System.out.println(Arrays.toString(staff));
-
-        for (SchoolStuff eachStaff : staff) {
-            System.out.println(eachStaff.getId() + " "
-                    + eachStaff.getName() + " " +
-                            eachStaff.getClass().getSimpleName());
-        }
-
-        for (SchoolStuff eachStaff : staff) {
-            if (eachStaff instanceof Teaching) {
-                System.out.println(((Teaching) eachStaff).getSubject());
-            }
-        }
+        Teacher[] teachers = new Teacher[2];
+        teachers[0] = new Teacher("CHEN", 23, "MATH");
+        teachers[1] = new Teacher("LELE", 10, "CHINESE");
+        List<Teacher> teacherList = Arrays.asList(teachers);
+        Collections.sort(teacherList, Comparator.comparingInt(Person::getAge).reversed());
+        System.out.println(teacherList);
+        System.out.println(Arrays.toString(teachers));
+        teacherList.sort(Comparator.comparingInt(Person::getAge));
+        System.out.println(teacherList);
     }
 }

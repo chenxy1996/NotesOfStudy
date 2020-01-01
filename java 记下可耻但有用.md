@@ -8,7 +8,7 @@
 
 但是今晚（20191218）想想还是得有这么个东西：一来是自己写笔记的过程也相当于是个梳理的过程，能加深对不熟悉部分的理解程度；二来是方便以后的复习。
 
-有些人看过的东西能永远记住，并且能灵活运用，可惜的是我不是那类人，还是有些不甘心的。所以就将这份笔记的名称暂且设置为 “心有可耻但有用”。
+有些人看过的东西能永远记住，并且能灵活运用，可惜的是我不是那类人，还是有些不甘心（哈哈）。所以就将这份笔记的名称暂且设置为 “可耻但有用”。
 
 # 正文
 
@@ -17,12 +17,6 @@
 在 `java language specification` 中指出了子类调用构造函数时会先调用父类的构造函数，如果父类还有其父类，则再调用父类的父类的构造函数，依次递归 `recursion` 。
 
 但是**这不代表在内存中创建子类对象的时候会同时创建父类对象。**
-
-```java
-
-```
-
-
 
 ## Iterator
 
@@ -160,6 +154,8 @@ private int newCapacity(int minCapacity) {
 和 JIT 的 c1 编译器优化有关。
 
 ## 允许存储 null 的 Collection 和 Map
+
+注: 键 key 可以为 null，但是值不能为 null。
 
 - HashSet
 
@@ -317,7 +313,7 @@ public class Test {
 }
 ```
 
-### 延伸：方法引用能否用接口：`Interface::instanceMethod` 以及多态性
+### 延伸：接口引用是否可行？：`Interface::instanceMethod` 以及多态性
 
 上面三种方法引用方式，其中 instance::instanceMethod 和 class:staticMethod 的调用的具体方法在调用的时候就已经确定了。看最后一种方法引用：class::instanceMethod，这里有两个问题：1. 其是否会有多态性。2. 将 class 换成 interface 是否可行.
 
@@ -509,5 +505,88 @@ class WildCardTest {
 }
 ```
 
+## 映射视图
 
+之所以出现映射视图的原因是：**集合框架不认为映射本身是一个集合**。
+
+不过，可以得到映射的视图（view)，也就是实现了 Collection 接口或者某个子接口的对象。
+
+- 键集
+- 值集合（不是一个集）
+- 条目集
+
+为什么键集是集（Set）而值集合是集合（Collection）?
+
+**因为 Map 中的 key 都是不重复的，而值是可以重复的。**
+
+注意：在键集和条目集中使用 `add` 都会抛出 `UnsupportedException` .
+
+## 其他视图有关的注意点
+
+### `Arrays.asList(T... args)` 返回的是是一个 `ArrayList` 视图
+
+注意：这里的 `ArrayList` 与经常使用的 ArrayList 是不同的，它是 Arrays 类中的一个私有静态内部类，直接继承了 AbstractList 类，并没有重写 remove 方法，在 AbstractList 中：remove 方法的调用会直接抛出一个 UnsupportedOperationException. 所以对该方法的返回对象使用 remove 方法也同样会抛出相同的异常。也就是说**任何改变原来数组（args）长度的操作都会报错。**
+
+```java
+public E remove(int index) {
+        throw new UnsupportedOperationException();
+}
+
+public E set(int index, E element) {
+        throw new UnsupportedOperationException();
+}
+```
+
+### 	常与 addAll 结合使用的 Colletions.nCopies()
+
+```java
+public static <T> List<T> nCopies(int n, T o) {
+        if (n < 0)
+            throw new IllegalArgumentException("List length = " + n);
+        return new CopiesList<>(n, o);
+}
+
+private static class CopiesList<E> extends AbstractList<E> implements RandomAccess, Serializable {
+    final int n;
+    final E element;
+    
+    CopiesList(int n, E e) {
+        assert n >= 0;
+        this.n = n;
+        element = e;
+    }
+    
+    public Object[] toArray() {
+        final Object[] a = new Object[n];
+        if (element != null)
+            Arrays.fill(a, 0, n, element);
+        return a;
+    }
+}
+```
+
+结合上面的源码知道：Collections.nCopies() 方法仅仅是创建了一个实行了 List 接口的 CopiesList 类，这个类中用 n 和 element 记录了相关值，并不是所想象的那样包含有一个数组（等）记录了 n 个 element. 这是一个非常节省内存的方法。
+
+当用 List.addAll() 方法时候，以 ArrayList 中的 addAll 方法举例：
+
+```java
+public boolean addAll(Collection<? extends E> c) {
+        Object[] a = c.toArray();
+        modCount++;
+        int numNew = a.length;
+        if (numNew == 0)
+            return false;
+        Object[] elementData;
+        final int s;
+        if (numNew > (elementData = this.elementData).length - (s = size))
+            elementData = grow(s + numNew);
+        System.arraycopy(a, 0, elementData, s, numNew);
+        size = s + numNew;
+        return true;
+    }
+```
+
+首先会调用 c 的 toArray 方法，而 CopiesList 的 toArray 方法这时候会创建一个数组并填充后返回。
+
+### Collections.singleton(Objects) 静态方法返回一个实现了 Set 接口的视图对象，该视图对象不可修改，就相当于一个容器。
 

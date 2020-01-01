@@ -1,7 +1,8 @@
 package finallyTest;
 
-import java.util.LinkedList;
-import java.util.function.Consumer;
+import java.io.Serializable;
+import java.lang.ref.WeakReference;
+import java.util.*;
 
 public class Test {
     static int[] get(int num) {
@@ -13,14 +14,11 @@ public class Test {
             nums[0] = num + 7;
         }
     }
+
     public static void main(String[] args) {
-        LinkedList<Integer> list = new LinkedList<>();
-        list.add(1);
-        list.add(3);
-        list.add(5);
-        list.add(2);
-        list.add(7);
-        System.out.println(list);
-        list.forEach();
+        int[] nums = new int[5];
+        for (int i = 0; i < 5; i++) {
+            nums[i] = i + 1;
+        }
     }
 }
