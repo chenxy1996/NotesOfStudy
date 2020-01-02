@@ -10,14 +10,13 @@ public class SchoolTest {
     }
 
     public static void main(String[] args) {
-        Teacher[] teachers = new Teacher[2];
-        teachers[0] = new Teacher("CHEN", 23, "MATH");
-        teachers[1] = new Teacher("LELE", 10, "CHINESE");
-        List<Teacher> teacherList = Arrays.asList(teachers);
-        Collections.sort(teacherList, Comparator.comparingInt(Person::getAge).reversed());
-        System.out.println(teacherList);
-        System.out.println(Arrays.toString(teachers));
-        teacherList.sort(Comparator.comparingInt(Person::getAge));
+        SchoolStuff[] teachers = new SchoolStuff[3];
+        teachers[0] = new Teacher("LELE", 10, "CHINESE");
+        teachers[1] = new Principal("CHENXIANGYU", 24);
+        teachers[2] = new Principal("CHEN", 23);
+        List<SchoolStuff> teacherList = Arrays.asList(teachers);
+        Comparator<SchoolStuff> comp = ((Comparator<SchoolStuff>) Comparator.naturalOrder()).thenComparing(Comparator.comparingInt(Person::getAge).reversed());
+        teacherList.sort(comp);
         System.out.println(teacherList);
     }
 }

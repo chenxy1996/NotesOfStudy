@@ -590,3 +590,43 @@ public boolean addAll(Collection<? extends E> c) {
 
 ### Collections.singleton(Objects) 静态方法返回一个实现了 Set 接口的视图对象，该视图对象不可修改，就相当于一个容器。
 
+## 关于 Collection 框架中的相关类和排序（只针对 List 类， 除了 SortedSet 和 NavigableSet ）
+
+我们晓得 Collection 框架中主要有两大类：Set 和 List ，其中 Set 是无序的 （除了 SortedSet 和 NavigableSet ），所以<u>对其来说排序是没有意义的，排序只是针对 List 。</u>
+
+对于 List 类的排序，有一个静态方法：`Collections.sort(List<T> list)` 和 `Collections.sort(List<T> list, Comparator<? super T> c)` 两个方法。
+
+```java
+public static <T extends Comparable<? super T>> void sort(List<T> list) {
+        list.sort(null);
+}
+
+public static <T> void sort(List<T> list, Comparator<? super T> c) {
+        list.sort(c);
+}
+```
+
+这连个方法都调用了 List 的实例方法 `List.sort(Comparator<? super E> c)`
+
+```java
+default void sort(Comparator<? super E> c) {
+        Object[] a = this.toArray();
+        Arrays.sort(a, (Comparator) c);
+        ListIterator<E> i = this.listIterator();
+        for (Object e : a) {
+            i.next();
+            i.set((E) e);
+        }
+    }
+```
+
+从上面的源码可以看出：对 List 的排序是将其转换为数组，然后再调用底层的 `Arrays.sort(T[] a, Comparator<? super T> c)` 静态方法的。
+
+### 集合类库中使用的排序算法是归并排序，不是快速排序（快排），是出于“稳定性的考虑”。
+
+这点在 java 核心技术 书中有提及：**稳定指的是不需要交换相同的元素。**
+
+假设有一个已经按照姓名排列的员工列表。现在要按照工资排序。如果两个雇员的工资相等，则将会保留按照名字的排列顺序。换言之，排序的结果将会产生这个么一个结果：首先按照工资排序，再按照姓名排序。
+
+## Array, Set, List 互相转换
+
