@@ -24,7 +24,7 @@
 
 首先我们来看一个对象在内存中的具体分布情况：
 
-一个对象具体是由两个部分组成的：对象头 (Object header) 和实例的字段 Field 以及对齐填充 ( padding ), 这个字段不止包括当前类的字段，还包括父类的字段，如果父类也有自己的父类，那么以此类推，都会写在这个部分当中，当然是否能够访问某个字段，要看有没有有权限，也就是 public private default protected 这些关键字的情况。关于对象头，可以分为两个：一个是普通的对象，一个是数组对象。
+一个对象具体是由两个部分组成的：对象头 (Object header) 和实例的字段 Field 以及对齐填充 ( padding ), 这个**字段区域不止包括当前类的字段，还包括父类的字段，如果父类也有自己的父类，那么以此类推，都会写在这个部分当中，当然是否能够访问某个字段，要看有没有有权限，也就是 public private default protected 这些关键字的情况**。关于对象头，可以分为两个：一个是普通的对象，一个是数组对象。
 
 对于普通对象，一般来说对象头可以分为三个个部分：标记信息、类行指针( Klass )。标记信息一般是32字节或64(没有压缩的情况)，这些字节中储存了一些关于这个类的基本信息：hashcode、锁状态标志、偏向线程ID、GC 分代年龄等等（可以看 《深入理解 Java 虚拟机》的相关部分）；类型指针指向方法区（JDK8 以前叫做方法区，也有时候被称作永久区，因为 GC 很少清理该区域的内存数据，但是在 JDK8 后 java 虚拟机规将该区域称之为元数据）中这个实例所属的类信息（class），这里我思考了一下，**`instanceof` 操作符是否就是利用了这个类型指针来判断的**；最后一部分是 padding。
 
@@ -153,7 +153,7 @@ private int newCapacity(int minCapacity) {
 
 这里还有一个注意的地方 `private void add(E e, Object[] elementData, int s)`.
 
-改方法是一个 helpler 方法，在以前的 jdk 中是没有单独分裂出来的。其注释:
+该方法是一个 helpler 方法，在以前的 jdk 中是没有单独分裂出来的。其注释:
 
 ```JAVA
 /**
@@ -466,7 +466,7 @@ List helper = list;
 
 具体的例子就不放了，上面有。
 
-<u>**（2）把一个静态类型 (static type) 为泛型类且其泛型类型是个范围(原始类型也可以，如 `List` ) 转换成具体泛型类型的时候编译器是不会报错的，只会出现警告。 **</u>
+<u>**（2）把一个静态类型 (static type) 为泛型类且其泛型类型是个范围(原始类型也可以，如 `List` ) 转换成具体泛型类型的时候编译器是不会报错的，只会出现警告。**</u>
 
 这就非常容易导致出错，恶意代码的注入。
 
@@ -636,7 +636,7 @@ default void sort(Comparator<? super E> c) {
 
 ### 集合类库中使用的排序算法是归并排序，不是快速排序（快排），是出于“稳定性的考虑”。
 
-这点在 java 核心技术 书中有提及：**稳定指的是不需要交换相同的元素。**
+这点在 《java 核心技术》书中有提及：**稳定指的是不需要交换相同的元素。**
 
 假设有一个已经按照姓名排列的员工列表。现在要按照工资排序。如果两个雇员的工资相等，则将会保留按照名字的排列顺序。换言之，排序的结果将会产生这个么一个结果：首先按照工资排序，再按照姓名排序。
 
@@ -713,6 +713,8 @@ List<String> list = new ArrayList<>(list);
 
 ## jdk7 及以后字符串常量池的有关部分（`intern()`）
 
+注意：关于字符串后面肯定会出一个大的笔记专题。
+
 字符串常量池在 JDK7 之前是在方法区 (Method Area) 的，但是在JDK7之后，被移动到了堆 (Heap) 中, 大概实字符串对象太占用地方了。并且 `intern()` 方法也有一点变化。
 
 这部分内容网上实在是太多了，什么关于面试的啊，一大堆，这次写这个笔记正好我也整理一下，自己重新写一下，也算是回顾。
@@ -765,5 +767,64 @@ String anotherString = new String("chenxiangyu");
 
 注释说的就很明确: 如果常量池出中已经有了一个和目标字符串相等（`equals` 方法判断）的字符串对象，那么常量池中的这个已经存在的字符串将会被返回。如果没有，就会在字符串常量池中添加目标字符串对象的引用。
 
-### 关于 new String("1") + new String("2") 最后创建的字符串
+### 关于 new String("1") + new String("2") 用两个字符串相加的问题。
 
+```java
+String s1 = "1";
+```
+
+上述代码中会直接在堆中的字符串常量池中创建一个字符串对象 "1";
+
+当我们接下来继续用字符串字面量初始化一个新的变量，实际上就是把上面常量池中 "1" 对象的引用返回。
+
+```java
+String s2 = "1";
+
+System.out.println(s1 == s2); // true
+```
+
+下面看一下这个：
+
+```java
+String s3 = new String("1") + new String("2");
+```
+
+一直一来我都有这么一个理解：在上面的表达式中最后会创建一个新的字符串字面量 "12"，然后执行`String s3 = new String("12")` 这么个操作，"12" 自然也自动加入进字符串常量池当中。
+
+实际上我的理解是错误的。真正的情况是：<u>会直接在堆中的非常量池中创建一个新的字符串对象</u>，而不会现在字符串常量池中创建。
+
+```java
+String s3 = new String("1") + new String("2");
+String s4 = "12";
+
+System.out.println(s3 == s4); // false
+```
+
+如果把上述代码改为:
+
+```java
+String s3 = (new String("1") + new String("2")).intern();
+String s4 = "12";
+
+System.out.println(s3 == s4); // true
+```
+
+推荐看一下 c 语言的字符串，看过后会对字符串如何储存会有一个更加深刻的了解。
+
+除此之外，常用的静态方法：`String.valueOf(E)` 也是如此:
+
+```java
+String s5 = String.valueOf(1);
+String s6 = "1";
+
+System.out.println(s5 == s6); // false
+
+String s7 = String.valueOf(1).intern();
+String s8 = "1";
+
+System.out.println(s7 == s8); // true
+```
+
+最后提一下: `new String("123")` 这种方式创建字符串对象是没有实际意义的, 其返回的相当于 "123" 的副本，JDK 源码中也在注释中说了：
+
+Initializes a newly created String object so that it represents the same sequence of characters as the argument; in other words, the newly created string is a copy of the argument string. Unless an explicit copy of original is needed, use of this constructor is unnecessary since Strings are immutable.

@@ -1,5 +1,6 @@
 package schoolTest;
 
+import jdk.swing.interop.SwingInterOpUtils;
 import methodReference.Employee;
 
 import java.util.*;
@@ -10,38 +11,30 @@ public class SchoolTest {
     }
 
     public static void main(String[] args) {
-        SchoolStuff[] teachers = new SchoolStuff[3];
-        teachers[0] = new Teacher("LELE", 10, "CHINESE");
-        teachers[1] = new Principal("CHENXIANGYU", 24);
-        teachers[2] = new Principal("CHEN", 23);
-        List<SchoolStuff> teacherList = Arrays.asList(teachers);
+//        SchoolStuff[] teachers = new SchoolStuff[3];
+//        teachers[0] = new Teacher("LELE", 10, "CHINESE");
+//        teachers[1] = new Principal("CHENXIANGYU", 24);
+//        teachers[2] = new Principal("CHEN", 23);
+//        List<SchoolStuff> teacherList = Arrays.asList(teachers);
+//
+//        BitSet bucket = new BitSet(4);
+//        bucket.set(0);
+//        bucket.set(1);
+//        bucket.set(2);
 
-        BitSet bucket = new BitSet(4);
-        bucket.set(0);
-        bucket.set(1);
-        bucket.set(2);
+        String s1 = "1";
+        String s2 = String.valueOf(2).intern();
+        String s3 = "2";
+        System.out.println(s2 == s3);
 
-        String s1 = new String("1") + new String("1");
-        s1.intern();
-        String s2 = "11";
-        System.out.println(s1 == s2);
+        String s4 = (new String("1") + new String("2"));
+        s4.intern();
+        String s5 = "12";
+        System.out.println(s5 == s4);
 
-        String s3 = String.valueOf(1);
-        String s4 = String.valueOf(2);
+        String s6 = String.valueOf(1).intern();
+        String s7 = "1";
 
-        String.valueOf(3).intern();
-
-        System.out.println(s3.equals(s4));
-        StringBuilder sb = new StringBuilder();
-        sb.append(1);
-        sb.append(2);
-        System.out.println(sb);
-
-        StringBuffer sf = new StringBuffer();
-        sf.append(1);
-        sf.append(2);
-        sf.append(5);
-
-        System.out.println(sf.toString());
+        System.out.println(s6 == s7);
     }
 }
