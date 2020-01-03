@@ -18,6 +18,18 @@
 
 但是**这不代表在内存中创建子类对象的时候会同时创建父类对象。**
 
+要了解这个问题到底是怎么回事，可以先看一下 《深入理解 Java 虚拟机》(Undestanding java virtual machine) 然后，如果还有兴趣了解，可以看 java 语言规范 和最新的 java 虚拟机规范。
+
+如果还想继续了解，就需要自己在网上找相关内容，以及看看 openJDK 的源码。
+
+首先我们来看一个对象在内存中的具体分布情况：
+
+一个对象具体是由两个部分组成的：对象头 (Object header) 和实例的字段 Field 以及对齐填充 ( padding ), 这个字段不止包括当前类的字段，还包括父类的字段，如果父类也有自己的父类，那么以此类推，都会写在这个部分当中，当然是否能够访问某个字段，要看有没有有权限，也就是 public private default protected 这些关键字的情况。关于对象头，可以分为两个：一个是普通的对象，一个是数组对象。
+
+对于普通对象，一般来说对象头可以分为三个个部分：标记信息、类行指针( Klass )。标记信息一般是32字节或64(没有压缩的情况)，这些字节中储存了一些关于这个类的基本信息：hashcode、锁状态标志、偏向线程ID、GC 分代年龄等等（可以看 《深入理解 Java 虚拟机》的相关部分）；类型指针指向方法区（JDK8 以前叫做方法区，也有时候被称作永久区，因为 GC 很少清理该区域的内存数据，但是在 JDK8 后 java 虚拟机规将该区域称之为元数据）中这个实例所属的类信息（class），这里我思考了一下，**`instanceof` 操作符是否就是利用了这个类型指针来判断的**；最后一部分是 padding。
+
+如果是数组对象，那么除了上述部分后，还有一个记录该对象被创建时里面所储存的元素的数量。
+
 ## Iterator
 
 jdk 源码上面都写着，非常详细。
@@ -523,7 +535,7 @@ class WildCardTest {
 
 ## 其他视图有关的注意点
 
-### `Arrays.asList(T... args)` 返回的是是一个 `ArrayList` 视图
+### `Arrays.asList(T... args)` 返回的是是一个 `ArrayList` 视图（此 `ArrayList` 非彼 `ArrayList`）
 
 注意：这里的 `ArrayList` 与经常使用的 ArrayList 是不同的，它是 Arrays 类中的一个私有静态内部类，直接继承了 AbstractList 类，并没有重写 remove 方法，在 AbstractList 中：remove 方法的调用会直接抛出一个 UnsupportedOperationException. 所以对该方法的返回对象使用 remove 方法也同样会抛出相同的异常。也就是说**任何改变原来数组（args）长度的操作都会报错。**
 
@@ -629,4 +641,129 @@ default void sort(Comparator<? super E> c) {
 假设有一个已经按照姓名排列的员工列表。现在要按照工资排序。如果两个雇员的工资相等，则将会保留按照名字的排列顺序。换言之，排序的结果将会产生这个么一个结果：首先按照工资排序，再按照姓名排序。
 
 ## Array, Set, List 互相转换
+
+- Array => List:
+
+```java
+String[] strings = new String[] {"chen", "lele", "ahuang"};
+List<String> list = Arrays.asList(strings);
+```
+
+- List => Array:
+
+```java
+List<String> list = new ArrayList<>();
+list.add("chen");
+list.add("lele");
+list.add("ahuang");
+
+Object[] objects = list.toArray();
+String[] objects = list.toArray(new String[0]);
+String[] strings = list.toArray(String[]::new);
+```
+
+上面的 `toArray` 是 Collection 接口中要求实现的三个方法，在 ArrayList 类中它们是这样实现的：
+
+```java
+public Object[] toArray() {
+    return Arrays.copyOf(elementData, size);
+}
+
+// Collection 集合中的默认接口
+default <T> T[] toArray(IntFunction<T[]> generator) {
+    return toArray(generator.apply(0));
+}
+
+@SuppressWarnings("unchecked")
+public <T> T[] toArray(T[] a) {
+    if (a.length < size)
+        // Make a new array of a's runtime type, but my contents:
+        return (T[]) Arrays.copyOf(elementData, size, a.getClass());
+    System.arraycopy(elementData, 0, a, 0, size);
+    if (a.length > size)
+        a[size] = null;
+    return a;
+}
+```
+
+- Set => Array
+
+和上面的 List => Array 一样。
+
+- Array => Set
+
+```java
+List<String> list = new ArrayList<>();
+list.add("chen");
+list.add("lele");
+list.add("ahuang");
+
+Set<String> set = new HashSet<>(list);
+```
+
+- Set => Array
+
+```java
+Set<String> set = new HashSet<>();
+set.add("chen");
+set.add("lele");
+
+List<String> list = new ArrayList<>(list);
+```
+
+## jdk7 及以后字符串常量池的有关部分（`intern()`）
+
+字符串常量池在 JDK7 之前是在方法区 (Method Area) 的，但是在JDK7之后，被移动到了堆 (Heap) 中, 大概实字符串对象太占用地方了。并且 `intern()` 方法也有一点变化。
+
+这部分内容网上实在是太多了，什么关于面试的啊，一大堆，这次写这个笔记正好我也整理一下，自己重新写一下，也算是回顾。
+
+首先，有一个大的前提：
+
+```java
+String aString = "chenxiangyu";
+```
+
+上述语句从头到尾只创建了一个对象，常量池中的字符串字面量："chenxiangyu".
+
+```java
+String anotherString = new String("chenxiangyu");
+```
+
+而上述语句则创建了两个对象：一个是常量池中的 "chenxiangyu", 还有一个是堆中常量池以外地方的 `anotherString`。
+
+知道上面的后，下面的就好说了。
+
+看源码中 `String.intern()` 的注释：
+
+```java
+ /**
+     * Returns a canonical representation for the string object.
+     * <p>
+     * A pool of strings, initially empty, is maintained privately by the
+     * class {@code String}.
+     * <p>
+     * When the intern method is invoked, if the pool already contains a
+     * string equal to this {@code String} object as determined by
+     * the {@link #equals(Object)} method, then the string from the pool is
+     * returned. Otherwise, this {@code String} object is added to the
+     * pool and a reference to this {@code String} object is returned.
+     * <p>
+     * It follows that for any two strings {@code s} and {@code t},
+     * {@code s.intern() == t.intern()} is {@code true}
+     * if and only if {@code s.equals(t)} is {@code true}.
+     * <p>
+     * All literal strings and string-valued constant expressions are
+     * interned. String literals are defined in section 3.10.5 of the
+     * <cite>The Java&trade; Language Specification</cite>.
+     *
+     * @return  a string that has the same contents as this string, but is
+     *          guaranteed to be from a pool of unique strings.
+     * @jls 3.10.5 String Literals
+     */
+    public native String intern();
+```
+
+注释说的就很明确: 如果常量池出中已经有了一个和目标字符串相等（`equals` 方法判断）的字符串对象，那么常量池中的这个已经存在的字符串将会被返回。如果没有，就会在字符串常量池中添加目标字符串对象的引用。
+
+### 关于 new String("1") + new String("2") 最后创建的字符串
 
