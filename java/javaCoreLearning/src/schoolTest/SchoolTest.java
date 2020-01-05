@@ -22,19 +22,13 @@ public class SchoolTest {
 //        bucket.set(1);
 //        bucket.set(2);
 
-        String s1 = "1";
-        String s2 = String.valueOf(2).intern();
-        String s3 = "2";
-        System.out.println(s2 == s3);
+        String s1 = String.valueOf(1).intern();
+        String s2 = String.valueOf(2);
 
-        String s4 = (new String("1") + new String("2"));
-        s4.intern();
-        String s5 = "12";
-        System.out.println(s5 == s4);
+        String s3 = "1";
 
-        String s6 = String.valueOf(1).intern();
-        String s7 = "1";
-
-        System.out.println(s6 == s7);
+        System.out.println(System.identityHashCode(s1));
+        System.out.println(System.identityHashCode(s2));
+        System.out.println(System.identityHashCode(s3));
     }
 }
