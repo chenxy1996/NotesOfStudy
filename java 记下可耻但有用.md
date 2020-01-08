@@ -445,6 +445,18 @@ List<?> helper = list; // List hlper = list 也可以
 List<A> newList = (List<A>) helper;  // 会出现警告，但是编译是可以通过的
 ```
 
+`List<?>` 和 `List` 标记的是不同的。虽然上面 `helper` 的静态类型是 `list<?>` 亦或 `List` 都行，但最大不同是 `List<?>` 的 `helper` 不能往立面存储新的元素，而 `List` 的 `helper` 是可以的：
+
+```java
+List<B> list = new ArrayList<>();
+List<?> helper = list;
+helper.add(1) // 编译器报错；
+List helper1 = list;
+helper1.add(1) // 编译器不报错，运行时可以执行
+```
+
+
+
 上面第二步也可以写成以下各种方式，都可以：
 
 ```java
