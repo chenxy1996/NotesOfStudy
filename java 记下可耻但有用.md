@@ -10,6 +10,8 @@
 
 有些人看过的东西能永远记住，并且能灵活运用，可惜的是我不是那类人，还是有些不甘心（哈哈）。所以就将这份笔记的名称暂且设置为 “可耻但有用”。
 
+因为是自己所写的笔记，现在只是给自己看的，所以格式方面没有太过于在意。
+
 # 正文
 
 ## 创建子类的同时不会创建父类
@@ -445,7 +447,7 @@ List<?> helper = list; // List hlper = list 也可以
 List<A> newList = (List<A>) helper;  // 会出现警告，但是编译是可以通过的
 ```
 
-`List<?>` 和 `List` 标记的是不同的。虽然上面 `helper` 的静态类型是 `list<?>` 亦或 `List` 都行，但最大不同是 `List<?>` 的 `helper` 不能往立面存储新的元素，而 `List` 的 `helper` 是可以的：
+**`List<?>` 和 `List` 标记的是不同的。虽然上面 `helper` 的静态类型是 `list<?>` 亦或 `List` 都行，但最大不同是 `List<?>` 的 `helper` 不能往立面存储新的元素，而 `List` 的 `helper` 是可以的：**
 
 ```java
 List<B> list = new ArrayList<>();
@@ -779,7 +781,7 @@ String anotherString = new String("chenxiangyu");
 
 注释说的就很明确: 如果常量池出中已经有了一个和目标字符串相等（`equals` 方法判断）的字符串对象，那么常量池中的这个已经存在的字符串将会被返回。如果没有，就会在字符串常量池中添加目标字符串对象的引用。
 
-### 关于 new String("1") + new String("2") 用两个字符串相加的问题。
+### 关于 new String("1") + new String("2") 用两个字符串相加后产生的新字符串对象会直接在堆中（非 String Pool）创建。
 
 ```java
 String s1 = "1";
@@ -840,3 +842,4 @@ System.out.println(s7 == s8); // true
 最后提一下: `new String("123")` 这种方式创建字符串对象是没有实际意义的, 其返回的相当于 "123" 的副本，JDK 源码中也在注释中说了：
 
 Initializes a newly created String object so that it represents the same sequence of characters as the argument; in other words, the newly created string is a copy of the argument string. Unless an explicit copy of original is needed, use of this constructor is unnecessary since Strings are immutable.
+

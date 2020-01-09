@@ -2,11 +2,11 @@ import java.util.Map;
 
 public class MyHashMap {
     /*static field-----------------------------------------------------*/
-    private static final int DEFAULT_INITIAL_CAPACITY = 16;
-    private static final float DEFAULT_LOAD_FACTOR = 0.75f;
+    private static final int    DEFAULT_INITIAL_CAPACITY    = 16;
+    private static final float  DEFAULT_LOAD_FACTOR         = 0.75f;
 
     // 1 * (2^30) int 中的最大值
-    private static final int MAXIMUM_CAPACITY = 1 << 30;
+    private static final int    MAXIMUM_CAPACITY            = 1 << 30;
 
 
     /*instance field---------------------------------------------------*/
