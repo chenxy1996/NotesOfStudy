@@ -15,9 +15,8 @@ public class Test {
         set.add(8);
         set.add(2);
         set.add(9);
-        System.out.println(set);
-
-        Consumer<String> cons = (String str) -> System.out.println(str);
-
+        Integer[] array = set.toArray(Integer[]::new);
+        System.out.println(Arrays.toString(array));
+//        List<Integer> list = new ArrayList<>(set);
     }
 }
